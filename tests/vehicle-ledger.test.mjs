@@ -8,9 +8,9 @@ const charge = (unitId, mode, metres, weighted = metres) => ({unitId, mode, actu
 test('separate unit/mode AP allowances share one faction vehicle supply allowance', () => {
   const ledger = newVehicleLedger(1, 'blue');
   const a = applyVehicleCharge(ledger, initial(), charge('blue1', 'drive', 8000));
-  assert.equal(a.ok, true); assert.deepEqual(a.cost, {ap: 2, supplies: 1, fatigue: 0, health: 0});
+  assert.equal(a.ok, true); assert.deepEqual(a.cost, {ap: 1, supplies: 1, fatigue: 0, health: 0});
   const b = applyVehicleCharge(a.ledger, a.resources, charge('blue1', 'motorcade', 12000));
-  assert.equal(b.ok, true); assert.deepEqual(b.cost, {ap: 6, supplies: 0, fatigue: 2, health: 2});
+  assert.equal(b.ok, true); assert.deepEqual(b.cost, {ap: 3, supplies: 0, fatigue: 1, health: 1});
   const c = applyVehicleCharge(b.ledger, initial(), charge('blue2', 'drive', 1));
   assert.equal(c.ok, true); assert.equal(c.cost.supplies, 1); assert.equal(c.cost.ap, 1);
   assert.deepEqual(ledger, newVehicleLedger(1, 'blue'));
@@ -50,7 +50,7 @@ test('prepaid distance permits zero AP, while weather uses weighted distance and
   assert.equal(b.ok, true); assert.equal(b.cost.ap, 0); assert.equal(b.cost.supplies, 0);
   const c = applyVehicleCharge(newVehicleLedger(1, 'blue'), {...initial(), fatigue: 10, health: 1},
     charge('blue1', 'motorcade', 2000, 2500));
-  assert.equal(c.ok, true); assert.equal(c.cost.ap, 2); assert.equal(c.cost.supplies, 1);
+  assert.equal(c.ok, true); assert.equal(c.cost.ap, 1); assert.equal(c.cost.supplies, 1);
   assert.equal(c.resources.fatigue, 10); assert.equal(c.resources.health, 0);
 });
 

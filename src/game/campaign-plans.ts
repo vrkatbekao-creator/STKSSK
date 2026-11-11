@@ -12,16 +12,18 @@ function makePlan(g:Campaign,u:CampaignUnit,nodeId:string,walk:ReturnType<typeof
  if(g.nodeState[n.id].visits[u.team]>=2)return fail('capped','c_errorCrowd');
  if(g.movementProfile==='streets-v2'&&outreachQuote(g,u.team,n.cellId).count>=2)return fail('capped','c_errorCrowd');
  const candidates=interactionCells(g,n);
- let destination:string,path:string[],moveAp:number;
- if(candidates.includes(u.cellId)){destination=u.cellId;path=[u.cellId];moveAp=0;}
+ let destination:string,moveAp:number;
+ if(candidates.includes(u.cellId)){destination=u.cellId;moveAp=0;}
  else{
   if(unitGuarded(g,u)||u.bracedUntil>=g.day)return fail('locked','c_errorGuardMove');
   const best=candidates.filter(id=>walk.costs.has(id)).sort((a,b)=>walk.costs.get(a)!-walk.costs.get(b)!||a.localeCompare(b))[0];
-  if(!best)return fail('blocked','c_errorRoute');destination=best;moveAp=walk.costs.get(best)!;const route=routeFromMovement(u,best,walk);if(!route)return fail('blocked','c_errorRoute');path=route.path;
+  if(!best)return fail('blocked','c_errorRoute');destination=best;moveAp=walk.costs.get(best)!;
  }
  const totalAp=moveAp+fee.ap;let state:VisitPlan['state']=moveAp?'travel':'here',error:string|null=null;
  if(u.ap<totalAp){state='ap';error='c_errorAP';}else if(g.resources[u.team].materials<fee.materials){state='materials';error='c_errorMaterials';}
- return {...base,state,error,destination,path,moveAp,totalAp,canAct:error===null};
+ // Most callers only rank costs; reconstruct a potentially cross-city path only on demand.
+ let path:string[]|undefined;
+ return {...base,state,error,destination,get path(){return path??=(moveAp?routeFromMovement(u,destination,walk)?.path??[]:[u.cellId]);},moveAp,totalAp,canAct:error===null};
 }
 export function planNodeVisit(g:Campaign,u:CampaignUnit,nodeId:string){return makePlan(g,u,nodeId,movement(g,u));}
 export function districtVisitPlans(g:Campaign,u:CampaignUnit,districtId:string){const walk=movement(g,u);return mapFor(g).nodes.filter(n=>n.districtId===districtId).map(n=>makePlan(g,u,n.id,walk));}

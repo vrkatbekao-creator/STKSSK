@@ -1,7 +1,8 @@
 // Local, isolated Node integration audit; never touches the browser's save slots.
 import {readFileSync,writeFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {districts,mapFor} from '../src/game/campaign-map.ts';
+import {districts,mapFor,routingEdges} from '../src/game/campaign-map.ts';
+import {vehicleBoardingAP} from '../src/game/vehicle-cost.ts';
 import {loadVerifiedVehicleBackend} from '../src/game/vehicle-verified-backend.ts';
 import {createCampaignStore} from '../src/game/campaign-store.ts';
 
@@ -18,6 +19,10 @@ const resumed=createCampaignStore(storage,'streets-v2',backend);resumed.getState
 if(resumed.getState().saveError||JSON.stringify(resumed.getState().game)!==JSON.stringify(done.game))throw Error('resume mismatch');
 const journal=done.game.vehicle.teams.blue.journal,report={status:'isolated Node integration, single route; not a browser or production test',
  from:unit.cellId,to:destination,journeys:journal.journeys.length,actualMetres:journal.journeys[0].actualQuarterMetres/4,
+ boardingMetres:journal.journeys[0].boardEdges.reduce((n,id)=>n+routingEdges[id].metres,0),
+ alightingMetres:journal.journeys[0].alightEdges.reduce((n,id)=>n+routingEdges[id].metres,0),
+ boardingAp:vehicleBoardingAP(journal.journeys[0].boardEdges.reduce((n,id)=>n+routingEdges[id].metres,0),journal.journeys[0].boardEdges.length>0),
+ alightingAp:vehicleBoardingAP(journal.journeys[0].alightEdges.reduce((n,id)=>n+routingEdges[id].metres,0),journal.journeys[0].alightEdges.length>0),
  contacts:done.game.vehicle.teams.blue.exposure.awarded,apBefore:unit.ap,apAfter:done.game.units.find(u=>u.id===unit.id).ap,
  sameGameAfterReload:true,elapsedMs:Math.round(performance.now()-began),rssBytes:process.memoryUsage().rss};
 writeFileSync('artifacts/vehicle-store-audit.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));

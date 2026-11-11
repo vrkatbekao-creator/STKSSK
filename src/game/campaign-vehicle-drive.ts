@@ -7,7 +7,7 @@ import {applyVehicleCharge} from './vehicle-ledger.ts';
 import {copyCampaign} from './campaign-copy.ts';
 import {career,exert} from './campaign-growth.ts';
 import {recordArrival,ensureTrail} from './campaign-progress.ts';
-import {roadAPCost} from './road-movement.ts';
+import {vehicleBoardingAP} from './vehicle-cost.ts';
 import {vehicleEdgeQuarterMetres} from './vehicle-routing.ts';
 import type {VehicleJourney} from './vehicle-journal.ts';
 import type {VehicleMode} from './vehicle-cost.ts';
@@ -30,7 +30,7 @@ export function executeCampaignVehicle(original:Campaign,team:Team,unitId:string
  unit.ap=charged.resources.ap-plan.walkingAp;unit.fatigue=charged.resources.fatigue;condition.health=charged.resources.health;unit.career=condition;
  resources.materials=charged.resources.materials;
  // Each connector is its own walking movement; transport itself adds no strain.
- for(const walk of [plan.boarding,plan.alighting])if(walk.edgeIds.length)exert(state,unit,'move',roadAPCost(walk.effort));
+ for(const walk of [plan.boarding,plan.alighting])if(walk.edgeIds.length)exert(state,unit,'move',vehicleBoardingAP(walk.effort,true));
  unit.cellId=destinationCell;ensureTrail(state);recordArrival(state,team,[destinationCell]);state.actions++;
  const journey:VehicleJourney={day:original.day,phase:original.phase,unitId,mode,fromCell:actor.cellId,toCell:destinationCell,
   boardEdges:[...plan.boarding.edgeIds],carStart:plan.nodeIndices[0],carEdges:[...plan.edgeIndices],weights,

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {incrementalAllowance, quoteVehicleCost} from '../src/game/vehicle-cost.ts';
+import {incrementalAllowance, quoteVehicleCost,vehicleBoardingAP} from '../src/game/vehicle-cost.ts';
 
 test('splitting travel never changes cumulative AP or vehicle supplies', () => {
   let weighted = 0, team = 0, ap = 0, supplies = 0, fatigue = 0;
@@ -21,7 +21,19 @@ test('prepaid travel can add zero AP and respects exact quarter-metre boundaries
   assert.equal(incrementalAllowance(9007199254740987, 1, 3), 1);
   assert.deepEqual(quoteVehicleCost({mode: 'drive', previousWeightedQuarterMetres: 0,
     addedWeightedQuarterMetres: 32000, previousTeamQuarterMetres: 0, addedTeamQuarterMetres: 32000}),
-    {ap: 2, supplies: 1, fatigue: 0, health: 0});
+    {ap: 1, supplies: 1, fatigue: 0, health: 0});
+});
+
+test('boarding pays by weighted distance with no charge for an empty connection',()=>{
+ assert.equal(vehicleBoardingAP(0,false),0);assert.equal(vehicleBoardingAP(1500,true),1);assert.equal(vehicleBoardingAP(1500.01,true),2);
+ assert.throws(()=>vehicleBoardingAP(1,false),RangeError);
+});
+test('campaign vehicles can cross districts without consuming the day on travel',()=>{
+ const quote=(mode,metres)=>quoteVehicleCost({mode,previousWeightedQuarterMetres:0,addedWeightedQuarterMetres:metres*4,
+  previousTeamQuarterMetres:0,addedTeamQuarterMetres:metres*4});
+ assert.equal(quote('drive',8000).ap,1);assert.equal(quote('drive',8001).ap,2);
+ assert.equal(quote('motorcade',4000).ap,1);assert.equal(quote('motorcade',4001).ap,2);
+ assert.equal(quote('motorcade',12000).ap,3);
 });
 
 test('rejects invalid or unsafe ledger values', () => {

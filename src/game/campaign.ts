@@ -73,12 +73,30 @@ export function initialCampaign(seed=0x5eed,playerTeam:Team='blue',movementProfi
 export function cellCost(g:Campaign,c:Pick<Cell,'terrain'|'districtId'>&Partial<Pick<Cell,'id'>>,team:Team=g.playerTeam,from?:string){
  return (c.terrain==='slope'?2:1)+(g.news==='rain'?1:0)+(g.surprise?.id==='streetworks'&&g.surprise.districtId===c.districtId&&!adapted(g.surprise,team)?1:0);
 }
+// Large movement ranges are shared by map, location list and preview. Cache only
+// on the same campaign object, and include mutable route inputs to avoid stale paths.
+const roadMovementCache=new WeakMap<Campaign,Map<string,ReturnType<typeof roadMovement>>>();
+const sharedRoadCache=new Map<string,{budget:number;walk:ReturnType<typeof roadMovement>}>();
+function cachedRoadMovement(g:Campaign,u:CampaignUnit,budget:number){
+ const surprise=g.surprise?.id==='streetworks'?`${g.surprise.districtId}:${g.surprise.responses[u.team]}`:'';
+ const occupancy=g.units.map(v=>`${v.id}:${v.cellId}:${v.mobilization>0?1:0}:${v.withdrawUntil<=g.day?1:0}`).join('|');
+ const base=`${u.id}:${u.team}:${u.cellId}:${g.day}:${g.news}:${surprise}:${occupancy}`,key=`${base}:${budget}`;
+ let cache=roadMovementCache.get(g);if(!cache){cache=new Map();roadMovementCache.set(g,cache);}
+ const hit=cache.get(key);if(hit)return hit;
+ const prior=Number.isInteger(budget)&&budget>=0?sharedRoadCache.get(base):undefined;
+ let result:ReturnType<typeof roadMovement>;
+ if(prior&&prior.budget>=budget){result=prior.budget===budget?prior.walk:{...prior.walk,costs:new Map([...prior.walk.costs].filter(([,cost])=>cost<=budget))};
+  sharedRoadCache.delete(base);sharedRoadCache.set(base,prior);
+ }else{result=roadMovement(g,u,budget);if(Number.isInteger(budget)&&budget>=0){sharedRoadCache.delete(base);sharedRoadCache.set(base,{budget,walk:result});
+  if(sharedRoadCache.size>3)sharedRoadCache.delete(sharedRoadCache.keys().next().value!);}}
+ cache.set(key,result);if(cache.size>2)cache.delete(cache.keys().next().value!);return result;
+}
 export function interactionCells(g:Campaign,node:CampaignNode){return g.movementProfile==='streets-v2'?[node.cellId,...approachCells(node.cellId)]:[node.cellId,...cells.get(node.cellId)!.neighbors];}
 
 export function movement(g:Campaign,u:CampaignUnit,budget=u.ap){
  const costs=new Map<string,number>([[u.cellId,0]]),previous=new Map<string,string>();
  if(!unitAvailable(g,u)||unitGuarded(g,u)||u.bracedUntil>=g.day)return {costs:new Map<string,number>(),previous};
- if(g.movementProfile==='streets-v2')return roadMovement(g,u,budget);
+ if(g.movementProfile==='streets-v2')return cachedRoadMovement(g,u,budget);
  const occupied=new Set(g.units.filter(v=>v.id!==u.id&&unitAvailable(g,v)).map(v=>v.cellId));
  const queue=[{id:u.cellId,cost:0}];
  while(queue.length){queue.sort((a,b)=>b.cost-a.cost);const current=queue.pop()!;if(current.cost!==costs.get(current.id))continue;

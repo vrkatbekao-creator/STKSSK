@@ -48,7 +48,7 @@ test('combined search matches exhaustive enumeration on small directed geographi
    if(depth)for(const end of destinations.filter(x=>x.vehicleNode===node)){
     const cost=quoteVehicleCost({mode:o.mode,previousWeightedQuarterMetres:o.previousWeightedQuarterMetres,
       addedWeightedQuarterMetres:weighted,previousTeamQuarterMetres:o.previousTeamQuarterMetres,addedTeamQuarterMetres:actual});
-    const foot=r=>r.edgeIds.length?Math.max(1,Math.ceil((r.effort-1e-6)/200)):0;
+    const foot=r=>r.edgeIds.length?Math.max(1,Math.ceil((r.effort-1e-6)/1500)):0;
     const ap=foot(origin)+foot(end)+cost.ap,dist=origin.metres+end.metres+actual/4;
     if(ap+o.reservedAp<=o.ap&&cost.supplies<=o.materials&&(!best||ap<best.ap||ap===best.ap&&dist<best.dist))best={ap,dist};
    }

@@ -3,8 +3,7 @@ import type {VehicleGraphColumns} from './vehicle-graph-format.ts';
 import type {VehicleMode} from './vehicle-cost.ts';
 import type {BoardingRoute} from './vehicle-boarding.ts';
 import {vehicleEdgeQuarterMetres,vehicleRoute} from './vehicle-routing.ts';
-import {incrementalAllowance,quoteVehicleCost,vehicleCostPolicy} from './vehicle-cost.ts';
-import {roadAPCost} from './road-movement.ts';
+import {incrementalAllowance,quoteVehicleCost,vehicleCostPolicy,vehicleBoardingAP} from './vehicle-cost.ts';
 
 export type VehicleLegPlan={boarding:BoardingRoute;alighting:BoardingRoute;nodeIndices:number[];edgeIndices:number[];
   walkingAp:number;vehicleAp:number;totalAp:number;materials:number;actualQuarterMetres:number;weightedQuarterMetres:number};
@@ -19,7 +18,7 @@ class Queue{
  push(x:Item){let i=this.data.length;this.data.push(x);while(i){const p=(i-1)>>1;if(this.data[p].cost<=x.cost)break;this.data[i]=this.data[p];i=p;}this.data[i]=x;}
  pop(){if(!this.data.length)return undefined;const first=this.data[0],last=this.data.pop()!;if(this.data.length){let i=0;while(i*2+1<this.data.length){let c=i*2+1;if(c+1<this.data.length&&this.data[c+1].cost<this.data[c].cost)c++;if(this.data[c].cost>=last.cost)break;this.data[i]=this.data[c];i=c;}this.data[i]=last;}return first;}
 }
-const footAp=(r:BoardingRoute)=>r.edgeIds.length?roadAPCost(r.effort):0;
+const footAp=(r:BoardingRoute)=>vehicleBoardingAP(r.effort,r.edgeIds.length>0);
 const validStop=(r:BoardingRoute,n:number)=>Number.isInteger(r.vehicleNode)&&r.vehicleNode>=0&&r.vehicleNode<n&&
  Number.isFinite(r.metres)&&r.metres>=0&&r.metres<=600&&Number.isFinite(r.effort)&&r.effort>=r.metres&&Array.isArray(r.edgeIds)&&
  r.edgeIds.every(i=>Number.isInteger(i)&&i>=0)&&((r.edgeIds.length===0)===(r.metres===0));

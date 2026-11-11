@@ -8,7 +8,7 @@ class MinQueue {
  pop(){const top=this.data[0],last=this.data.pop()!;if(this.data.length){let i=0;while(i*2+1<this.data.length){let n=i*2+1;if(n+1<this.data.length&&(this.data[n+1][0]<this.data[n][0]||this.data[n+1][0]===this.data[n][0]&&this.data[n+1][1]<this.data[n][1]))n++;if(this.data[n][0]>last[0]||this.data[n][0]===last[0]&&this.data[n][1]>=last[1])break;this.data[i]=this.data[n];i=n;}this.data[i]=last;}return top;}
 }
 export type RoadMovement={costs:Map<string,number>;previous:Map<string,string>;road:{start:number;previous:Map<number,number>;effort:Map<number,number>}};
-export const roadAPPolicy=Object.freeze({metresPerAP:200,stairs:.5,rain:.25,streetworks:.5});
+export const roadAPPolicy=Object.freeze({metresPerAP:1500,stairs:.5,rain:.25,streetworks:.5});
 export const roadAPCost=(effort:number)=>Math.max(1,Math.ceil((effort-1e-6)/roadAPPolicy.metresPerAP));
 export function roadEffort(g:Campaign,edgeId:number,team:CampaignUnit['team']){
  const e=routingEdges[edgeId],way=streetWays.get(e.wayId)!,district=allCells.get(routingNodes[e.to].cellId)!.districtId;

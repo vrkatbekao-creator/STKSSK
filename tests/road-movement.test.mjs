@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { initialCampaign,movement,route,routeFromMovement,campaignCommand,endCampaignPhase,intelligence } from '../src/game/campaign.ts';
 import { mapFor,routingNodes,routingEdges,routingOutgoing,streetWays,streetSource,hexDistance,roadWalkCells,walkGeometry } from '../src/game/campaign-map.ts';
-import { roadEffort,roadAPCost } from '../src/game/road-movement.ts';
+import { roadEffort,roadAPCost,roadMovement } from '../src/game/road-movement.ts';
 import { planNodeVisit } from '../src/game/campaign-plans.ts';
 import { encodeSave,decodeSave,validSession } from '../src/game/campaign-save.ts';
 import { createCampaignStore } from '../src/game/campaign-store.ts';
@@ -40,13 +40,13 @@ test('distance penalties share the command formula; occupancy and unaffordable m
  const poor=structuredClone(g);poor.units[0].ap=0;const failed=campaignCommand(poor,{type:'move',unitId:u.id,cellId:to});assert.ok(failed.error);assert.equal(failed.game,poor);const occupied=structuredClone(g);occupied.units[3].cellId=to;assert.equal(route(occupied,occupied.units[0],to),null);
 });
 
-test('road travel uses 200-metre AP bands with one AP minimum and no per-edge rounding',()=>{
- assert.equal(roadAPCost(.01),1);assert.equal(roadAPCost(200),1);assert.equal(roadAPCost(200.001),2);assert.equal(roadAPCost(1000),5);assert.equal(roadAPCost(1250),7);
- const g=fresh(),u=g.units[0],walk=movement(g,u,5);assert.equal(walk.costs.get(u.cellId),0);
- const candidate=[...walk.costs].map(([id])=>routeFromMovement(u,id,walk)).find(p=>p.edgeIds.length>2&&p.metres>800&&p.metres<=1000&&p.edgeIds.every(id=>streetWays.get(routingEdges[id].wayId).highway!=='steps'));
- assert.ok(candidate);assert.equal(candidate.cost,5);assert.ok(candidate.cost<Math.ceil(candidate.metres/100));assert.ok(candidate.edgeIds.length>candidate.cost);
- const limited=movement(g,u,4);assert.equal(limited.costs.has(candidate.path.at(-1)),false);
- const exact=structuredClone(g);exact.units[0].ap=5;const moved=act(exact,{type:'move',unitId:u.id,cellId:candidate.path.at(-1)});assert.equal(moved.units[0].ap,0);assert.equal(exact.units[0].ap,5);
+test('road travel uses 1.5-kilometre AP bands with one AP minimum and no per-edge rounding',()=>{
+ assert.equal(roadAPCost(.01),1);assert.equal(roadAPCost(1500),1);assert.equal(roadAPCost(1500.001),2);assert.equal(roadAPCost(3000),2);assert.equal(roadAPCost(3000.001),3);
+ const g=fresh(),u=g.units[0],walk=movement(g,u,2);assert.equal(walk.costs.get(u.cellId),0);
+ const candidate=[...walk.costs].map(([id])=>routeFromMovement(u,id,walk)).find(p=>p.edgeIds.length>2&&p.metres>1500&&p.metres<=3000&&p.edgeIds.every(id=>streetWays.get(routingEdges[id].wayId).highway!=='steps'));
+ assert.ok(candidate);assert.equal(candidate.cost,2);assert.ok(candidate.edgeIds.length>candidate.cost);
+ const limited=movement(g,u,1);assert.equal(limited.costs.has(candidate.path.at(-1)),false);
+ const exact=structuredClone(g);exact.units[0].ap=2;const moved=act(exact,{type:'move',unitId:u.id,cellId:candidate.path.at(-1)});assert.equal(moved.units[0].ap,0);assert.equal(exact.units[0].ap,2);
 });
 
 test('rain, stairs and construction use bounded additive effort and faction-specific mitigation',()=>{
@@ -54,6 +54,21 @@ test('rain, stairs and construction use bounded additive effort and faction-spec
  assert.equal(roadEffort(g,flat.id,'blue'),flat.metres);g.news='rain';assert.equal(roadEffort(g,flat.id,'blue'),flat.metres*1.25);
  g.surprise={id:'streetworks',districtId:mapFor(g).cells.get(routingNodes[stairs.to].cellId).districtId,responses:{blue:null,green:null,white:null}};
  assert.equal(roadEffort(g,stairs.id,'blue'),stairs.metres*2.25);g.surprise.responses.blue='adapt';assert.equal(roadEffort(g,stairs.id,'blue'),stairs.metres*1.75);assert.equal(roadEffort(g,stairs.id,'green'),stairs.metres*2.25);
+});
+
+test('reuses movement results without retaining stale weather or unit occupancy',()=>{
+ const g=fresh(),u=g.units[0],first=movement(g,u,1);
+ assert.equal(movement(g,u,1),first);
+ g.news='rain';const rainy=movement(g,u,1);assert.notEqual(rainy,first);
+ g.units[1].cellId=[...rainy.costs.keys()].find(id=>id!==u.cellId&&!g.units.some(v=>v.cellId===id));
+ const occupied=movement(g,u,1);assert.notEqual(occupied,rainy);assert.equal(occupied.costs.has(g.units[1].cellId),false);
+});
+test('a smaller budget on a copied campaign uses the same reachable cells as an independent search',()=>{
+ const g=fresh(),u=g.units[0];movement(g,u,3);const copy=structuredClone(g),actor=copy.units[0];
+ const limited=movement(copy,actor,1),independent=roadMovement(copy,actor,1);
+ assert.deepEqual([...limited.costs],[...independent.costs]);
+ const destination=[...limited.costs].find(([id,cost])=>id!==actor.cellId&&cost===1)[0];
+ assert.deepEqual(routeFromMovement(actor,destination,limited).edgeIds,routeFromMovement(actor,destination,independent).edgeIds);
 });
 
 test('save round-trips keep spent AP and history while the next road move uses the new rate',()=>{

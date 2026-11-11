@@ -26,6 +26,8 @@ import type { Talk,TalkReport,Reply } from './campaign-dialogue.ts';
 import { ensureGrowth,career,capacity,dailyAP,grantXP,exert,recover,morning,recruitCost,recruitLocation,helperTypes,helperRole,assistError,assist,dailySupplies,aiRosterGoal } from './campaign-growth.ts';
 import {copyCampaign} from './campaign-copy.ts';
 import type { Career,Helper } from './campaign-growth.ts';
+import type {CampaignVehicleState} from './campaign-vehicle-state.ts';
+import {vehicleActive} from './campaign-vehicle-state.ts';
 export type Support=Record<string,Record<Team,number>>;
 export type CampaignUnit={career?:Career;helper?:Helper;id:string;team:Team;role:Role;cellId:string;ap:number;maxAp:number;mobilization:number;fatigue:number;withdrawUntil:number;guardedUntil:number;skillReadyDay:number;transportDay:number;facing:number;bracedUntil:number;confusedUntil:number};
 export type Stage={nodeId:string;team:Team;brand:'island'|'soapbox';openDay:number;staffed:boolean;lastEventDay:number};
@@ -33,7 +35,7 @@ export type CampaignLog={key:string;values:Record<string,string|number>};
 type Activity={nodes:string[];kinds:string[];rested:boolean;afterRest:boolean};
 type NodeState={influence:Record<Team,number>;visits:Record<Team,number>;active:Record<Team,boolean>};
 export type Snapshot={releasedDay:number;asOfDay:number;support:Support};
-export type Campaign={outreach?:Outreach;contacts?:Contacts;talk?:Talk|null;talkReports?:TalkReport[];movementProfile?:MovementProfile;trail?:CampaignTrail;playerTeam:Team;day:number;phase:'day'|'night';seed:number;news:'rain'|'market'|'volunteers'|'clear';surprise:Surprise|null;commanders:Record<Team,CommanderId>;talkZones:{cellId:string;untilDay:number}[];surges:{team:Team;cellId:string;day:number}[];flash:CampaignLog|null;units:CampaignUnit[];resources:Record<Team,{materials:number;volunteers:number}>;support:Support;nodeState:Record<string,NodeState>;stages:Stage[];activity:Record<string,Record<Team,Activity>>;wonderPriority:Record<Team,string[]>;prepared:Record<Team,{topic:string;day:number}|null>;eventDone:Record<Team,number>;poll:Snapshot|null;pollHistory:Snapshot[];rumor:Snapshot|null;history:{day:number;support:Support}[];logs:CampaignLog[];actions:number;result:Team|'draw'|null};
+export type Campaign={vehicle?:CampaignVehicleState;outreach?:Outreach;contacts?:Contacts;talk?:Talk|null;talkReports?:TalkReport[];movementProfile?:MovementProfile;trail?:CampaignTrail;playerTeam:Team;day:number;phase:'day'|'night';seed:number;news:'rain'|'market'|'volunteers'|'clear';surprise:Surprise|null;commanders:Record<Team,CommanderId>;talkZones:{cellId:string;untilDay:number}[];surges:{team:Team;cellId:string;day:number}[];flash:CampaignLog|null;units:CampaignUnit[];resources:Record<Team,{materials:number;volunteers:number}>;support:Support;nodeState:Record<string,NodeState>;stages:Stage[];activity:Record<string,Record<Team,Activity>>;wonderPriority:Record<Team,string[]>;prepared:Record<Team,{topic:string;day:number}|null>;eventDone:Record<Team,number>;poll:Snapshot|null;pollHistory:Snapshot[];rumor:Snapshot|null;history:{day:number;support:Support}[];logs:CampaignLog[];actions:number;result:Team|'draw'|null};
 export type Command=
  |{type:'streetCanvass';unitId:string}
  |{type:'siteTransfer';unitId:string;nodeId:string}
@@ -145,6 +147,7 @@ export function campaignCommand(original:Campaign,cmd:Command,team:Team=original
  const {nodeById,districts}=mapFor(original);
  if(original.result)return {game:original,error:'c_errorEnded'};
  if(original.talk&&!['talkAnswer','talkLeave'].includes(cmd.type))return {game:original,error:'d_finishFirst'};
+ if(original.vehicle&&vehicleActive(original.vehicle,original.day)&&(cmd.type==='transport'||cmd.type==='siteTransfer'))return {game:original,error:'c_errorTransport'};
  if(cmd.type==='canvassRoute'){
   const actor=original.units.find(u=>u.id===cmd.unitId&&u.team===team);if(!actor)return {game:original,error:'c_errorUnit'};
   const plan=planNodeVisit(original,actor,cmd.nodeId);if(!plan.canAct)return {game:original,error:plan.error??'c_errorRoute'};
@@ -277,7 +280,7 @@ function settle(g:Campaign){
  g.history.push({day:g.day,support:structuredClone(g.support)});
  log(g,'c_logSettlement',{day:g.day});
 }
-export function automatedFactionTurn(original:Campaign,team:Team,options:{recruit?:boolean;expertDialogue?:boolean}={}){
+export function automatedFactionTurn(original:Campaign,team:Team,options:{recruit?:boolean;expertDialogue?:boolean;disableTransport?:boolean}={}){
  const {nodes:allNodes,districts}=mapFor(original);const nodes=allNodes.filter(n=>playableNode(original,n));
  let g=original;
  for(const id of g.units.filter(u=>u.team===team).map(u=>u.id)){
@@ -291,7 +294,7 @@ export function automatedFactionTurn(original:Campaign,team:Team,options:{recrui
   if(isCommander(u)&&u.skillReadyDay<=g.day&&g.day%2===1&&(g.commanders[team]==='jiang'?g.units.some(v=>v.team!==team&&unitAvailable(g,v)&&hexDistance(cells.get(u.cellId)!,cells.get(v.cellId)!)<=3):g.commanders[team]==='shen'?g.units.some(v=>v.team!==team&&unitAvailable(g,v)&&g.units.some(ally=>ally.team===team&&unitAvailable(g,ally)&&hexDistance(cells.get(ally.cellId)!,cells.get(v.cellId)!)<=4)):true))exec({type:'skill',unitId:id,...(g.commanders[team]==='huang'?{targetId:g.units.find(v=>v.team!==team&&unitAvailable(g,v)&&hexDistance(cells.get(v.cellId)!,cells.get(u.cellId)!)<=3)?.id}:{})});
   if(scheduledEvent(g.day)&&g.eventDone[team]!==g.day&&exec({type:'talkStart',unitId:id,mode:'debate'})){while(g.talk)if(!exec({type:'talkAnswer',unitId:id,talkId:g.talk.id,step:talkStep(g.talk),reply:options.expertDialogue?autoReply(g.talk):aiReply(g.talk)}))break;}
   if([6,13,20,26].includes(g.day)&&id===`${team}1`)exec({type:'prepare',unitId:id,topic:eventTopic(g.day+1)});
-  if(g.day%4===0&&u.ap>=8){const target=districts[(g.day/4+Number(id.slice(-1))*3)%12];exec({type:'transport',unitId:id,districtId:target.id});}
+  if(!options.disableTransport&&g.day%4===0&&u.ap>=8){const target=districts[(g.day/4+Number(id.slice(-1))*3)%12];exec({type:'transport',unitId:id,districtId:target.id});}
   for(let turn=0;turn<6&&u.ap>=2;turn++){
    const enemy=g.units.find(v=>v.team!==team&&unitAvailable(g,v)&&hexDistance(cells.get(v.cellId)!,cells.get(u.cellId)!)<=(u.role==='ranged'?3:1));
    if(enemy&&turn===0){if(u.role==='ranged'&&splashTargets(g,u,enemy.id).length>1&&exec({type:'broadcast',unitId:id,targetId:enemy.id}))continue;if(u.role==='scout'&&behind(u,enemy)&&exec({type:'backstab',unitId:id,targetId:enemy.id}))continue;if(exec({type:'rally',unitId:id,targetId:enemy.id}))continue;}
@@ -308,7 +311,7 @@ export function automatedFactionTurn(original:Campaign,team:Team,options:{recrui
     const seen=new Set(g.outreach?.[team].seenSectors??[]);let street:{cellId:string;score:number}|undefined;
     for(const [cellId,ap] of walk.costs){if(!ap||ap+2>u.ap||seen.has(sectorKey(cells.get(cellId)!)))continue;const q=outreachQuote(g,team,cellId),score=q.points/(ap+2);if(q.count<2&&(!street||score>street.score))street={cellId,score};}
     const walkScore=Math.max(target?target.q.points/target.p.totalAp!:0,street?.score??0);
-    if(u.transportDay!==g.day&&u.ap>=6){const remote=nodes.filter(n=>n.sourcePlace&&outreachQuote(g,team,n.cellId).freshDistrict&&siteTransferDestination(g,u,n.id)).sort((a,b)=>hexDistance(cells.get(u.cellId)!,cells.get(a.cellId)!)-hexDistance(cells.get(u.cellId)!,cells.get(b.cellId)!)||a.id.localeCompare(b.id))[0];if(remote&&outreachQuote(g,team,remote.cellId).points/6>walkScore&&exec({type:'siteTransfer',unitId:id,nodeId:remote.id}))continue;}
+    if(!options.disableTransport&&u.transportDay!==g.day&&u.ap>=6){const remote=nodes.filter(n=>n.sourcePlace&&outreachQuote(g,team,n.cellId).freshDistrict&&siteTransferDestination(g,u,n.id)).sort((a,b)=>hexDistance(cells.get(u.cellId)!,cells.get(a.cellId)!)-hexDistance(cells.get(u.cellId)!,cells.get(b.cellId)!)||a.id.localeCompare(b.id))[0];if(remote&&outreachQuote(g,team,remote.cellId).points/6>walkScore&&exec({type:'siteTransfer',unitId:id,nodeId:remote.id}))continue;}
     if(street&&street.score>(target?target.q.points/target.p.totalAp!:0)){if(exec({type:'move',unitId:id,cellId:street.cellId})&&exec({type:'streetCanvass',unitId:id}))continue;}
     if(target&&exec({type:'canvassRoute',unitId:id,nodeId:target.p.nodeId}))continue;
     if(here.count<2&&here.points>=4&&exec({type:'streetCanvass',unitId:id}))continue;
@@ -323,11 +326,11 @@ export function automatedFactionTurn(original:Campaign,team:Team,options:{recrui
  }
  return g;
 }
-export function endCampaignPhase(original:Campaign){
+export function endCampaignPhase(original:Campaign,options:{automatedTurn?:(g:Campaign,team:Team)=>Campaign}={}){
  const {districts}=mapFor(original);
  if(original.result||original.talk)return original;
  if(original.phase==='day'){const g=copyCampaign(original);g.phase='night';log(g,'c_logNight');return g;}
- let g=copyCampaign(original);ensureGrowth(g);const opponents=teams.filter(t=>t!==g.playerTeam);if(g.day%2===0)opponents.reverse();for(const team of opponents)g=automatedFactionTurn(g,team);settle(g);
+ let g=copyCampaign(original);ensureGrowth(g);const opponents=teams.filter(t=>t!==g.playerTeam);if(g.day%2===0)opponents.reverse();for(const team of opponents)g=options.automatedTurn?options.automatedTurn(g,team):automatedFactionTurn(g,team);settle(g);
  if(g.day===28){const total=totals(g.support);g.result=campaignOutcome(total);log(g,'c_logFinal');return g;}
  if(g.surprise)for(const team of teams)if(g.surprise.responses[team]==='mobilize')g.resources[team].volunteers++;
  g.day++;g.phase='day';Object.assign(g,news(g.seed));Object.assign(g,drawSurprise(g.seed,g.day,districts.map(d=>d.id)));g.activity=dailyActivity();g.flash=null;g.surges=[];g.talkZones=g.talkZones.filter(z=>z.untilDay>=g.day);

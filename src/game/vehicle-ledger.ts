@@ -22,6 +22,27 @@ export function vehicleLedgerForDay(ledger: VehicleTeamLedger, day: number): Veh
   return day === ledger.day ? ledger : newVehicleLedger(day, ledger.team);
 }
 
+/** Preliminary ledger validation only. A future save schema must also validate route history and revisions. */
+export function validVehicleLedger(value:unknown,day:number,team:Team,unitIds:readonly string[]):value is VehicleTeamLedger {
+  if(!value||typeof value!=='object'||Array.isArray(value))return false;
+  const ledger=value as Record<string,unknown>;
+  if(Object.keys(ledger).sort().join(',')!=='actualQuarterMetres,day,team,units'||ledger.day!==day||ledger.team!==team||
+     !Number.isInteger(day)||day<1||day>28||!teams.includes(team)||!nonnegative(ledger.actualQuarterMetres)||
+     !ledger.units||typeof ledger.units!=='object'||Array.isArray(ledger.units))return false;
+  const units=ledger.units as Record<string,unknown>,ids=Object.keys(units);
+  if(ids.length>7||new Set(unitIds).size!==unitIds.length)return false;
+  let weighted=0;
+  for(const id of ids){
+    if(!unitIds.includes(id)||!new RegExp(`^${team}[1-7]$`).test(id))return false;
+    const unit=units[id];if(!unit||typeof unit!=='object'||Array.isArray(unit))return false;
+    const record=unit as Record<string,unknown>;
+    if(Object.keys(record).sort().join(',')!=='drive,motorcade'||!nonnegative(record.drive)||!nonnegative(record.motorcade)||
+      record.drive+record.motorcade===0||!Number.isSafeInteger(weighted+record.drive+record.motorcade))return false;
+    weighted+=record.drive+record.motorcade;
+  }
+  return Number(ledger.actualQuarterMetres)<=weighted && (Number(ledger.actualQuarterMetres)>0)===(weighted>0);
+}
+
 /** Accounting only: the campaign command must validate the route, unit availability and occupancy first. */
 export function applyVehicleCharge(ledger: VehicleTeamLedger, resources: VehicleResources, charge: VehicleCharge):
   | {ok: true; ledger: VehicleTeamLedger; resources: VehicleResources; cost: {ap: number; supplies: number; fatigue: number; health: number}}

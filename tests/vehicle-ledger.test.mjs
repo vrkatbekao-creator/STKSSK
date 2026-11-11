@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {newVehicleLedger, vehicleLedgerForDay, applyVehicleCharge} from '../src/game/vehicle-ledger.ts';
+import {newVehicleLedger, vehicleLedgerForDay, applyVehicleCharge, validVehicleLedger} from '../src/game/vehicle-ledger.ts';
 
 const initial = () => ({ap: 14, materials: 8, fatigue: 0, health: 100});
 const charge = (unitId, mode, metres, weighted = metres) => ({unitId, mode, actualQuarterMetres: metres * 4, weightedQuarterMetres: weighted * 4});
@@ -52,4 +52,17 @@ test('prepaid distance permits zero AP, while weather uses weighted distance and
     charge('blue1', 'motorcade', 2000, 2500));
   assert.equal(c.ok, true); assert.equal(c.cost.ap, 2); assert.equal(c.cost.supplies, 1);
   assert.equal(c.resources.fatigue, 10); assert.equal(c.resources.health, 0);
+});
+
+test('ledger validation rejects forged days, factions, members and impossible totals', () => {
+  const start=newVehicleLedger(3,'blue'), members=['blue1','blue2','blue3'];
+  assert.equal(validVehicleLedger(start,3,'blue',members),true);
+  const result=applyVehicleCharge(start,initial(),charge('blue1','drive',100));
+  const copy=JSON.parse(JSON.stringify(result.ledger));
+  assert.equal(validVehicleLedger(copy,3,'blue',members),true);
+  for(const bad of [{...copy,day:4},{...copy,team:'white'}, {...copy,actualQuarterMetres:401},
+    {...copy,units:{blue7:{drive:400,motorcade:0}}}, {...copy,units:{blue1:{drive:-1,motorcade:0}}},
+    {...copy,units:{blue1:{drive:400,motorcade:0,extra:1}}}, {...copy,extra:1}]) {
+    assert.equal(validVehicleLedger(bad,3,'blue',members),false);
+  }
 });

@@ -2,6 +2,16 @@
 
 2026-11-11，Astra 規劃交接。**目前只有文件，尚未實作；遊戲仍是 v0.17.0。**
 
+2026-11-11 後續：車掃、AI、舊存檔轉換與 schema 6 的純規則原型已實作，但**尚未接入實際遊戲或存檔槽，現行遊戲仍為 v0.17.0**。新道路舊局在記憶體中安排次日啟用，舊 AP、位置和紀錄不回補；legacy-hex 與第 28 天舊局不切換。可選用的 AI 回合共用車行成本和接觸收益，並阻擋新制度下舊接駁。真實車行線可依現有行政區界及 600m 街區切分，路段重複計數會去重；投影與切線分別對照 pyproj、Shapely，結果在 `artifacts/vehicle-geometry-audit.json`。原型車圖與接點仍在忽略目錄，未經正式載入與完整真實路況驗證。
+
+最新補充：已新增逐陣營步行／車掃順序紀錄、舊局啟用日的既有步行熱度基準，以及依固定車行圖重新計算覆蓋與熱度的原型重播；混合行動存讀、竄改拒絕、跨日及 AI 足跡已有測試。可信路網原型載入器核對固定 SHA、步行與車行 revision，實際 `.tools` 圖資的 Node 驗證與損毀拒絕見 `artifacts/vehicle-backend-audit.json`。此為一致性檢查，不證明舊局啟用之前的動作或歷史天氣真實；歷史權重仍僅做範圍驗證。圖包尚未發布，沒有瀏覽器下載、解壓、載入與記憶體實測，仍須考慮行動裝置效能。現有遊戲與存檔槽仍未接線，UI 留待下一階段。
+
+再補充：`createCampaignStore` 現提供明確注入經驗證車行資料的可選後端模式，車掃命令、單一 Store、三槽 schema 6、AI 夜間回合與遷移已有整合測試；測試只使用小型合成車圖。正式 `useCampaign` 尚未啟用車行模式，也沒有載入正式圖包或玩家操作入口；前段「存檔槽仍未接線」指預設的正式遊戲。不能宣稱玩家已可使用此功能。
+
+隨後以 `.tools` 的完整固定車圖在隔離 Node 狀態試跑一條晴天跨區車掃與保存／續玩，4,444m、14→8 AP、4 點影響、重開後狀態一致；耗時／記憶體及範圍見 `artifacts/vehicle-store-audit.json`。其餘 AI 28 天整合仍使用空的合成車圖，尚未用完整車圖跑完整對局。先前「測試只使用小型合成車圖」描述前一檢查點。
+
+未完成的關鍵：正式資料包、瀏覽器非同步載入及完整行車限制核對；將已注入模式安全啟用於正式 `useCampaign`；可操作的雙語 UI 和實機功能驗收。schema 6 的重播只在提供匹配圖資及驗證器時可用；部分早期測試注入的驗證器是測試替身，不能當正式驗證。資料量與本機預覽耗時、記憶體仍有風險，不能宣稱已可發布。使用者明確延後 UI 精修、跨瀏覽器和無障礙驗收。
+
 TERRA 已開始 A：原始 PBF SHA 已比對一致，車行來源快照已萃取至 `.tools/taipei-vehicle-source-v1.json.gz`，SHA256 `3e3db298019f7c103d26628328106638a439c4dc2bcac58959843f3c0e8e204d`；來源稽核見 `artifacts/vehicle-source-audit.json`。132,376 條 way、1,799 筆轉向關係，其中 70 筆缺少標準成員；與步行來源共有 226,121 個節點 ID，但尚未證明可接駁。新增來源萃取、汽車權限／方向、保守轉向原型及六項單元測試。轉向原型未接入遊戲，via-way 先封鎖而非完整支援；含不完整與特殊關係均須在圖建置中保守封鎖並稽核。車行圖、上下車連接、十二區可達性仍未完成，不能當作 A 階段已完成。來源快照位於忽略目錄，不隨 Git 提交；可用 `python design/extract_vehicle_network.py` 從固定 PBF 重建。下方「只有文件」為原始交接狀態。
 
 後續進度：新增離線 `vehicle_graph.py` 和 `audit_vehicle_graph.py`，見 `artifacts/vehicle-graph-prototype.json`。各區一個來源共節點候選，以原步行圖在無單位阻擋時測得雙向均在 600m 內；候選節點間 132 個有向車行距離均有結果（2,032–23,674m）。這些是區中心附近的候選點，不是代表活動場地；轉向模型尚待全面稽核，via-way 保守封鎖可能誤拒，不能視為完整合法通行驗證。圖還未壓縮、版本化或接入遊戲；圖層封裝、正式上下車／佔位、132 場地行程、AI、存檔及瀏覽器驗收均未完成。八項 Python 測試通過；原型稽核使用環境既有 SciPy 1.18.1，尚未列入建置依賴。原文「六項」「車行圖尚未完成」描述前一檢查點。
@@ -15,6 +25,14 @@ TERRA 已開始 A：原始 PBF SHA 已比對一致，車行來源快照已萃取
 後續已完成欄位式 VGP2 離線實驗：`design/package_vehicle_columnar.py`、`design/audit_vehicle_columnar.py`，產物與稽核摘要在 `artifacts/vehicle-package-columnar*.json`；路網 gzip 為 29,694,391 bytes，VGP1 為 31,934,891 bytes，減少約 7%，中繼資料沿用約 1.14 MB。逐筆核對原型全部節點／邊及轉向中繼資料，兩次產生檔案 SHA 相同。這並未驗證轉向真實正確性，且本機 Python 解壓時間不是瀏覽器或記憶體測試。VGP2 的 12-byte header／欄位未對齊 8 bytes，不能直接假設瀏覽器可對每欄建 Float64Array／BigUint64Array；正式格式需處理對齊、BigInt 支援、邊距離的固定整數計量、封包損壞／尺寸驗證與小裝置效能，再決定是否採用。VGP2 仍在 `.tools`，未發布、未連結遊戲，無任何存檔格式變更。
 
 最新：新增對齊的離線 VGP3 實驗及純解析器 `src/game/vehicle-graph-format.ts`，原始資料逐 byte 證實為已稽核 VGP2 對齊轉換，解析器驗證大小、排序、索引及基本座標／距離；呼叫方仍必須先驗證可信 SHA／revision。`artifacts/vehicle-aligned-node-audit.json` 是單次本機 Node 結果，非瀏覽器或網路／手機測量；RSS 含程序與複製緩衝區。當輪瀏覽器盤點沒有連線中的遊戲分頁，故未執行瀏覽器測試。VGP3 在 `.tools` 且未接入遊戲、data:package 或保存；解析器不驗證中繼資料、路口限制、上下車及行程。下一步需連線遊戲分頁後完成瀏覽器載入／記憶體測試、完善可信 manifest 及轉向與路徑，再考慮接入。
+
+最新實作：使用者指定暫緩跨瀏覽器及無障礙驗收。新增 `src/game/vehicle-routing.ts`、`vehicle-turn-policy.ts` 的純尋路／保守轉向原型，及 `design/audit-vehicle-routing.mjs`；六條真實場地候選路線在 Node 下皆可計算，較 Python 未取整結果分別長約 0.05–0.70m，見 `artifacts/vehicle-routing-node-audit.json`。每來源邊的距離先四捨五入至 0.25m、極短邊最低 0.25m，再逐邊按天氣／施工向上計權，以保證拆段一致；全市來源圖 39 條有向邊短於 0.125m，這種近似尚須完整評估，不能當真實導航距離。帶有 via-way／不完整限制仍採保守近似。這些模組未接入遊戲、上下車、佔格、AI、支持收益或存檔；六條測例與資料原型不等於正式路網驗收。使用者延後的跨瀏覽器／無障礙不應被標記為通過；功能需要的一般瀏覽器操作測試仍待接入後執行。
+
+最新進度（使用者要求完成接駁、多站、存檔及 AI）：`build_vehicle_connectors.py` 建立並逐筆複核 80,466 個兩圖來源節點對照（原型包仍在 `.tools`）；`vehicle-boarding.ts` 和 `campaign-vehicle-boarding.ts` 以實際步行距離 600m 搜尋並檢查佔格、方向、守備與多條非支配路線；`vehicle-connectors.ts` 檢查版本與索引。`vehicle-leg-planner.ts`／`campaign-vehicle-plans.ts` 在多個上下車候選中比較整段步行、車行、預留 AP 與物資，加入保守幾何下界；小型地理路網與窮舉解一致。`campaign-vehicle-itinerary.ts` 使用待接入的車行執行器做最多六站原子模擬，活動走既有 campaignCommand；中途錯誤回復，對話只能最後一站。`validVehicleLedger` 為帳本的初步驗證，尚不是 schema 6 或行程歷史驗證。
+
+本機 Node 真實資料單條純預覽（無 UI／無實際執行）結果見 `artifacts/vehicle-campaign-preview-audit.json`，最初混合天氣測試約 22 秒／1.27 GB RSS，加入上下界後約 3 秒／0.89 GB RSS；後來發現步行部分為雨天、車行為晴天，改成全晴天後量得約 8 秒及另一次約 4.2 秒；後者處理前約 0.73 GB、處理後約 0.94 GB RSS；數字含進程與已載入地圖，無法外推瀏覽器或手機。這些模組仍未接入權威車行命令、Zustand、畫布／UI、行程保存或三方 AI；未完成使用者要求，不能宣稱可玩。VGP3、接點、轉向中繼資料仍不在正式載入流程。後續仍需資料封裝與 SHA／revision 驗證、可信轉向和行程幾何、完整 command／單次保存與 schema 6 相容、AI 共用規則、街道接觸收益、效能優化及一般瀏覽器實測。跨瀏覽器與無障礙驗收依使用者指示保留 pending。
+
+本輪延續：新增 drive-only 的 `campaign-vehicle-drive.ts`／`campaign-vehicle-drive-itinerary.ts` 副本執行原型，含步行健康消耗、車輛共用額度及多站失敗時遊戲與帳本一同回復；`vehicle-journal.ts` 可檢查路線、連接點、版本及當日帳本一致性，但只驗證權重範圍，不能證實歷史天氣。`campaign-vehicle-ai.ts` 以注入的相同報價函式排名候選，尚未接入 AI 回合。這些仍是未啟用的原型，不含完整玩家日誌／畫布、正式 schema 6 遷移、motorcade 接觸收益、歷史天氣證明與真實執行；不能用這些測試冒稱使用者要求已完成。尚須將經驗證的資料包正式載入、優化效能、串接命令／Store／保存／AI，並完成一般瀏覽器功能驗證後才可發布。
 
 ## 使用者意圖
 

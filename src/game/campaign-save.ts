@@ -37,6 +37,8 @@ const checksum=(s:string)=>{let hash=2166136261;for(let i=0;i<s.length;i++)hash=
 export function validSession(value:unknown,oldNodes=false):value is Session{
  if(!obj(value)||!obj(value.game))return false;
  const g=value.game;
+ // Vehicle state requires the independently verified schema-6 codec.
+ if(g.vehicle!==undefined)return false;
  if(g.movementProfile!==undefined&&!oneOf(g.movementProfile,['legacy-hex','streets-v2']))return false;
  const {cells,nodes:activeNodes}=mapFor(g);const nodeIds=(oldNodes?nodes:activeNodes).map(n=>n.id);
  if(!oneOf(g.playerTeam,teams)||!integer(g.day,1,28)||!oneOf(g.phase,['day','night'])||!integer(g.seed,0,0xffffffff)||!oneOf(g.news,['rain','market','volunteers','clear'])||!integer(g.actions))return false;

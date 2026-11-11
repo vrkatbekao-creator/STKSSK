@@ -1,0 +1,27 @@
+{
+  "status": "offline prototype; not published or approved for gameplay",
+  "format": "vehicle-graph-prototype-v1",
+  "sourceExtractSha256": "3e3db298019f7c103d26628328106638a439c4dc2bcac58959843f3c0e8e204d",
+  "binarySha256": "9fc832c24bb17582b303fb9fdf6acebbd8640da62e156e149cefa79b23ae1978",
+  "metadataSha256": "9efb8952c183f1f84e007ab2ad5891e6a0bccaab245694f4cec905659ba906ed",
+  "policySha256": {
+    "vehicle_policy.py": "5d8c03c0467d3a05aee4922e9d83dd7081410e79b6539885d70614b501334e46",
+    "vehicle_graph.py": "f799615b2cf4d6fda50476a52b74030daa43b277f34a1358b6f7e432fa82d729",
+    "vehicle_turns.py": "b2a343692f0fce8d4513e6d36ec803a9d21c3bc467a2210094359e0ccb8381b6"
+  },
+  "revision": "83c5641ecaf8bc4ba4a1493a994081cc88454c2b4da49ebb393e39dd1dee9016",
+  "binary": {
+    "sha256": "9fc832c24bb17582b303fb9fdf6acebbd8640da62e156e149cefa79b23ae1978",
+    "bytes": 62038260,
+    "nodes": 862806,
+    "directedEdges": 1722121,
+    "gzipSha256": "6e4ad3730d4ed48905baedb66c54ad6a1f1597e4c24b4f4b0a30e071912dd665",
+    "gzipBytes": 31934891
+  },
+  "metadata": {
+    "sha256": "9efb8952c183f1f84e007ab2ad5891e6a0bccaab245694f4cec905659ba906ed",
+    "bytes": 10160013,
+    "gzipSha256": "7c49a669b00cd0de3f406585b7c10f06062df04f169e38198a90f4d7875be077",
+    "gzipBytes": 1138777
+  }
+}

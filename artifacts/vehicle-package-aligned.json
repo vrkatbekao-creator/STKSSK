@@ -1,0 +1,13 @@
+{
+  "status": "offline prototype; not approved for gameplay",
+  "format": "vehicle-graph-aligned-prototype-v3",
+  "v2Revision": "d2cd021016a417e1951f834ece7eb241fd30823ccf685c8a9972fd26f5611020",
+  "binarySha256": "8a024d1b7a313b7e895b808920ea6e4da8d6d99515d2e48f057fc66dc07ffb1f",
+  "metadataSha256": "9efb8952c183f1f84e007ab2ad5891e6a0bccaab245694f4cec905659ba906ed",
+  "revision": "bcfe2b6758c6943be71adad779a5a639125107c0116bdcb6b94b518825428955",
+  "nodes": 862806,
+  "directedEdges": 1722121,
+  "bytes": 58601008,
+  "gzipBytes": 29694361,
+  "gzipSha256": "da19f5c37e5d8991944cab983323e743f5249b519106d03f3d7171404079015a"
+}

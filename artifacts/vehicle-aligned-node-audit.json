@@ -1,0 +1,18 @@
+{
+  "status": "local Node prototype audit; browser and hardware tests pending",
+  "revision": "bcfe2b6758c6943be71adad779a5a639125107c0116bdcb6b94b518825428955",
+  "nodes": 862806,
+  "directedEdges": 1722121,
+  "compressedBytes": 29694361,
+  "uncompressedBytes": 58601008,
+  "readMs": 13,
+  "decompressAndCompressedHashMs": 201,
+  "validationMs": 25,
+  "rssBytes": 209551360,
+  "arrayBuffersBytes": 146915022,
+  "limitations": [
+    "Local filesystem and Node, not a browser or network measurement.",
+    "RSS includes the process and duplicate buffers; it is not incremental game memory.",
+    "Turn semantics, route planning and gameplay are not validated by this parser."
+  ]
+}

@@ -2,6 +2,7 @@ import type { VehicleGraphColumns } from './vehicle-graph-format.ts';
 import type { VehicleLegOptions, VehicleLegPlan } from './vehicle-leg-planner.ts';
 import { quoteVehicleCost, vehicleBoardingAP, vehicleCostPolicy } from './vehicle-cost.ts';
 import { vehicleEdgeQuarterMetres } from './vehicle-routing.ts';
+import type { encodeVehiclePolicy } from './rust-vehicle-policy.ts';
 
 type VehicleExports = {
   memory: WebAssembly.Memory;
@@ -9,11 +10,13 @@ type VehicleExports = {
   routing_output(): number;
   routing_output_len(): number;
   vehicle_init(): number;
+  vehicle_prepare?(): number;
+  vehicle_search_labels?(): number;
   vehicle_query(origins: number, destinations: number, ap: number, supplies: number,
-    priorWeighted: bigint, priorActual: bigint, perAp: number, perSupply: number): number;
+    priorWeighted: bigint, priorActual: bigint, perAp: number, perSupply: number, rain: number, works: number): number;
 };
 
-export async function instantiateRustVehicle(module: WebAssembly.Module, graph: VehicleGraphColumns) {
+export async function instantiateRustVehicle(module: WebAssembly.Module, graph: VehicleGraphColumns, prepared?:ReturnType<typeof encodeVehiclePolicy>) {
   let policy: VehicleLegOptions | undefined;
   const instance = await WebAssembly.instantiate(module, { env: {
     vehicle_weight: (edge: number) => policy!.edgeWeightQuarters(edge),
@@ -30,8 +33,13 @@ export async function instantiateRustVehicle(module: WebAssembly.Module, graph: 
   const buffer = input(binary.byteLength);
   new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength).set(binary);
   if (!api.vehicle_init()) throw new Error('Invalid VGP3 routing data');
+  if(prepared&&api.vehicle_prepare){
+    const target=input(prepared.bytes.byteLength);
+    new Uint8Array(target.buffer,target.byteOffset,target.byteLength).set(new Uint8Array(prepared.bytes));
+    if(!api.vehicle_prepare())throw new Error('Invalid WASM vehicle policy');
+  }
 
-  return (options: VehicleLegOptions): VehicleLegPlan | null => {
+  const plan=(options: VehicleLegOptions): VehicleLegPlan | null => {
     const { origins, destinations, ap, reservedAp, materials, mode,
       previousWeightedQuarterMetres, previousTeamQuarterMetres } = options;
     if (!origins.length || !destinations.length || ap < reservedAp) return null;
@@ -46,9 +54,11 @@ export async function instantiateRustVehicle(module: WebAssembly.Module, graph: 
     const perAp = mode === 'drive' ? vehicleCostPolicy.quarterMetresPerDriveAP : vehicleCostPolicy.quarterMetresPerMotorcadeAP;
     policy = options;
     let found: number;
+    const conditions=api.vehicle_prepare&&prepared?options.roadConditions:undefined;
     try {
       found = api.vehicle_query(origins.length, destinations.length, ap - reservedAp, materials,
-        BigInt(previousWeightedQuarterMetres), BigInt(previousTeamQuarterMetres), perAp, vehicleCostPolicy.quarterMetresPerSupply);
+        BigInt(previousWeightedQuarterMetres), BigInt(previousTeamQuarterMetres), perAp, vehicleCostPolicy.quarterMetresPerSupply,
+        conditions?Number(conditions.rain):2,conditions?.worksDistrict?prepared!.districtCodes.get(conditions.worksDistrict)??0:0);
     } finally {
       policy = undefined;
     }
@@ -78,4 +88,5 @@ export async function instantiateRustVehicle(module: WebAssembly.Module, graph: 
     return { boarding, alighting, nodeIndices, edgeIndices, walkingAp, vehicleAp: fee.ap,
       totalAp, materials: fee.supplies, actualQuarterMetres, weightedQuarterMetres };
   };
+  return Object.assign(plan,{expanded:()=>api.vehicle_search_labels?.()});
 }

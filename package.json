@@ -1,6 +1,6 @@
 {
   "name": "capital-tactics",
-  "version": "0.17.0",
+  "version": "0.18.0-beta.1",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -11,6 +11,7 @@
     "build": "vite build && node design/write-release-notices.mjs",
     "alpha:assets": "node design/package-alpha.mjs",
     "build:alpha": "npm run alpha:assets && vite build --mode alpha && node design/write-release-notices.mjs",
+    "build:beta": "npm run alpha:assets && vite build --mode beta && node design/write-release-notices.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test": "node --test --test-concurrency=2 tests/*.test.mjs",
     "check": "tsc --noEmit",

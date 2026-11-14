@@ -10,7 +10,7 @@ export function vehicleTurnPolicy(relations:TurnRelation[],viaNodesByWay:Readonl
     const candidates=from.length?from:r.members.filter(m=>m.type==='w');
     for(const id of new Set(candidates.map(m=>BigInt(m.ref)))){const items=indexed.get(id)??[];items.push(r);indexed.set(id,items);}
   }
-  return (incoming:bigint,node:bigint,outgoing:bigint):boolean=>{
+  const allowTurn = (incoming:bigint,node:bigint,outgoing:bigint):boolean=>{
     for(const r of indexed.get(incoming)??[]){
       const exceptions=r.tags.except?.split(';').map(s=>s.trim())??[];
       if(exceptions.some(s=>['motorcar','motor_vehicle','vehicle'].includes(s)))continue;
@@ -37,4 +37,5 @@ export function vehicleTurnPolicy(relations:TurnRelation[],viaNodesByWay:Readonl
     }
     return true;
   };
+  return Object.assign(allowTurn, { restrictedWays: new Set(indexed.keys()) });
 }

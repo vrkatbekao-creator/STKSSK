@@ -138,7 +138,7 @@ export function AlphaCampaign(){
   if(e.key==='Escape'){if(target)cancel();else if(panel)closePanel();else setArrival(null);}
  }}>
   <header className="a3-desk">
-   <div className="a3-title"><h1>{t('brand')} <small>{t('c_chapter')}</small></h1><b>{t('a3_update')}</b></div>
+   <div className="a3-title"><h1>{t('brand')} <small>{t('c_chapter')}</small></h1><b>{t('a3_update')}</b>{import.meta.env.MODE!=='alpha'&&<small>v0.18.0 Beta 1</small>}</div>
    <div className="a3-status"><span>{t('c_dayLabel')} {game.day}/28 · {t(game.phase)}</span>
     <span>{unitLabel(game,actor,t)} <strong>{actor.ap} AP</strong> · {resources.materials} {t('c_materials')}</span>
     <button disabled={busy||!!game.talk||!!game.result} onClick={()=>void end()}>{t(game.phase==='day'?'c_endDay':'c_endNight')}</button>

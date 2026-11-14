@@ -9,6 +9,7 @@ import { prepareCampaignTravel } from './campaign-travel.ts';
 import type { TravelIntent } from './campaign-travel.ts';
 import { readRustVehicleBackend } from './rust-vehicle-backend.ts';
 import { instantiateRustVehicle } from './rust-vehicle.ts';
+import { encodeVehiclePolicy } from './rust-vehicle-policy.ts';
 import type { RoutingQuery, RoutingResult } from './rust-routing.ts';
 
 export function createRustCampaignWorker(module: WebAssembly.Module, query: (options: RoutingQuery) => RoutingResult | null,
@@ -17,8 +18,8 @@ export function createRustCampaignWorker(module: WebAssembly.Module, query: (opt
   let activeQueries = 0;
   const roadSearch = rustRoadSearch(options => { activeQueries++; return query(options); });
   async function loadVehicle(base: string) {
-    const { graph, runtime } = await loadBackend(base);
-    const planLeg = await instantiateRustVehicle(module, graph);
+    const { graph, runtime, turns, districts } = await loadBackend(base);
+    const planLeg = await instantiateRustVehicle(module, graph, encodeVehiclePolicy(graph, turns, districts));
     return {
       ...runtime,
       contextFor: (game: Campaign, team: Campaign['playerTeam']) => ({

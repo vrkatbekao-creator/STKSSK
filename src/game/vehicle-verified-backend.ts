@@ -30,5 +30,5 @@ export async function loadVerifiedVehicleBackend(read:(asset:VehicleAsset)=>Prom
  const turns=parseVehicleTurnMetadata(metadata,fixed.source),connectors=parseVehicleConnectors(connectorData,{walkingRevision:fixed.walkingRevision,
   vehicleRevision:fixed.revision,walkingNodes:routingNodes.length,vehicleNodes:graph.ids.length});
  const runtime=createVehicleRuntime(fixed.revision,graph,connectors,turns,districts);
- return {graph,runtime,saveContext:createVehicleSaveContext(runtime,graph,connectors,districts)};
+ return {graph,runtime,turns,districts,saveContext:createVehicleSaveContext(runtime,graph,connectors,districts)};
 }

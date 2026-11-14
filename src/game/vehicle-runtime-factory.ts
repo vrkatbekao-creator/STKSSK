@@ -37,10 +37,11 @@ export function createVehicleRuntime(revision:string,graph:VehicleGraphColumns,c
  if(!/^[a-f0-9]{64}$/.test(revision))throw Error('Invalid vehicle revision');
  const allowTurn=vehicleTurnPolicy(turns.relations,turns.viaNodes),pointDistrict=new Map<number,string|null>();
  const districtAt=(node:number)=>{if(!pointDistrict.has(node))pointDistrict.set(node,vehiclePointDistrict(projectVehiclePoint(graph.longitudes[node],graph.latitudes[node]),districts));return pointDistrict.get(node)??null;};
- return {revision,contextFor:(game:Campaign,team:Team)=>({graph,connectors,allowTurn,edgeWeightQuarters:(edge:number)=>{
-  const works=game.surprise?.id==='streetworks'&&!adapted(game.surprise,team)&&districtAt(graph.targets[edge])===game.surprise.districtId;
-  return 4+(game.news==='rain'?1:0)+(works?2:0);
- }}),fragmentsForRoute:(_game,_team,plan)=>vehicleRouteFragments(graph,plan,districts)};
+ return {revision,contextFor:(game:Campaign,team:Team)=>{
+  const roadConditions={rain:game.news==='rain',worksDistrict:game.surprise?.id==='streetworks'&&!adapted(game.surprise,team)?game.surprise.districtId:null};
+  return {graph,connectors,allowTurn,roadConditions,edgeWeightQuarters:(edge:number)=>
+   4+Number(roadConditions.rain)+(roadConditions.worksDistrict!==null&&districtAt(graph.targets[edge])===roadConditions.worksDistrict?2:0)};
+ },fragmentsForRoute:(_game,_team,plan)=>vehicleRouteFragments(graph,plan,districts)};
 }
 
 /** The same authenticated graph and turn policy must be used for execution and save replay. */

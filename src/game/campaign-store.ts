@@ -153,7 +153,7 @@ function browserStorage(prefix:string){try{
  return {getItem:(key:string)=>localStorage.getItem(prefix+key),setItem:(key:string,value:string)=>localStorage.setItem(prefix+key,value)};
 }catch{return null;}}
 const testMode=typeof window!=='undefined'&&import.meta.env?.DEV?new URLSearchParams(window.location.search).get('routing'):null;
-export const alphaMode=typeof window!=='undefined'&&(import.meta.env.DEV||import.meta.env.MODE==='alpha')&&new URLSearchParams(window.location.search).get('view')!=='2d'&&!testMode;
+export const alphaMode=typeof window!=='undefined'&&(import.meta.env.DEV||import.meta.env.MODE==='beta'||import.meta.env.MODE==='alpha')&&new URLSearchParams(window.location.search).get('view')!=='2d'&&!testMode;
 const wasmEnabled=testMode==='wasm'||testMode==='wasm-vehicle';
 const vehicleBase=alphaMode||testMode==='wasm-vehicle'?new URL(`${import.meta.env.BASE_URL}${alphaMode?'alpha-data/':'.tools/'}`,window.location.href).href:undefined;
 const client=wasmEnabled||alphaMode?(await import('./rust-move-client.ts')).createRustCampaignClient(

@@ -7,9 +7,11 @@ import {incrementalAllowance,quoteVehicleCost,vehicleCostPolicy,vehicleBoardingA
 
 export type VehicleLegPlan={boarding:BoardingRoute;alighting:BoardingRoute;nodeIndices:number[];edgeIndices:number[];
   walkingAp:number;vehicleAp:number;totalAp:number;materials:number;actualQuarterMetres:number;weightedQuarterMetres:number};
+export type VehicleRoadConditions={rain:boolean;worksDistrict:string|null};
 export type VehicleLegOptions={mode:VehicleMode;origins:readonly BoardingRoute[];destinations:readonly BoardingRoute[];
   ap:number;materials:number;reservedAp:number;previousWeightedQuarterMetres:number;previousTeamQuarterMetres:number;
-  allowTurn:(incoming:bigint,node:bigint,outgoing:bigint)=>boolean;edgeWeightQuarters:(edge:number)=>number};
+  allowTurn:(incoming:bigint,node:bigint,outgoing:bigint)=>boolean;edgeWeightQuarters:(edge:number)=>number;
+  roadConditions?:VehicleRoadConditions};
 
 type Label={node:number;way:bigint|null;origin:number;walkAp:number;actual:number;weighted:number;previous:number;edge:number};
 type Item={label:number;cost:number};

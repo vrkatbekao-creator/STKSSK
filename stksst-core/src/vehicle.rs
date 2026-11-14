@@ -16,6 +16,66 @@ struct Graph {
     ways: Vec<u64>,
     distances: Vec<u32>,
     points: Vec<[f64; 3]>,
+    reverse: Incoming,
+}
+
+struct Incoming {
+    offsets: Vec<u32>,
+    edges: Vec<(u32, u32)>,
+}
+
+impl Graph {
+    fn incoming(offsets: &[u32], targets: &[u32], distances: &[u32]) -> Incoming {
+        let mut starts = vec![0; offsets.len()];
+        for &node in targets {
+            starts[node as usize + 1] += 1;
+        }
+        for i in 1..starts.len() {
+            starts[i] += starts[i - 1];
+        }
+        let mut next = starts.clone();
+        let mut edges = vec![(0, 0); targets.len()];
+        for (node, pair) in offsets.windows(2).enumerate() {
+            for edge in pair[0] as usize..pair[1] as usize {
+                let cursor = &mut next[targets[edge] as usize];
+                edges[*cursor as usize] = (node as u32, distances[edge]);
+                *cursor += 1;
+            }
+        }
+        Incoming {
+            offsets: starts,
+            edges,
+        }
+    }
+
+    // Ignore turn restrictions and weather. The resulting distance is a lower bound
+    // on every legal continuation, including trips for which no continuation exists.
+    fn distance_to_stops(&self, stops: &[Stop]) -> Vec<u64> {
+        let mut distance = vec![u64::MAX; self.points.len()];
+        let mut queue = BinaryHeap::new();
+        for stop in stops {
+            if distance[stop.node as usize] != 0 {
+                distance[stop.node as usize] = 0;
+                queue.push(Reverse((0u64, stop.node)));
+            }
+        }
+        while let Some(Reverse((cost, node))) = queue.pop() {
+            if cost != distance[node as usize] {
+                continue;
+            }
+            let at = node as usize;
+            let start = self.reverse.offsets[at] as usize;
+            let end = self.reverse.offsets[at + 1] as usize;
+            for &(from, edge) in &self.reverse.edges[start..end] {
+                let next = cost + u64::from(edge);
+                if next < distance[from as usize] {
+                    distance[from as usize] = next;
+                    queue.push(Reverse((next, from)));
+                }
+            }
+        }
+        distance
+    }
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -79,12 +139,14 @@ impl Graph {
             ways.push(read_u64(bytes, way + 8 * i)?);
             distances.push(quarters.max(1.0) as u32);
         }
+        let reverse = Self::incoming(&offsets, &targets, &distances);
         Some(Self {
             offsets,
             targets,
             ways,
             distances,
             points,
+            reverse,
         })
     }
 }
@@ -184,6 +246,7 @@ fn plan(
     budget: Budget,
     weight: impl Fn(u32) -> u32,
     turn: impl Fn(u32, u32, u32) -> bool,
+    expanded: &mut u32,
 ) -> Option<Vec<u32>> {
     if origins.is_empty() || destinations.is_empty() {
         return None;
@@ -209,6 +272,8 @@ fn plan(
         .iter()
         .map(|stop| stop.metres)
         .fold(f64::INFINITY, f64::min);
+    let min_alight_ap = u64::from(destinations.iter().map(|stop| stop.ap).min()?);
+    let remaining_distance = graph.distance_to_stops(destinations);
     let mut search = Search {
         graph,
         origins,
@@ -247,14 +312,37 @@ fn plan(
                 label.weighted + estimate,
                 budget.per_ap,
             );
-        if lower > best_ap {
+        if lower + min_alight_ap > best_ap {
             break;
         }
-        if lower == best_ap
-            && origin.metres + (label.actual + estimate) as f64 / 4.0 + min_alight > best_distance
+        let network_distance = remaining_distance[label.node as usize];
+        if network_distance == u64::MAX {
+            continue;
+        }
+        let optimistic_distance = estimate.max(network_distance);
+        let optimistic_ap = u64::from(origin.ap)
+            + min_alight_ap
+            + allowance(
+                budget.previous_weighted,
+                label.weighted + optimistic_distance,
+                budget.per_ap,
+            );
+        if optimistic_ap > best_ap
+            || allowance(
+                budget.previous_actual,
+                label.actual + optimistic_distance,
+                budget.per_supply,
+            ) > budget.supplies
         {
             continue;
         }
+        if optimistic_ap == best_ap
+            && origin.metres + (label.actual + optimistic_distance) as f64 / 4.0 + min_alight
+                > best_distance
+        {
+            continue;
+        }
+        *expanded = expanded.saturating_add(1);
         if label.previous.is_some() {
             for &i in targets.get(&label.node).into_iter().flatten() {
                 let dest = destinations[i];
@@ -286,7 +374,7 @@ fn plan(
             let weighted = label.weighted + (d * u64::from(quarters)).div_ceil(4);
             let ap =
                 u64::from(origin.ap) + allowance(budget.previous_weighted, weighted, budget.per_ap);
-            if ap > best_ap
+            if ap + min_alight_ap > best_ap
                 || allowance(budget.previous_actual, actual, budget.per_supply) > budget.supplies
             {
                 continue;
@@ -316,6 +404,59 @@ fn plan(
 #[cfg(target_arch = "wasm32")]
 thread_local! {
     static GRAPH: RefCell<Option<Graph>> = const { RefCell::new(None) };
+    static POLICY: RefCell<Option<PreparedPolicy>> = const { RefCell::new(None) };
+    static EXPANDED: std::cell::Cell<u32> = const { std::cell::Cell::new(0) };
+}
+
+#[cfg(target_arch = "wasm32")]
+struct PreparedPolicy {
+    districts: Vec<u8>,
+    forbidden: HashMap<(u32, u64), Vec<u32>>,
+    restricted_incoming: Vec<bool>,
+}
+
+#[cfg(target_arch = "wasm32")]
+impl PreparedPolicy {
+    fn parse(graph: &Graph, bytes: &[u8]) -> Option<Self> {
+        let nodes = read_u32(bytes, 4)? as usize;
+        let count = read_u32(bytes, 8)? as usize;
+        if read_u32(bytes, 0)? != 0x31505652
+            || nodes != graph.points.len()
+            || count > bytes.len() / 8
+            || bytes.len() != 12 + count * 8 + nodes
+        {
+            return None;
+        }
+        let mut forbidden = HashMap::<(u32, u64), Vec<u32>>::new();
+        let mut restricted_incoming = vec![false; graph.targets.len()];
+        for i in 0..count {
+            let incoming = read_u32(bytes, 12 + i * 8)? as usize;
+            let outgoing = read_u32(bytes, 16 + i * 8)?;
+            let node = *graph.targets.get(incoming)?;
+            let at = node as usize;
+            if !(graph.offsets[at]..graph.offsets[at + 1]).contains(&outgoing) {
+                return None;
+            }
+            forbidden
+                .entry((node, graph.ways[incoming]))
+                .or_default()
+                .push(outgoing);
+        }
+        for (edge, (&node, &way)) in graph.targets.iter().zip(&graph.ways).enumerate() {
+            restricted_incoming[edge] = forbidden.contains_key(&(node, way));
+        }
+        Some(Self {
+            districts: bytes[12 + count * 8..].to_vec(),
+            forbidden,
+            restricted_incoming,
+        })
+    }
+
+    fn allows(&self, graph: &Graph, node: u32, incoming: u32, outgoing: u32) -> bool {
+        let edge = incoming as usize;
+        !self.restricted_incoming[edge]
+            || !self.forbidden[&(node, graph.ways[edge])].contains(&outgoing)
+    }
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -325,8 +466,26 @@ pub extern "C" fn vehicle_init() -> u32 {
         let graph = Graph::parse(&std::mem::take(&mut runtime.input));
         let ok = graph.is_some();
         GRAPH.with_borrow_mut(|stored| *stored = graph);
+        POLICY.with_borrow_mut(|stored| *stored = None);
         u32::from(ok)
     })
+}
+
+#[cfg(target_arch = "wasm32")]
+#[no_mangle]
+pub extern "C" fn vehicle_prepare() -> u32 {
+    let policy = crate::RUNTIME.with_borrow(|runtime| {
+        GRAPH.with_borrow(|graph| PreparedPolicy::parse(graph.as_ref()?, &runtime.input))
+    });
+    let ok = policy.is_some();
+    POLICY.with_borrow_mut(|stored| *stored = policy);
+    u32::from(ok)
+}
+
+#[cfg(target_arch = "wasm32")]
+#[no_mangle]
+pub extern "C" fn vehicle_search_labels() -> u32 {
+    EXPANDED.get()
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -340,7 +499,10 @@ pub extern "C" fn vehicle_query(
     previous_actual: u64,
     per_ap: u32,
     per_supply: u32,
+    rain: u32,
+    works: u32,
 ) -> u32 {
+    EXPANDED.set(0);
     crate::RUNTIME.with_borrow_mut(|runtime| {
         GRAPH.with_borrow(|stored| {
             runtime.output.clear();
@@ -378,14 +540,40 @@ pub extern "C" fn vehicle_query(
                 per_ap: u64::from(per_ap),
                 per_supply: u64::from(per_supply),
             };
-            let result = plan(
-                graph,
-                origins,
-                destinations,
-                budget,
-                |edge| unsafe { vehicle_weight(edge) },
-                |node, incoming, outgoing| unsafe { vehicle_turn(node, incoming, outgoing) != 0 },
-            );
+            let mut expanded = 0;
+            let result = POLICY.with_borrow(|policy| {
+                match policy.as_ref().filter(|_| rain <= 1 && works <= 255) {
+                    Some(policy) => plan(
+                        graph,
+                        origins,
+                        destinations,
+                        budget,
+                        |edge| {
+                            4 + rain
+                                + 2 * u32::from(
+                                    works != 0
+                                        && u32::from(
+                                            policy.districts[graph.targets[edge as usize] as usize],
+                                        ) == works,
+                                )
+                        },
+                        |node, incoming, outgoing| policy.allows(graph, node, incoming, outgoing),
+                        &mut expanded,
+                    ),
+                    None => plan(
+                        graph,
+                        origins,
+                        destinations,
+                        budget,
+                        |edge| unsafe { vehicle_weight(edge) },
+                        |node, incoming, outgoing| unsafe {
+                            vehicle_turn(node, incoming, outgoing) != 0
+                        },
+                        &mut expanded,
+                    ),
+                }
+            });
+            EXPANDED.set(expanded);
             if let Some(output) = result {
                 runtime.output = output;
                 1
@@ -401,12 +589,44 @@ mod tests {
     use super::*;
 
     #[test]
-    fn revisits_a_junction_by_a_legal_way_and_uses_prepaid_allowance() {
+    fn reverse_distance_respects_one_way_edges_and_uses_best_stop() {
+        let offsets = vec![0, 1, 2, 3, 3, 3];
+        let targets = vec![1, 2, 3];
+        let distances = vec![40, 15, 20];
         let graph = Graph {
-            offsets: vec![0, 2, 3, 4, 4],
-            targets: vec![1, 2, 3, 1],
+            reverse: Graph::incoming(&offsets, &targets, &distances),
+            offsets,
+            targets,
+            distances,
+            ways: vec![7, 8, 9],
+            points: vec![[0.0; 3]; 5],
+        };
+        let stop = |node| Stop {
+            node,
+            ap: 1,
+            metres: 100.0,
+        };
+        assert_eq!(
+            graph.distance_to_stops(&[stop(2), stop(3)]),
+            vec![55, 15, 0, 0, u64::MAX]
+        );
+        assert_eq!(
+            graph.distance_to_stops(&[stop(0)]),
+            vec![0, u64::MAX, u64::MAX, u64::MAX, u64::MAX]
+        );
+    }
+
+    #[test]
+    fn revisits_a_junction_by_a_legal_way_and_uses_prepaid_allowance() {
+        let offsets = vec![0, 2, 3, 4, 4];
+        let targets = vec![1, 2, 3, 1];
+        let distances = vec![10, 20, 10, 20];
+        let graph = Graph {
+            reverse: Graph::incoming(&offsets, &targets, &distances),
+            offsets,
+            targets,
             ways: vec![7, 8, 9, 8],
-            distances: vec![10, 20, 10, 20],
+            distances,
             points: vec![[0.0; 3]; 4],
         };
         let start = Stop {
@@ -429,7 +649,7 @@ mod tests {
         };
         let turn = |_: u32, incoming, outgoing| !(incoming == 0 && outgoing == 2);
         assert_eq!(
-            plan(&graph, &[start], &[end], budget(), |_| 7, turn),
+            plan(&graph, &[start], &[end], budget(), |_| 7, turn, &mut 0),
             Some(vec![0, 0, 1, 3, 2])
         );
         assert!(plan(
@@ -441,7 +661,8 @@ mod tests {
                 ..budget()
             },
             |_| 4,
-            turn
+            turn,
+            &mut 0,
         )
         .is_none());
     }

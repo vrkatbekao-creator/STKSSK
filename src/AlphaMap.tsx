@@ -1,3 +1,4 @@
+import {mapLabel} from './map-language.ts';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {useTranslation} from 'react-i18next';
@@ -41,8 +42,8 @@ const collection=(features:Feature[]=[]):FeatureCollection=>({type:'FeatureColle
 const sources=['districts','rivers','roads','buildings','hex','visits','contest','picked','route'] as const;
 const accents={blue:['#91b9f3','#245ce1','#143b82'],green:['#ffc0a8','#db6a41','#8f361f'],white:['#d9def2','#f7faff','#493a73']};
 type Props={game:Campaign;districtId:string;selected:string;destination?:string;segments:TravelSegment[];grid:boolean;terrain:boolean;
- onCell:(id:string)=>void;onNode:(id:string)=>void;onDistrict:(id:string)=>void;onUnit:(id:string)=>void;districtPicker:boolean;
- popup?:{cellId:string;element:React.ReactNode};motion:TravelQuote|null;onMotionEnd:()=>void};
+ onCell:(id:string)=>void;onNode:(id:string)=>void;onDistrict:(id:string)=>void;onUnit:(id:string,origin:HTMLElement)=>void;districtPicker:boolean;
+ popup?:{cellId:string;element:React.ReactNode};fieldPopup?:{cellId:string;element:React.ReactNode};motion:TravelQuote|null;onMotionEnd:()=>void};
 
 function style():StyleSpecification{
  return {version:8,sources:Object.fromEntries(sources.map(id=>[id,{type:'geojson',data:collection()}])),
@@ -67,15 +68,15 @@ function style():StyleSpecification{
 }
 
 export function AlphaMap(props:Props){
- const {t,i18n}=useTranslation(), lang=i18n.language==='en'?'en':'zh-TW';
+ const {t,i18n}=useTranslation(), lang=i18n.language;
  const {reduceMotion}=useAccessibility();
- const {game,districtId,districtPicker,grid,terrain,destination,segments,popup}=props;
+ const {game,districtId,districtPicker,grid,terrain,destination,segments,popup,fieldPopup}=props;
  const mapData=mapFor(game), district=mapData.districts.find(d=>d.id===districtId)!;
  const host=useRef<HTMLDivElement>(null), map=useRef<maplibre.Map|null>(null);
  const live=useRef(props);live.current=props;
  const [ready,setReady]=useState(false),[failed,setFailed]=useState(false),[terrainFailed,setTerrainFailed]=useState(false);
  const [view,setView]=useState({x:district.bounds[0],y:district.bounds[1],width:district.bounds[2]-district.bounds[0],height:district.bounds[3]-district.bounds[1]});
- const [popupPoint,setPopupPoint]=useState<[number,number]>([0,0]);
+ const [popupPoint,setPopupPoint]=useState({x:0,y:0,width:0,height:0});
  const surface=useGeoData('taipei-surface-v1.json.gz',decodeSurface);
  const {roads,buildings}=useDistrictLayers(districtId,view);
  const defaultCenter=alphaLngLat(district.center);
@@ -92,7 +93,6 @@ export function AlphaMap(props:Props){
   }catch{setFailed(true);return;}
   map.current=instance;
   const size=new ResizeObserver(()=>instance.resize());size.observe(host.current);
-  instance.addControl(new maplibre.NavigationControl({showCompass:false}),'bottom-right');
   instance.on('load',()=>{updateBounds(instance);setReady(true);});
   instance.on('error',event=>{if('sourceId' in event&&event.sourceId==='elevation')setTerrainFailed(true);
    else if(event.error.message.includes('Worker failed'))setFailed(true);});
@@ -112,6 +112,18 @@ export function AlphaMap(props:Props){
   });
   return()=>{size.disconnect();instance.remove();map.current=null;};
  },[]);
+ useEffect(()=>{
+  const instance=map.current;if(!instance)return;
+  const zoom=new maplibre.NavigationControl({showCompass:false});
+  instance.addControl(zoom,'bottom-right');
+  const controls=instance.getContainer();
+  instance.getCanvas().setAttribute('aria-label',t('c_cityMap'));
+  for(const [selector,label] of [['.maplibregl-ctrl-zoom-in',t('a3_zoomIn')],['.maplibregl-ctrl-zoom-out',t('a3_zoomOut')]]){
+   const button=controls.querySelector(selector);
+   button?.setAttribute('aria-label',label);button?.setAttribute('title',label);
+  }
+  return()=>{if(instance.hasControl(zoom))instance.removeControl(zoom);};
+ },[lang,t]);
  function source(id:typeof sources[number],data:FeatureCollection){
   (map.current?.getSource(id) as GeoJSONSource|undefined)?.setData(data);
  }
@@ -124,7 +136,7 @@ export function AlphaMap(props:Props){
   const m=map.current;if(!ready||!m)return;
   const reduce=reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(districtPicker)m.fitBounds([[121.43,24.95],[121.67,25.22]],{padding:65,pitch:0,duration:reduce?0:320});
-  else if(!live.current.motion)m.easeTo({center:defaultCenter,zoom:Math.max(13.8,m.getZoom()),pitch:44,duration:reduce?0:400});
+  else if(!live.current.motion&&!live.current.fieldPopup)m.easeTo({center:defaultCenter,zoom:Math.max(13.8,m.getZoom()),pitch:44,duration:reduce?0:400});
  },[ready,districtId,districtPicker]);
  useEffect(()=>{
   if(!props.motion)return;
@@ -201,10 +213,10 @@ export function AlphaMap(props:Props){
  },[ready,destination,segments,mapData.cells]);
  useEffect(()=>{
   const m=map.current;if(!m||!ready)return;
-  const marker=(xy:number[],label:string,cls:string,click:()=>void,color?:string)=>{
+  const marker=(xy:number[],label:string,cls:string,click:(origin:HTMLElement)=>void,color?:string)=>{
    const el=document.createElement('button');el.type='button';el.className=cls;el.textContent=label;
    if(color)el.style.setProperty('--mark',color);
-   el.onclick=e=>{e.stopPropagation();click();};
+   el.onclick=e=>{e.stopPropagation();click(el);};
    return new maplibre.Marker({element:el,anchor:'bottom'}).setLngLat(alphaLngLat(xy)).addTo(m);
   };
   if(districtPicker)return;
@@ -221,7 +233,8 @@ export function AlphaMap(props:Props){
    if(props.motion&&u.id===props.selected)continue;
    const point=cellPosition(mapData.cells.get(u.cellId)!);
    const name=unitLabel(game,u,t);
-   const mkr=marker(point,name,`a3-token${u.id===props.selected?' selected':''}`,()=>live.current.onUnit(u.id),factionColors[u.team]);
+   const mkr=marker(point,name,`a3-token${u.id===props.selected?' selected':''}`,origin=>live.current.onUnit(u.id,origin),factionColors[u.team]);
+   mkr.getElement().id=`a3-unit-${u.id}`;
    if(isCommander(u)){const img=document.createElement('img');img.src=`${import.meta.env.BASE_URL}art/portraits/${game.commanders[u.team]}-v1.png`;img.alt='';mkr.getElement().prepend(img);}
    else {
     const sprite=document.createElement('span'),index=memberIndex(u.role,u.helper);
@@ -233,23 +246,43 @@ export function AlphaMap(props:Props){
   }
   return()=>markers.forEach(m=>m.remove());
  },[ready,game.units,game.commanders,game.stages,game.visitColors,game.day,props.selected,props.motion,lang,districtPicker,mapData.cells]);
- const popupCell=popup?.cellId;
+ useEffect(()=>{
+  for(const unit of game.units.filter(unit=>unit.team===game.playerTeam)){
+   host.current?.querySelector(`#a3-unit-${unit.id}`)?.setAttribute('aria-expanded',String(!!fieldPopup&&unit.id===props.selected));
+  }
+ },[ready,game.units,game.day,props.selected,props.motion,lang,districtPicker,!!fieldPopup]);
+ const popupCell=popup?.cellId??fieldPopup?.cellId;
+ const isField=!!fieldPopup;
  useEffect(()=>{
   const m=map.current,cell=popupCell?mapData.cells.get(popupCell):undefined;
   if(!ready||!m||!cell)return;
   const position=alphaLngLat(cellPosition(cell));
-  const track=()=>{const p=m.project(position);setPopupPoint([p.x,p.y]);};
-  m.easeTo({center:position,duration:reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches?0:250});
-  track();m.on('move',track);return()=>{m.off('move',track);};
- },[ready,popupCell,mapData.cells,reduceMotion]);
- const elevationCell=popupCell?mapData.cells.get(popupCell):undefined;
+  const track=()=>{
+   const p=m.project(position),{clientWidth:width,clientHeight:height}=m.getContainer();
+   setPopupPoint({x:p.x,y:p.y,width,height});
+  };
+  const p=m.project(position),{clientWidth:width,clientHeight:height}=m.getContainer();
+  if(!isField||p.x<0||p.y<0||p.x>width||p.y>height){
+   m.easeTo({center:position,duration:reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches?0:250});
+  }
+  track();m.on('move',track);m.on('resize',track);
+  return()=>{m.off('move',track);m.off('resize',track);};
+ },[ready,popupCell,isField,mapData.cells,reduceMotion]);
+ const popupStyle={'--popup-x':`${popupPoint.x}px`,'--popup-y':`${popupPoint.y}px`} as React.CSSProperties;
+ const fieldSide=popupPoint.x>popupPoint.width/2?'left':'right';
+ const fieldVertical=popupPoint.y>popupPoint.height/2?'above':'below';
+ const elevationCell=popup?mapData.cells.get(popup.cellId):undefined;
  const elevation=surface.data&&elevationCell?surfaceHeight(surface.data,cellPosition(elevationCell)[0],cellPosition(elevationCell)[1]):null;
  return <>
   <div ref={host} className="a3-map" aria-label={t('c_cityMap')} hidden={failed}/>
   {failed&&<section className="a3-map-fallback"><p>{t('a3_mapUnavailable')}</p>{mapData.districts.map(d=><button key={d.id}
-   onClick={()=>districtPicker?props.onDistrict(d.id):props.onNode(d.wonderId)}>{d.name[lang]}</button>)}</section>}
+   onClick={()=>districtPicker?props.onDistrict(d.id):props.onNode(d.wonderId)}>{mapLabel(d.name,lang)}</button>)}
+   {!districtPicker&&game.units.filter(u=>u.team===game.playerTeam&&unitAvailable(game,u)).map(u=>
+    <button key={u.id} aria-expanded={u.id===props.selected&&isField} onClick={e=>props.onUnit(u.id,e.currentTarget)}>{unitLabel(game,u,t)}</button>)}
+  </section>}
   {(roads.error||buildings.error||terrain&&terrainFailed)&&!failed&&<button className="a3-map-warning" onClick={()=>{roads.retry();buildings.retry();setTerrainFailed(false);}}>{t('p_retry')}</button>}
-  {popup&&<div className={`a3-pin-popup ${failed?'fallback':''}`} style={{'--popup-x':`${popupPoint[0]}px`,'--popup-y':`${popupPoint[1]}px`} as React.CSSProperties}>{popup.element}
+  {popup&&<div className={`a3-pin-popup ${failed?'fallback':''}`} style={popupStyle}>{popup.element}
    {terrain&&elevation!==null&&<small className="a3-elevation">{t('a3_elevation',{metres:Math.round(elevation)})}</small>}</div>}
+  {fieldPopup&&<div className={`a3-field-popup ${fieldSide} ${fieldVertical}${failed||!ready?' fallback':''}`} style={popupStyle}>{fieldPopup.element}</div>}
  </>;
 }

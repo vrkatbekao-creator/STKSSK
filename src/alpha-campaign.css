@@ -32,7 +32,7 @@
 .a3-leader img,.a3-leader>svg{width:44px;height:50px;object-fit:contain;background:#b6c9db}
 .a3-leader small,.a3-leader strong{display:block}
 .a3-leader button{grid-column:1/-1}
-.a3-drawer,.a3-quote{border:1px solid var(--line);border-top:3px solid var(--accent);background:var(--panel);padding:.7rem;box-shadow:0 6px 20px #0007}
+.a3-drawer,.a3-quote,.a3-field-menu{border:1px solid var(--line);border-top:3px solid var(--accent);background:var(--panel);padding:.7rem;box-shadow:0 6px 20px #0007}
 .a3-drawer{position:absolute;z-index:3;right:200px;top:.7rem;width:min(380px,42%);max-height:calc(100% - 3.5rem);overflow:auto;overscroll-behavior:contain}
 .a3-drawer.left{left:200px;right:auto}
 .a3-drawer-head{display:flex;gap:.6rem;justify-content:space-between;align-items:center;margin-bottom:.65rem}
@@ -62,6 +62,16 @@
 .a3-travel-token.vehicle svg{width:64px;height:40px;filter:drop-shadow(0 2px 3px #0007)}
 .a3-pin-popup{position:absolute;z-index:4;left:clamp(150px,var(--popup-x),calc(100% - 150px));top:clamp(175px,var(--popup-y),calc(100% - 20px));transform:translate(-50%,-100%);width:min(290px,calc(100% - 1.5rem))}
 .a3-pin-popup.fallback{left:50%;top:70%}
+.a3-field-popup{position:absolute;z-index:4;--field-width:min(285px,calc(50% - 4rem));width:var(--field-width);top:clamp(.55rem,calc(var(--popup-y) - 6rem),max(.55rem,calc(100% - min(345px,67%) - .55rem)))}
+.a3-field-popup.right{left:clamp(.55rem,calc(var(--popup-x) + 3.5rem),calc(100% - var(--field-width) - .55rem))}
+.a3-field-popup.left{right:clamp(.55rem,calc(100% - var(--popup-x) + 3.5rem),calc(100% - var(--field-width) - .55rem))}
+.a3-field-menu{max-height:min(345px,48dvh);overflow:auto;overscroll-behavior:contain}
+.a3-field-menu .a3-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+.a3-field-menu .a3-actions button{overflow-wrap:anywhere}
+.a3-field-menu p{margin:.35rem 0}
+.a3-field-menu .a3-nearby{display:grid;gap:.25rem;margin:0}
+.a3-field-menu .a3-nearby select{width:100%;min-width:0}
+.a3-board .a3-field-popup.fallback{left:50%;right:auto;top:50%;width:min(285px,calc(100% - 1.1rem));transform:translate(-50%,-50%)}
 .a3-quote::after{content:'';position:absolute;left:calc(50% - 7px);bottom:-8px;border:7px solid transparent;border-bottom:0;border-top-color:var(--panel)}
 .a3-quote p{margin:.42rem 0}
 .a3-elevation{display:block;background:var(--panel);padding:.15rem .45rem}
@@ -92,6 +102,10 @@
  .a3-right,.a3-left{max-width:132px;font-size:.72rem}
  .a3-drawer,.a3-drawer.left{left:.55rem;right:.55rem;top:auto;bottom:3.5rem;width:auto;max-height:calc(100% - 5rem)}
  .a3-pin-popup{top:auto;left:50%;bottom:3.5rem;transform:translateX(-50%);width:calc(100% - 1.1rem)}
+ .a3-board .a3-field-popup{--field-width:min(290px,calc(100% - 1.1rem));left:clamp(.55rem,calc(var(--popup-x) - var(--field-width) / 2),calc(100% - var(--field-width) - .55rem));right:auto}
+ .a3-field-popup.below{top:clamp(.55rem,calc(var(--popup-y) + .65rem),calc(100% - 13.5rem))}
+ .a3-field-popup.above{top:clamp(13.5rem,calc(var(--popup-y) - 3rem),calc(100% - .55rem));transform:translateY(-100%)}
+ .a3-field-menu{max-height:min(13rem,46dvh)}
  .a3-quote::after{display:none}
  .a3-chat{flex-wrap:wrap}
  .a3-desk,.a3-news{padding:.45rem .55rem}

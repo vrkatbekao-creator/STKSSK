@@ -1,3 +1,4 @@
+import {mapLabel} from './map-language.ts';
 import {nodeLabel} from './campaign-node-label.ts';
 import {MemberPortrait} from './MemberArt.tsx';
 import {useAccessibility} from './useAccessibility.ts';
@@ -28,7 +29,7 @@ import './measured-landscape.css';
 import { RealRoadLayer,RoadConsole } from './RealRoads.tsx';
 const terrainColor:Record<string,number>=campaignPalette.terrain;
 export default function HexMap({nodeId,onNode,planned,onPlan}:{nodeId:string;onNode:(id:string)=>void;planned:string|null;onPlan:(id:string|null)=>void}){
- const {t,i18n}=useTranslation();const {vectorMap}=useAccessibility();const lang=i18n.language==='en'?'en':'zh-TW';const {game,selected,districtId,select}=useCampaign();
+ const {t,i18n}=useTranslation();const {vectorMap}=useAccessibility();const lang=i18n.language;const {game,selected,districtId,select}=useCampaign();
  const {campaignMap,districts,nodes,nodeById}=mapFor(game);const street=game.movementProfile==='streets-v2',sf=campaignMap.radiusMetres/190;const nodeCells=useMemo(()=>new Set(nodes.map(n=>n.cellId)),[nodes]);
  const [showRoads,setShowRoads]=useState(true),[showRoadNames,setShowRoadNames]=useState(true),[roadFilter,setRoadFilter]=useState<RoadFilter>('all'),[locatedRoad,setLocatedRoad]=useState<string|null>(null);
  const surface=useGeoData('taipei-surface-v1.json.gz',decodeSurface);
@@ -60,7 +61,7 @@ export default function HexMap({nodeId,onNode,planned,onPlan}:{nodeId:string;onN
  return <div className={`hex-map ${street?'street-routing':''} theme-${d.theme} ${failed||vectorMap?'no-canvas':''} ${showRoads&&roadData?'has-real-roads':''}`}>
  <div className="map-meaning-key"><p>{t('o_mapMeaning')}</p><div><span><i className="meaning-park"/>{t('c_terrain_park')}</span><span><i className="meaning-building"/>{t('o_buildingLegend')}</span><span><i className="meaning-place"/>{t('o_placeLegend')}</span><span><i className="meaning-reach"/>{t('c_reachable')}</span><span><i className="meaning-route"/>{t('o_routeLegend')}</span></div></div><DistrictSceneCard districtId={districtId}/><MapKeyboardControls reachable={reachable} cells={mapFor(game).cells} current={u.cellId} onPreview={id=>{const point=cellPosition(cells.get(id)!);setPan([point[0]-cp[0],point[1]-cp[1]]);onPlan(id);}}/><div className="hex-controls"><button onClick={()=>setZoom(z=>Math.min(2,z+.25))} aria-label={t('c_zoomIn')}>＋</button><button onClick={()=>setZoom(z=>Math.max(.5,z-.25))} aria-label={t('c_zoomOut')}>−</button><button onClick={()=>{setPan([0,0]);setZoom(1);}}>{t('c_center')}</button><span>{t('c_hexScale',{metres:campaignMap.radiusMetres*2})}</span></div>
  <div className="map-selection-caption"><strong>{chosenName}</strong><span>{t(progressKey(chosenStatus),{count:chosenStatus.today})}</span></div>
- <div className="hex-surface"><div ref={host} className="hex-canvas" aria-hidden="true"/><svg preserveAspectRatio="none" viewBox={`${bounds.x} ${bounds.y} ${width} ${height}`} role="group" aria-label={t('c_hexMap',{district:d.name[lang]})}>
+ <div className="hex-surface"><div ref={host} className="hex-canvas" aria-hidden="true"/><svg preserveAspectRatio="none" viewBox={`${bounds.x} ${bounds.y} ${width} ${height}`} role="group" aria-label={t('c_hexMap',{district:mapLabel(d.name,lang)})}>
  <defs><marker id="walk-arrow" markerWidth="5" markerHeight="5" refX="4.5" refY="2.5" orient="auto"><path d="M0 0L5 2.5L0 5Z" fill="#82e4ed"/></marker></defs>
  {showSurface&&surface.data&&<SurfaceLayer data={surface.data} bounds={bounds} contours={showContours}/>}
  {showBuildings&&buildings.data&&<SourceBuildings buildings={visibleBuildings} selected={inspectedBuilding}/>}

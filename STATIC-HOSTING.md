@@ -4,6 +4,9 @@
 
 ## 建置與發布
 
+- 2D 公開原型使用 `/STKSST/`，3D Beta 使用 `/STKSST/3d/`。兩個入口可互相切換，使用各自的存檔鍵。各入口的 `RELEASE.json` 記錄自己的版本與來源提交。
+- `npm run deploy:pages:beta` 驗證、建置並更新 `gh-pages` 的 `3d/`，同時在 2D 首頁加入 3D 連結。車網、WASM 和地形圖磚的前置需求見 [Beta 建置說明](BETA-REVIEW.md)。3D 發布包附車網資料的 ODbL 署名及下載檔。
+
 - 目前使用 GitHub Pages 的 gh-pages 分支根目錄來源，配合 .nojekyll 發布預先建置的成品。現有 OAuth 憑證沒有 workflow scope，GitHub 拒絕新增自訂 Actions 工作流，因此未擴充憑證權限，改採官方支援的分支發布。
 - Node.js 24（最低依 package.json），首次準備 npm ci。後續執行 npm run deploy:pages：check、test、build:pages、發布包檢查全部成功後才推送成品。僅更新 main 不會重建網站。
 - design/publish-pages.mjs 只推送 gh-pages，保留既有發布歷史，不使用 force；若有競爭更新會拒絕而非覆寫。暫存發布工作目錄在已忽略的 .tools/。RELEASE.json 保存版本與來源提交。

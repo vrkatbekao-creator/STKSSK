@@ -6,7 +6,7 @@ A bilingual, single-player campaign tactics game across Taipei’s 12 districts.
 
 | 版本 / Version | 取得方式 / How to play |
 | --- | --- |
-| **v0.18.0 Beta 1 · 3D** | 本 repo 的 `main` 原始碼，請依 [Beta 建置與驗收說明](BETA-REVIEW.md) 在本機試玩。 Build and play locally using the [Beta guide](BETA-REVIEW.md). |
+| **v0.18.0 Beta 1 · 3D** | [GitHub Pages 3D 試玩 / Play the 3D Beta](https://vrkatbekao-creator.github.io/STKSST/3d/) · [本機建置與驗收 / Local build and QA](BETA-REVIEW.md) |
 | **v0.17.0 · 2D 公開原型 / Public prototype** | [GitHub Pages 試玩 / Play in your browser](https://vrkatbekao-creator.github.io/STKSST/) |
 
 [回報問題 / Report an issue](https://github.com/vrkatbekao-creator/STKSST/issues/new?template=bug_report.yml)

@@ -17,6 +17,8 @@
     "check": "tsc --noEmit",
     "data:package": "node design/build-map-packages.mjs",
     "build:pages": "vite build --base=/STKSST/ && node design/write-release-notices.mjs",
+    "build:pages:beta": "npm run alpha:assets && vite build --mode beta --base=/STKSST/3d/ && node design/write-release-notices.mjs",
+    "deploy:pages:beta": "npm run check && npm test && npm run build:pages:beta && node design/publish-pages.mjs --beta",
     "deploy:pages": "npm run check && npm test && npm run build:pages && node design/publish-pages.mjs"
   },
   "engines": {

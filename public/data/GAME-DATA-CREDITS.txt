@@ -7,6 +7,7 @@ https://www.openstreetmap.org/copyright
 https://opendatacommons.org/licenses/odbl/1-0/
 Full source and derivative notices: ROAD-DATA-LICENSE.txt,
 LANDSCAPE-DATA-LICENSE.txt (in this same directory).
+3D vehicle route notices: VEHICLE-DATA-LICENSE.txt.
 
 衛星地表 / Satellite surface
 produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus

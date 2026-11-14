@@ -7,6 +7,12 @@
 .a3-shell .a3-primary{background:var(--accent);color:#111b28;font-weight:700}
 .a3-desk,.a3-news,.a3-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem 1rem;padding:.55rem .9rem}
 .a3-title,.a3-status{display:flex;gap:.55rem .9rem;align-items:center;flex-wrap:wrap}
+.a3-travel-modes{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;flex-basis:100%;font-size:.82rem}
+.a3-travel-modes>strong,.a3-travel-modes>small{color:#d6e4f1}
+.a3-travel-modes button svg{display:inline-block;width:28px;height:18px;vertical-align:middle}
+.a3-travel-modes button[aria-pressed=true]{outline:1px solid var(--accent)}
+.a3-leg-cost{color:#d6e4f1;font-size:.82rem}
+.a3-vehicle-warning{margin:0;color:#ffdf75}
 .a3-title h1{margin:0;font-size:clamp(1rem,2vw,1.6rem)}
 .a3-title small{color:#c9d9eb;font-size:.7em}
 .a3-title b,.a3-news b{padding:.22rem .85rem .22rem .5rem;color:#182537;background:var(--accent);clip-path:polygon(0 0,100% 0,calc(100% - 6px) 50%,100% 100%,0 100%)}

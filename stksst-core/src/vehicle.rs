@@ -2,6 +2,36 @@
 use std::cell::RefCell;
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap};
+use std::hash::{BuildHasherDefault, Hasher};
+
+// Keys come from the game's authenticated road graph and are numeric IDs.
+#[derive(Default)]
+struct RoadIdHasher(u64);
+
+impl Hasher for RoadIdHasher {
+    fn finish(&self) -> u64 {
+        self.0
+    }
+    fn write(&mut self, bytes: &[u8]) {
+        for &byte in bytes {
+            self.write_u64(u64::from(byte));
+        }
+    }
+    fn write_u32(&mut self, value: u32) {
+        self.write_u64(u64::from(value));
+    }
+    fn write_u64(&mut self, value: u64) {
+        self.0 = (self.0.rotate_left(5) ^ value).wrapping_mul(0x517c_c1b7_2722_0a95);
+    }
+    fn write_usize(&mut self, value: usize) {
+        self.write_u64(value as u64);
+    }
+    fn write_isize(&mut self, value: isize) {
+        self.write_u64(value as u64);
+    }
+}
+
+type RoadFrontier = HashMap<(u32, Option<u64>), Vec<usize>, BuildHasherDefault<RoadIdHasher>>;
 
 #[cfg(target_arch = "wasm32")]
 #[link(wasm_import_module = "env")]
@@ -165,6 +195,7 @@ struct Label {
     actual: u64,
     weighted: u64,
     previous: Option<(usize, u32)>,
+    active: bool,
 }
 
 struct Budget {
@@ -188,7 +219,7 @@ struct Search<'a> {
     graph: &'a Graph,
     origins: &'a [Stop],
     labels: Vec<Label>,
-    frontier: HashMap<(u32, Option<u64>), Vec<usize>>,
+    frontier: RoadFrontier,
     queue: BinaryHeap<Reverse<(u64, usize)>>,
     estimates: Vec<Option<u32>>,
     center: [f64; 3],
@@ -228,7 +259,12 @@ impl Search<'_> {
         if entries.iter().any(|&i| dominates(self.labels[i], label)) {
             return;
         }
-        entries.retain(|&i| !dominates(label, self.labels[i]));
+        entries.retain(|&i| {
+            if dominates(label, self.labels[i]) {
+                self.labels[i].active = false;
+            }
+            self.labels[i].active
+        });
         let id = self.labels.len();
         self.labels.push(label);
         entries.push(id);
@@ -278,7 +314,7 @@ fn plan(
         graph,
         origins,
         labels: Vec::new(),
-        frontier: HashMap::new(),
+        frontier: RoadFrontier::default(),
         queue: BinaryHeap::new(),
         estimates: vec![None; graph.points.len()],
         center,
@@ -293,6 +329,7 @@ fn plan(
                 actual: 0,
                 weighted: 0,
                 previous: None,
+                active: true,
             });
         }
     }
@@ -301,7 +338,7 @@ fn plan(
     let mut best = None;
     while let Some(Reverse((_, id))) = search.queue.pop() {
         let label = search.labels[id];
-        if !search.frontier[&search.key(label)].contains(&id) {
+        if !label.active {
             continue;
         }
         let origin = origins[label.origin];
@@ -385,6 +422,7 @@ fn plan(
                 actual,
                 weighted,
                 previous: Some((id, edge)),
+                active: true,
             });
         }
     }

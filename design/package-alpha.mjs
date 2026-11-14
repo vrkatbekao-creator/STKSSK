@@ -13,3 +13,4 @@ for(const file of ['vehicle-graph-prototype-v3.bin.gz','vehicle-graph-prototype-
 }
 copyFileSync(new URL('stksst-core/target/wasm32-unknown-unknown/release/stksst_core.wasm',root),new URL(destination+'/stksst_core.wasm',root));
 execFileSync('python',['design/package-alpha-terrain.py'],{cwd,stdio:'inherit'});
+execFileSync(process.execPath,['design/package-vehicle-policy.mjs'],{cwd,stdio:'inherit'});

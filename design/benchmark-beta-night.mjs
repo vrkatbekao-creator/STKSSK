@@ -26,10 +26,10 @@ const module = await WebAssembly.compile(await readFile(new URL('../stksst-core/
 const alphaPath = process.argv[2] ? pathToFileURL(resolve(process.argv[2])) : new URL('stksst-alpha-baseline.wasm',cwd);
 const alpha = await WebAssembly.compile(await readFile(alphaPath));
 const route = await instantiateRustRouting(module,await readPackage(manifest.core),encodeRoutingMetadata(streetSource));
-const oldPlan = await instantiateRustVehicle(alpha,backend.graph);
 const policyStart=performance.now();
 const policy=encodeVehiclePolicy(backend.graph,backend.turns,backend.districts);
 const policyMs=Math.round(performance.now()-policyStart);
+const oldPlan = await instantiateRustVehicle(alpha,backend.graph,policy);
 const newPlan = await instantiateRustVehicle(module,backend.graph,policy);
 console.log(JSON.stringify({initMs:Math.round(performance.now()-init),policyMs,policyBytes:policy.bytes.byteLength,forbidden:policy.forbiddenCount,vehicleNodes:backend.graph.ids.length,vehicleEdges:backend.graph.targets.length}));
 
@@ -56,7 +56,7 @@ function measure(game,label,engine,planLeg){
 }
 
 function compare(game,label){
-  const a=measure(game,label,'alpha',oldPlan),b=measure(game,label,'beta',newPlan);
+  const a=measure(game,label,'baseline',oldPlan),b=measure(game,label,'candidate',newPlan);
   assert.deepEqual(b.routes,a.routes,`${label} vehicle routes changed`);
   assert.deepEqual(b.next,a.next,`${label} campaign result changed`);
   return b.next;

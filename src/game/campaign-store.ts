@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import {alphaMode,vehicleBase,wasmEnabled} from './browser-routing-mode.ts';
+export {alphaMode} from './browser-routing-mode.ts';
 import { initialCampaign,campaignCommand,endCampaignPhase,prioritizeWonder,chooseCommander } from './campaign.ts';
 import type { CommanderId } from './campaign-tactics.ts';
 import type { Command,Team } from './campaign.ts';
@@ -152,10 +154,6 @@ function browserStorage(prefix:string){try{
  if(typeof localStorage==='undefined')return null;
  return {getItem:(key:string)=>localStorage.getItem(prefix+key),setItem:(key:string,value:string)=>localStorage.setItem(prefix+key,value)};
 }catch{return null;}}
-const testMode=typeof window!=='undefined'&&import.meta.env?.DEV?new URLSearchParams(window.location.search).get('routing'):null;
-export const alphaMode=typeof window!=='undefined'&&(import.meta.env.DEV||import.meta.env.MODE==='beta'||import.meta.env.MODE==='alpha')&&new URLSearchParams(window.location.search).get('view')!=='2d'&&!testMode;
-const wasmEnabled=testMode==='wasm'||testMode==='wasm-vehicle';
-const vehicleBase=alphaMode||testMode==='wasm-vehicle'?new URL(`${import.meta.env.BASE_URL}${alphaMode?'alpha-data/':'.tools/'}`,window.location.href).href:undefined;
 const client=wasmEnabled||alphaMode?(await import('./rust-move-client.ts')).createRustCampaignClient(
  `${import.meta.env.BASE_URL}${alphaMode?'alpha-data/stksst_core.wasm':'stksst-core/target/wasm32-unknown-unknown/release/stksst_core.wasm'}`,vehicleBase):undefined;
 const vehicle=vehicleBase?await (await import('./rust-vehicle-backend.ts')).readRustVehicleBackend(vehicleBase).catch(()=>undefined):undefined;

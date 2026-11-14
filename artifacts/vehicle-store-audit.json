@@ -1,0 +1,17 @@
+{
+  "status": "isolated Node integration, single route; not a browser or production test",
+  "from": "taipei-street-hex-v2:-174,402",
+  "to": "taipei-street-hex-v2:-122,405",
+  "journeys": 1,
+  "actualMetres": 3778.75,
+  "boardingMetres": 577.9300000000001,
+  "alightingMetres": 548.42,
+  "boardingAp": 1,
+  "alightingAp": 1,
+  "contacts": 3,
+  "apBefore": 15,
+  "apAfter": 12,
+  "sameGameAfterReload": true,
+  "elapsedMs": 1781,
+  "rssBytes": 775946240
+}

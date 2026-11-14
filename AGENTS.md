@@ -1,5 +1,7 @@
 # 專案工作規則
 
+- 2026-11-11 v0.18 車掃僅完成規劃，見 VEHICLE-CANVASSING-SPEC.md／VEHICLE-CANVASSING-HANDOFF.md。使用者要求先由 Astra 規劃，再切回 TERRA 實作；未開工前不把規劃數值當現行規則。現行已發布版仍為 v0.17.0。下一輪優先處理獨立車行路網、跨區 AP、淺度車掃與深度拜訪；旋轉鏡頭延後。
+
 - v0.17 全域掃街依 CITY-OUTREACH-SPEC.md：官方來源場地與任意道路掃街、600 公尺街區飽和／探索、區域 3 AP／場地 4 AP 接駁共用每日一次；成本、收益、上限與 AI 都由純規則決定。schema 5 讀 1–4，只在記憶體加入中立場地與可證實的觸及／今日次數，不回補 AP、不改舊位置或歷史。場地 revision 獨立於 routing revision；圖例不畫支持度勢力區。
 
 - v0.16.1 使用者回報移動 AP 過高，調整依 ROAD-MOVEMENT-SPEC.md：道路每 AP 200 加權公尺，雨天／階梯／施工額外 0.25／0.5／0.5，玩家、預覽、正式命令與 AI 共用 roadAPPolicy。舊局不回補 AP、不重算歷史，legacy-hex 不變；schema 4／rules 0.16.0 資料契約不變。這次是使用者指定的移動調整，不延伸重調其他平衡。

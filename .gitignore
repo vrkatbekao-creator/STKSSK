@@ -3,6 +3,7 @@ node_modules/
 design/research/attractions-source.zip
 design/research/puma-official*
 dist/
+public/alpha-data/
 .env
 .env.*
 !.env.example

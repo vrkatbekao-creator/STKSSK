@@ -3,7 +3,7 @@ export {manifest};
 export type PackageEntry={file:string;sha256:string;bytes:number;gzipBytes:number};
 export async function readPackage(entry:PackageEntry):Promise<ArrayBuffer>{
  let packed:ArrayBuffer;
- if(typeof window==='undefined'){
+ if(typeof location==='undefined'){
   const fs=await import(/* @vite-ignore */ String('node:fs/promises'));
   const bytes:Uint8Array=await fs.readFile(new URL('../public/data/runtime-v1/'+entry.file,import.meta.url));
   packed=bytes.slice().buffer as ArrayBuffer;

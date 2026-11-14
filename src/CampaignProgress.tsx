@@ -8,9 +8,11 @@ import {siteTransferError,actionCost} from './game/campaign.ts';
 import { districtProgress,nodeProgress,trailFor } from './game/campaign-progress.ts';
 import { progressKey } from './campaign-progress-labels.ts';
 import { districtVisitPlans } from './game/campaign-plans.ts';
+import { vehicleActive } from './game/campaign-vehicle-state.ts';
 export function ProgressBadge({nodeId}:{nodeId:string}){const {t}=useTranslation();const {game}=useCampaign();const status=nodeProgress(game,nodeId);return <span className={`node-progress-badge ${status.completed?'complete':''}`}>{status.completed?'✓ ':''}{t(progressKey(status),{count:status.today})}</span>;}
 export function NodeChecklist({nodeId,onNode,onPlan}:{nodeId:string;onNode:(id:string)=>void;onPlan:(id:string|null)=>void}){
  const {t,i18n}=useTranslation();const {game,districtId,selected,dispatch}=useCampaign();const lang=i18n.language==='en'?'en':'zh-TW',progress=districtProgress(game,districtId),unit=game.units.find(u=>u.id===selected)!;
+ const canTransfer=!game.vehicle||!vehicleActive(game.vehicle,game.day);
  const {nodeById}=mapFor(game),[filter,setFilter]=useState<'all'|'unfinished'|'available'>('all'),[query,setQuery]=useState(''),[kind,setKind]=useState('all'),[limit,setLimit]=useState(6);
  useEffect(()=>setLimit(6),[districtId,query,kind,filter]);
  const plans=districtVisitPlans(game,unit,districtId).filter(p=>playableNode(game,nodeById.get(p.nodeId)!)),available=plans.filter(p=>p.canAct).length;
@@ -22,6 +24,6 @@ export function NodeChecklist({nodeId,onNode,onPlan}:{nodeId:string;onNode:(id:s
  <button className="node-summary" aria-pressed={nodeId===n.id} onClick={()=>onNode(n.id)}><strong>{n.kind==='wonder'?'★ ':''}{name}</strong><ProgressBadge nodeId={n.id}/></button>
  {game.movementProfile==='streets-v2'&&<small className="source-site-badge">{t(`o_opportunity_${q.band}`)}{q.freshDistrict?` · ${t('o_newDistrict')}`:''}</small>}<p className={`node-plan-state ${plan.canAct?'ready':''}`}>{t(`c_plan_${plan.state}`,{move:plan.moveAp,total:plan.totalAp,ap:plan.activityAp,materials:plan.materials})}</p>
  <div className="node-plan-buttons"><button aria-label={`${t('c_previewNodeRoute')}：${name}`} className="outline-button" disabled={!plan.destination||!plan.moveAp||!!game.result} onClick={()=>{onNode(n.id);onPlan(plan.destination);}}>{t('c_previewNodeRoute')}</button><button aria-label={`${t(plan.moveAp?'c_moveAndCanvass':'c_canvassHere')}：${name}`} className="campaign-primary" disabled={!plan.canAct||!!game.talk} onClick={()=>{onNode(n.id);dispatch({type:'canvassRoute',unitId:unit.id,nodeId:n.id});onPlan(null);}}>{t(plan.moveAp?'c_moveAndCanvass':'c_canvassHere')}</button></div>
- {n.sourcePlace&&plan.state!=='capped'&&(plan.moveAp===null||plan.moveAp>4)&&<button className="outline-button site-transfer" aria-label={`${t('c_action_siteTransfer')}：${name}`} disabled={!!transferError} title={transferError?t(transferError):undefined} onClick={()=>{onNode(n.id);dispatch({type:'siteTransfer',unitId:unit.id,nodeId:n.id});onPlan(null);}}>{t('c_action_siteTransfer')} · {t('c_cost',transfer)}</button>}
+ {canTransfer&&n.sourcePlace&&plan.state!=='capped'&&(plan.moveAp===null||plan.moveAp>4)&&<button className="outline-button site-transfer" aria-label={`${t('c_action_siteTransfer')}：${name}`} disabled={!!transferError} title={transferError?t(transferError):undefined} onClick={()=>{onNode(n.id);dispatch({type:'siteTransfer',unitId:unit.id,nodeId:n.id});onPlan(null);}}>{t('c_action_siteTransfer')} · {t('c_cost',transfer)}</button>}
  </article>;})}</div>{shown.length>limit&&<button className="outline-button place-more" onClick={()=>setLimit(v=>v+6)}>{t('o_showMore',{count:shown.length-limit})}</button>}</section>;
 }

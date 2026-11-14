@@ -1,0 +1,924 @@
+{
+  "status": "offline prototype only; not validated for runtime or district accessibility",
+  "nodes": 862806,
+  "directedEdges": 1722121,
+  "largestStrongComponentIgnoringTurnRestrictions": 814564,
+  "districtCandidates": {
+    "6300100": {
+      "placeId": "poi_market_094127669ec0",
+      "placeName": "臺北市公有龍城市場",
+      "placeType": "market",
+      "cell": 26713,
+      "node": 13504466848,
+      "walkingOutWeightedMetres": 20.71,
+      "walkingInWeightedMetres": 20.71
+    },
+    "6300200": {
+      "placeId": "poi_market_18436f457d91",
+      "placeName": "臺北市公有光復市場",
+      "placeType": "market",
+      "cell": 30587,
+      "node": 623479373,
+      "walkingOutWeightedMetres": 13.78,
+      "walkingInWeightedMetres": 13.78
+    },
+    "6300300": {
+      "placeId": "poi_market_86c1c8081178",
+      "placeName": "臺北市公有錦安市場",
+      "placeType": "market",
+      "cell": 32736,
+      "node": 661199544,
+      "walkingOutWeightedMetres": 16.45,
+      "walkingInWeightedMetres": 16.45
+    },
+    "6300400": {
+      "placeId": "poi_market_03d47baf9074",
+      "placeName": "臺北市公有長春市場",
+      "placeType": "market",
+      "cell": 26700,
+      "node": 7728470056,
+      "walkingOutWeightedMetres": 60.970000000000006,
+      "walkingInWeightedMetres": 60.970000000000006
+    },
+    "6300500": {
+      "placeId": "poi_market_033f90236c4e",
+      "placeName": "光華數位新天地",
+      "placeType": "market",
+      "cell": 28540,
+      "node": 12444778717,
+      "walkingOutWeightedMetres": 0.0,
+      "walkingInWeightedMetres": 0.0
+    },
+    "6300600": {
+      "placeId": "poi_market_38faa607a102",
+      "placeName": "臺北市公有永樂市場",
+      "placeType": "market",
+      "cell": 26663,
+      "node": 2634590003,
+      "walkingOutWeightedMetres": 0.0,
+      "walkingInWeightedMetres": 0.0
+    },
+    "6300700": {
+      "placeId": "poi_market_0a1a6ce55c67",
+      "placeName": "臺北市公有西門商場",
+      "placeType": "market",
+      "cell": 29233,
+      "node": 7673522106,
+      "walkingOutWeightedMetres": 62.86,
+      "walkingInWeightedMetres": 62.86
+    },
+    "6300800": {
+      "placeId": "poi_market_3e5dfcee4a01",
+      "placeName": "臺北市公有興隆市場",
+      "placeType": "market",
+      "cell": 37770,
+      "node": 7073032385,
+      "walkingOutWeightedMetres": 33.32,
+      "walkingInWeightedMetres": 33.32
+    },
+    "6300900": {
+      "placeId": "poi_market_945ec614afa6",
+      "placeName": "臺北市公有中研市場",
+      "placeType": "market",
+      "cell": 28499,
+      "node": 2085804888,
+      "walkingOutWeightedMetres": 12.5,
+      "walkingInWeightedMetres": 12.5
+    },
+    "6301000": {
+      "placeId": "poi_market_12cd7e2b9857",
+      "placeName": "臺北市公有西湖市場",
+      "placeType": "market",
+      "cell": 21210,
+      "node": 4607811298,
+      "walkingOutWeightedMetres": 15.6,
+      "walkingInWeightedMetres": 15.6
+    },
+    "6301100": {
+      "placeId": "poi_market_759116c5834f",
+      "placeName": "臺北市公有士東市場",
+      "placeType": "market",
+      "cell": 14284,
+      "node": 8483070832,
+      "walkingOutWeightedMetres": 18.11,
+      "walkingInWeightedMetres": 18.11
+    },
+    "6301200": {
+      "placeId": "poi_market_dadf3567146b",
+      "placeName": "臺北市公有北投市場",
+      "placeType": "market",
+      "cell": 9417,
+      "node": 2085900601,
+      "walkingOutWeightedMetres": 19.82,
+      "walkingInWeightedMetres": 19.82
+    }
+  },
+  "singleExample": {
+    "from": "6300100",
+    "to": "6300200",
+    "reachable": true,
+    "metres": 2762,
+    "edges": 98
+  },
+  "limitations": [
+    "Dry walking effort includes stairs; the 600m search limit uses weighted distance conservatively and ignores occupancy/weather/closures.",
+    "One fixed market per district; routes use one chosen connector, not the optimal combined route.",
+    "Candidates use a strong component calculated without turn restrictions.",
+    "Conservative turn prototype can exclude legal routes and needs further audit.",
+    "Fixed market selection and dry fresh AP do not cover all venues, weather or occupancy."
+  ],
+  "candidatePairs": [
+    {
+      "from": "6300100",
+      "to": "6300200",
+      "metres": 2762.3353934766396,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300100",
+      "to": "6300300",
+      "metres": 5340.869603910809,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300100",
+      "to": "6300400",
+      "metres": 1645.5522234291439,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300100",
+      "to": "6300500",
+      "metres": 3725.3006878948013,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300100",
+      "to": "6300600",
+      "metres": 4783.707143998281,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300100",
+      "to": "6300700",
+      "metres": 5999.4956175265315,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300100",
+      "to": "6300800",
+      "metres": 8207.73141975484,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300100",
+      "to": "6300900",
+      "metres": 7519.596111478635,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300100",
+      "to": "6301000",
+      "metres": 5880.925236757311,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300100",
+      "to": "6301100",
+      "metres": 9207.1400257516,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300100",
+      "to": "6301200",
+      "metres": 13446.115617126155,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300200",
+      "to": "6300100",
+      "metres": 2725.2075972389375,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300200",
+      "to": "6300300",
+      "metres": 4210.221313105005,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300200",
+      "to": "6300400",
+      "metres": 3620.4326000298315,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300200",
+      "to": "6300500",
+      "metres": 4229.023249428713,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300200",
+      "to": "6300600",
+      "metres": 6272.022276452583,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300200",
+      "to": "6300700",
+      "metres": 6022.642324513986,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300200",
+      "to": "6300800",
+      "metres": 6176.386797881917,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300200",
+      "to": "6300900",
+      "metres": 7262.045138604784,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300200",
+      "to": "6301000",
+      "metres": 7814.0631489424895,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300200",
+      "to": "6301100",
+      "metres": 11824.20468585734,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300200",
+      "to": "6301200",
+      "metres": 15884.652791165927,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300300",
+      "to": "6300100",
+      "metres": 5095.4826213319475,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300300",
+      "to": "6300200",
+      "metres": 4006.0820524366504,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300300",
+      "to": "6300400",
+      "metres": 4051.8751423119375,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300300",
+      "to": "6300500",
+      "metres": 2357.802957332873,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300300",
+      "to": "6300600",
+      "metres": 4488.969113978497,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300300",
+      "to": "6300700",
+      "metres": 3272.4881624306718,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300300",
+      "to": "6300800",
+      "metres": 4653.461006098604,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300300",
+      "to": "6300900",
+      "metres": 11174.115616728923,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300300",
+      "to": "6301000",
+      "metres": 9699.088014727358,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300300",
+      "to": "6301100",
+      "metres": 11067.70595601439,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300300",
+      "to": "6301200",
+      "metres": 14232.191703402314,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300400",
+      "to": "6300100",
+      "metres": 1224.179261889491,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300400",
+      "to": "6300200",
+      "metres": 3812.275969553413,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300400",
+      "to": "6300300",
+      "metres": 4140.152513017884,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300400",
+      "to": "6300500",
+      "metres": 2467.5804478719774,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300400",
+      "to": "6300600",
+      "metres": 3525.9869039754594,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300400",
+      "to": "6300700",
+      "metres": 4741.775377503708,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300400",
+      "to": "6300800",
+      "metres": 8211.733447733315,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300400",
+      "to": "6300900",
+      "metres": 8729.795440532245,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300400",
+      "to": "6301000",
+      "metres": 5687.01214563855,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300400",
+      "to": "6301100",
+      "metres": 9004.756929136855,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300400",
+      "to": "6301200",
+      "metres": 12354.796846372543,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300500",
+      "to": "6300100",
+      "metres": 3100.065862989581,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300500",
+      "to": "6300200",
+      "metres": 3862.9037154035673,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300500",
+      "to": "6300300",
+      "metres": 2419.2095967130845,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300500",
+      "to": "6300400",
+      "metres": 2056.458383969567,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300500",
+      "to": "6300600",
+      "metres": 3053.5271858601336,
+      "dryFreshApWithVisit": 3
+    },
+    {
+      "from": "6300500",
+      "to": "6300700",
+      "metres": 3261.880731390038,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300500",
+      "to": "6300800",
+      "metres": 6957.97487269315,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300500",
+      "to": "6300900",
+      "metres": 9566.869788159698,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300500",
+      "to": "6301000",
+      "metres": 7628.510219770686,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300500",
+      "to": "6301100",
+      "metres": 9254.626319250277,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300500",
+      "to": "6301200",
+      "metres": 12604.666236485966,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300600",
+      "to": "6300100",
+      "metres": 4777.960170582081,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300600",
+      "to": "6300200",
+      "metres": 6404.434715384522,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300600",
+      "to": "6300300",
+      "metres": 4293.109545284006,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300600",
+      "to": "6300400",
+      "metres": 3620.0423010321033,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300600",
+      "to": "6300500",
+      "metres": 2702.862082932147,
+      "dryFreshApWithVisit": 3
+    },
+    {
+      "from": "6300600",
+      "to": "6300700",
+      "metres": 1664.3036276044593,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300600",
+      "to": "6300800",
+      "metres": 8454.643835470692,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300600",
+      "to": "6300900",
+      "metres": 11902.743891559756,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300600",
+      "to": "6301000",
+      "metres": 8333.950639748387,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300600",
+      "to": "6301100",
+      "metres": 7923.813957673094,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300600",
+      "to": "6301200",
+      "metres": 10202.075036874627,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300700",
+      "to": "6300100",
+      "metres": 6449.170115640998,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300700",
+      "to": "6300200",
+      "metres": 6404.618208874661,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300700",
+      "to": "6300300",
+      "metres": 3601.0172242479107,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300700",
+      "to": "6300400",
+      "metres": 5291.252246091021,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300700",
+      "to": "6300500",
+      "metres": 3653.065931778166,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300700",
+      "to": "6300600",
+      "metres": 2063.243895524454,
+      "dryFreshApWithVisit": 4
+    },
+    {
+      "from": "6300700",
+      "to": "6300800",
+      "metres": 7557.839690366921,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300700",
+      "to": "6300900",
+      "metres": 12973.79995209028,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300700",
+      "to": "6301000",
+      "metres": 10337.99634795949,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300700",
+      "to": "6301100",
+      "metres": 9591.886169538186,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300700",
+      "to": "6301200",
+      "metres": 11781.752217463047,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300800",
+      "to": "6300100",
+      "metres": 7838.190533716864,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300800",
+      "to": "6300200",
+      "metres": 6028.026626947819,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300800",
+      "to": "6300300",
+      "metres": 4456.181907285309,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300800",
+      "to": "6300400",
+      "metres": 7924.932913682229,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300800",
+      "to": "6300500",
+      "metres": 6587.001703262889,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6300800",
+      "to": "6300600",
+      "metres": 8426.097036050436,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300800",
+      "to": "6300700",
+      "metres": 7199.032950365626,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300800",
+      "to": "6300900",
+      "metres": 12869.83179712514,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300800",
+      "to": "6301000",
+      "metres": 13421.849807462833,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300800",
+      "to": "6301100",
+      "metres": 15161.377845080415,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300800",
+      "to": "6301200",
+      "metres": 18169.319625474258,
+      "dryFreshApWithVisit": 9
+    },
+    {
+      "from": "6300900",
+      "to": "6300100",
+      "metres": 7572.414480452976,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300900",
+      "to": "6300200",
+      "metres": 7240.792809409081,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300900",
+      "to": "6300300",
+      "metres": 11394.270841644942,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300900",
+      "to": "6300400",
+      "metres": 8862.852674085418,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300900",
+      "to": "6300500",
+      "metres": 10088.886137221372,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300900",
+      "to": "6300600",
+      "metres": 11856.0978194324,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6300900",
+      "to": "6300700",
+      "metres": 12539.58924273116,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300900",
+      "to": "6300800",
+      "metres": 12980.802474369033,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300900",
+      "to": "6301000",
+      "metres": 8600.423613659173,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6300900",
+      "to": "6301100",
+      "metres": 14677.357434959302,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6300900",
+      "to": "6301200",
+      "metres": 18970.750003287034,
+      "dryFreshApWithVisit": 9
+    },
+    {
+      "from": "6301000",
+      "to": "6300100",
+      "metres": 6232.26712694097,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301000",
+      "to": "6300200",
+      "metres": 7815.643281488368,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301000",
+      "to": "6300300",
+      "metres": 9550.699153640579,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301000",
+      "to": "6300400",
+      "metres": 5558.082016325424,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301000",
+      "to": "6300500",
+      "metres": 7858.759257209063,
+      "dryFreshApWithVisit": 5
+    },
+    {
+      "from": "6301000",
+      "to": "6300600",
+      "metres": 8129.964014829307,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301000",
+      "to": "6300700",
+      "metres": 9626.919592949786,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301000",
+      "to": "6300800",
+      "metres": 13406.227649489847,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6301000",
+      "to": "6300900",
+      "metres": 8450.778095691641,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301000",
+      "to": "6301100",
+      "metres": 6206.6031694636,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301000",
+      "to": "6301200",
+      "metres": 10499.995737791309,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301100",
+      "to": "6300100",
+      "metres": 9673.253307183102,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301100",
+      "to": "6300200",
+      "metres": 12261.350014847014,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6301100",
+      "to": "6300300",
+      "metres": 11250.09736771567,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301100",
+      "to": "6300400",
+      "metres": 8811.691229991615,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301100",
+      "to": "6300500",
+      "metres": 9262.546700337816,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301100",
+      "to": "6300600",
+      "metres": 8035.07313763318,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301100",
+      "to": "6300700",
+      "metres": 9699.376765237635,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301100",
+      "to": "6300800",
+      "metres": 15665.252469576188,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6301100",
+      "to": "6300900",
+      "metres": 14812.516966918249,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6301100",
+      "to": "6301000",
+      "metres": 6623.489179916672,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301100",
+      "to": "6301200",
+      "metres": 4716.7548602504085,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301200",
+      "to": "6300100",
+      "metres": 13345.545467965965,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6301200",
+      "to": "6300200",
+      "metres": 15751.504437769201,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6301200",
+      "to": "6300300",
+      "metres": 13930.419902387957,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6301200",
+      "to": "6300400",
+      "metres": 12125.059375813269,
+      "dryFreshApWithVisit": 8
+    },
+    {
+      "from": "6301200",
+      "to": "6300500",
+      "metres": 12049.931805316834,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301200",
+      "to": "6300600",
+      "metres": 9857.440036777025,
+      "dryFreshApWithVisit": 6
+    },
+    {
+      "from": "6301200",
+      "to": "6300700",
+      "metres": 11521.743664381482,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301200",
+      "to": "6300800",
+      "metres": 18091.95419257467,
+      "dryFreshApWithVisit": 9
+    },
+    {
+      "from": "6301200",
+      "to": "6300900",
+      "metres": 19063.162340483756,
+      "dryFreshApWithVisit": 9
+    },
+    {
+      "from": "6301200",
+      "to": "6301000",
+      "metres": 10874.13455348219,
+      "dryFreshApWithVisit": 7
+    },
+    {
+      "from": "6301200",
+      "to": "6301100",
+      "metres": 4754.415561191774,
+      "dryFreshApWithVisit": 6
+    }
+  ]
+}

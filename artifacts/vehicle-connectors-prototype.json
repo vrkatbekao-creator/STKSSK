@@ -1,0 +1,10 @@
+{
+  "status": "offline connector candidates; not yet used by game",
+  "vehicleRevision": "bcfe2b6758c6943be71adad779a5a639125107c0116bdcb6b94b518825428955",
+  "walkingRevision": "324e9a8435d22e7d1876af469e16e7c23ae0d2e9eb06116f1810e34b7106477f",
+  "pairs": 80466,
+  "walkingNodes": 234577,
+  "sha256": "ec1d8865e495e3348382be43e88cc69f15983d63579098c9ee318ac733ceebd9",
+  "gzipSha256": "4cfe49c1b846ee1bf9f7f8e985277e971682a84036c9a6e848ba04c50c6e3173",
+  "gzipBytes": 408048
+}

@@ -1,21 +1,21 @@
 # 選戰騎士團：首都篇 / Campaign Knights: Capital Edition
 
-台北 12 行政區、三個虛構陣營、28 天日夜競選。這是一款繁體中文／英文的單機戰棋。玩家可步行拜訪、跨區車掃、經營社群舞台，並透過政見發表會及辯論爭取支持。
+台北 12 行政區、三個虛構陣營、28 天日夜競選。玩家可步行拜訪、跨區車掃、經營社群舞台，並透過政見發表會及辯論爭取支持。3D Beta 2 支援繁體中文、英文、日語、法語、荷蘭語與簡體中文。
 
-A bilingual, single-player campaign tactics game across Taipei’s 12 districts. Lead one of three fictional factions through 28 days of street visits, motorcades, community stages, policy presentations, and debates.
+A single-player campaign tactics game across Taipei’s 12 districts. Lead one of three fictional factions through 28 days of street visits, motorcades, community stages, policy presentations, and debates. The 3D Beta 2 is available in Traditional Chinese, English, Japanese, French, Dutch, and Simplified Chinese.
 
 | 版本 / Version | 取得方式 / How to play |
 | --- | --- |
 | **v0.18.0 Beta 2 · 3D 原始碼 / Source** | [本機建置與效能驗收 / Local build and performance QA](BETA-REVIEW.md) |
-| **v0.18.0 Beta 1 · 3D 公開試玩 / Public preview** | [GitHub Pages 3D 試玩 / Play the 3D Beta](https://vrkatbekao-creator.github.io/STKSST/3d/) |
+| **v0.18.0 Beta 2 · 3D 公開試玩 / Public preview** | [GitHub Pages 3D 試玩 / Play the 3D Beta](https://vrkatbekao-creator.github.io/STKSST/3d/) |
 | **v0.17.0 · 2D 公開原型 / Public prototype** | [GitHub Pages 試玩 / Play in your browser](https://vrkatbekao-creator.github.io/STKSST/) |
 
 [回報問題 / Report an issue](https://github.com/vrkatbekao-creator/STKSST/issues/new?template=bug_report.yml)
 
 
-## 3D Beta 1
+## 3D Beta 2
 
-- **地圖與移動 / Map and travel** — MapLibre 3D 地圖保留六角格、台北區界、道路、建物與衛星地表。點選地圖或活動點可查看步行、開車或車掃的 AP 和物資，確認抵達後選擇現場行動。 Select a destination to review walking, driving, or motorcade costs, then choose what to do on arrival.
+- **地圖與移動 / Map and travel** — MapLibre 3D 地圖保留六角格、台北區界、道路、建物與衛星地表。點選地圖或活動點可查看步行、開車或車掃的 AP 和物資，點選己方角色或抵達後可在角色旁選擇現場行動。 Select a destination to review walking, driving, or motorcade costs. Select an allied unit, or arrive at a destination, to open actions beside the unit on the map.
 - **尋路與兩方 AI / Routing and opposing AI** — Rust／WebAssembly 在背景處理道路尋路與夜間對手行動。Beta 改善車行尋路。七組對照快照的路線、費用及結算狀態一致。 Beta accelerates vehicle routing while preserving routes, costs, and outcomes in seven matched scenarios. [效能與驗收紀錄 / Benchmark and QA](BETA-REVIEW.md)
 - **競選與存檔 / Campaign and saves** — 每隊最多七人，保有隊員技能、染色拜訪紀錄、治疏嶼（Governance Isle）及恰恰肥皂箱（Cha-Cha Soapbox）。第 2–14 天偶數日公布民調，第 15–28 天封關，最後一晚結算後開票。 Three browser-local save slots, teams of up to seven, and a polling blackout from day 15 until the final night concludes.
 

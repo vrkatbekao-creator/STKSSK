@@ -1,3 +1,5 @@
+import {mapLabel} from './map-language.ts';
+import {LanguageSelect} from './LanguageSelect.tsx';
 import {lazy,Suspense,useEffect,useRef,useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {useCampaign} from './game/campaign-store.ts';
@@ -34,7 +36,7 @@ const travelPreferences:TravelPreference[]=['auto','walk','drive','motorcade'];
 const lines=['a3_chat1','a3_chat2','a3_chat3','a3_chat4'];
 
 export function AlphaCampaign(){
- const {t,i18n}=useTranslation(),lang=i18n.language==='en'?'en':'zh-TW',state=useCampaign();
+ const {t,i18n}=useTranslation(),lang=i18n.language,state=useCampaign();
  const {reduceMotion}=useAccessibility();
  const {game,selected,dispatch,select,end}=state,team=game.playerTeam;
  const map=mapFor(game),actor=game.units.find(u=>u.id===selected)!,leader=game.units.find(u=>u.id===`${team}1`)!;
@@ -50,7 +52,8 @@ export function AlphaCampaign(){
  const [headline,setHeadline]=useState<'update'|'breaking'|null>(()=>game.day===1&&game.actions===0?'update':null);
  const lastEvent=useRef(game.surprise?game.day:0),drawerOrigin=useRef<HTMLElement|null>(null);
  const drawerClose=useRef<HTMLButtonElement>(null),quoteHeading=useRef<HTMLElement>(null);
- const sceneHeading=useRef<HTMLElement>(null),quoteOrigin=useRef<HTMLElement|null>(null);
+ const fieldHeading=useRef<HTMLHeadingElement>(null),quoteOrigin=useRef<HTMLElement|null>(null);
+ const fieldOrigin=useRef<HTMLElement|null>(null);
  const area=map.districts.find(d=>d.id===district)??map.districts[0];
  const activeVehicle=!!game.vehicle&&vehicleActive(game.vehicle,game.day);
  const actorDistrict=map.cells.get(actor.cellId)!.districtId;
@@ -61,7 +64,7 @@ export function AlphaCampaign(){
  function togglePanel(value:Panel,event?:React.MouseEvent<HTMLElement>){
   if(panel===value){closePanel();return;}
   if(event)drawerOrigin.current=event.currentTarget;
-  setPanel(value);setTarget(null);
+  setPanel(value);setTarget(null);setArrival(null);
  }
  function closePanel(){setPanel(null);drawerOrigin.current?.focus();}
  function preferredMode(destination:Destination, preference:TravelPreference):TravelMode{
@@ -77,7 +80,7 @@ export function AlphaCampaign(){
   if(busy||game.talk||game.result)return;
   quoteOrigin.current=document.activeElement instanceof HTMLElement?document.activeElement:null;
   setPanel(null);setHistoryRoute([]);setQuote(null);setQuoteError('');
-  if(destination.cellId===actor.cellId){setTarget(null);setArrival({nodeId:destination.nodeId});return;}
+  if(destination.cellId===actor.cellId){setTarget(null);fieldOrigin.current=quoteOrigin.current;setArrival({nodeId:destination.nodeId});return;}
   setArrival(null);setMode(preferredMode(destination,travelPreference));setLoading(true);setTarget(destination);
  }
  function pickNode(id:string){
@@ -89,10 +92,25 @@ export function AlphaCampaign(){
   if(u.team!==team){togglePanel('tactics');return;}
   select(id);setDistrict(map.cells.get(u.cellId)!.districtId);setTarget(null);setArrival(null);
  }
+ function closeField(){
+  setArrival(null);
+  const origin=fieldOrigin.current;
+  if(origin?.isConnected){origin.focus({preventScroll:true});return;}
+  document.getElementById(`a3-unit-${selected}`)?.focus({preventScroll:true});
+ }
+ function openFieldForUnit(id:string,origin:HTMLElement){
+  if(busy||game.talk||game.result)return;
+  if(id===selected&&arrival){closeField();return;}
+  chooseUnit(id);
+  if(game.units.find(u=>u.id===id)?.team!==team)return;
+  fieldOrigin.current=origin;
+  setPanel(null);setHistoryRoute([]);setArrival({});
+ }
  useEffect(()=>{if(panel)drawerClose.current?.focus({preventScroll:true});},[panel]);
  useEffect(()=>{if(target)quoteHeading.current?.focus({preventScroll:true});},[target]);
- useEffect(()=>{if(arrival&&!motion)sceneHeading.current?.focus({preventScroll:true});},[arrival,motion]);
- useEffect(()=>{setTarget(null);setArrival(null);setHistoryRoute([]);setMotion(null);},[game.day,game.phase,selected]);
+ const fieldOpen=!!arrival&&!motion&&!game.talk&&!game.result;
+ useEffect(()=>{if(fieldOpen)fieldHeading.current?.focus({preventScroll:true});},[fieldOpen,selected]);
+ useEffect(()=>{setTarget(null);setArrival(null);setHistoryRoute([]);setMotion(null);},[game.day,game.phase]);
  useEffect(()=>{
   if(!game.surprise||game.day===lastEvent.current)return;
   lastEvent.current=game.day;setHeadline('breaking');
@@ -113,6 +131,7 @@ export function AlphaCampaign(){
   if(!quote||!target||loading||busy)return;
   if(!state.confirmTravel(quote)){setTarget({...target});return;}
   const destination=map.cells.get(quote.destination)!;
+  fieldOrigin.current=null;
   setDistrict(destination.districtId);setArrival({nodeId:target.nodeId,quote,mode});
   if(!reduceMotion&&!matchMedia('(prefers-reduced-motion: reduce)').matches)setMotion(quote);
   setTarget(null);
@@ -130,7 +149,7 @@ export function AlphaCampaign(){
  };
  const upcoming=nextEvent(game.day),currentEvent=scheduledEvent(game.day), intel=intelligence(game);
  const surprise=game.surprise;
- const surpriseText=surprise?t(`c_surprise_${surprise.id}`)+' · '+map.districts.find(d=>d.id===surprise.districtId)!.name[lang]:'';
+ const surpriseText=surprise?t(`c_surprise_${surprise.id}`)+' · '+mapLabel(map.districts.find(d=>d.id===surprise.districtId)!.name,lang):'';
  const local=nearbyNodes(game,actor);
  const nearby=local.find(n=>n.id===arrival?.nodeId)??local[0];
  const stage=nearby?game.stages.find(s=>s.nodeId===nearby.id):undefined;
@@ -145,10 +164,30 @@ export function AlphaCampaign(){
  const placeButton=(id:string)=> <button key={id} onClick={()=>pickNode(id)}>{name(id)}</button>;
  const modes:TravelMode[]=activeVehicle?['walk','drive','motorcade']:['walk',...(node?.sourcePlace?['siteTransfer' as const]:[]),...(node?.wonderId&&area.id!==map.cells.get(actor.cellId)!.districtId?['transport' as const]:[])];
  const panelButton=(id:Panel,label=t(keys[id]))=><button aria-expanded={panel===id} onClick={e=>togglePanel(id,e)}>{label}</button>;
+ const fieldMenu=fieldOpen&&arrival?<section className="a3-field-menu" aria-labelledby="a3-field-title">
+  <header className="a3-drawer-head"><h2 id="a3-field-title" ref={fieldHeading} tabIndex={-1}>{t('c_actions')} · {unitLabel(game,actor,t)}</h2>
+   <button onClick={closeField}>{t('close')}</button></header>
+  {nearby&&local.length===1&&<p>{name(nearby.id)}</p>}
+  {local.length>1&&<label className="a3-nearby">{t('c_nodes')} <select value={nearby?.id??''} onChange={e=>setArrival({...arrival,nodeId:e.target.value})}>
+   {local.map(n=><option key={n.id} value={n.id}>{name(n.id)}</option>)}</select></label>}
+  {arrival.quote?.contacts!==undefined&&<p role="status">{t('a3_motorcadeDone')} · {t(arrival.quote.contacts?'a3_contact':'a3_noContact')}</p>}
+  <div className="a3-actions">
+   {game.movementProfile==='streets-v2'&&action({type:'streetCanvass',unitId:selected},undefined,!!streetCanvassError(game,actor))}
+   {nearby&&action({type:'visit',unitId:selected,nodeId:nearby.id},undefined,visitBlocked)}
+   {nearby&&action({type:'talkStart',unitId:selected,nodeId:nearby.id,mode:'resident'},t('d_resident'),visitBlocked)}
+   {nearby&&action({type:'canvass',unitId:selected,nodeId:nearby.id},undefined,visitBlocked)}
+   {nearby?.wonderId&&(['forum','livestream','culture','environment'] as const).map(type=>action({type,unitId:selected,nodeId:nearby.id},undefined,visitBlocked))}
+   {nearby?.wonderId&&<button disabled={!canAct} onClick={()=>state.priority(nearby.wonderId!)}>{t('c_prioritize')} · {wonderCondition(game,nearby.wonderId,team)?'✓':'★'}</button>}
+   {nearby?.kind==='venue'&&!stage&&(['island','soapbox'] as const).map(brand=>action({type:'build',unitId:selected,nodeId:nearby.id,brand},t(`c_brand_${brand}`)))}
+   {stage?.team===team&&nearby&&(!stage.staffed?action({type:'staff',unitId:selected,nodeId:nearby.id},undefined,stage.openDay>game.day||resources.volunteers<1):
+    action({type:'talkStart',unitId:selected,nodeId:nearby.id,mode:'stage'},t('c_action_stageEvent'),stage.lastEventDay===game.day||stage.openDay>game.day))}
+   {stage?.team===team&&nearby&&action({type:'withdraw',unitId:selected,nodeId:nearby.id})}
+  </div>
+ </section>:null;
  return <main className={`a3-shell a3-${game.phase}${reduceMotion?' a3-reduced':''}`} id="campaign-main"
   data-move-engine={state.lastMoveEngine??undefined} data-vehicle-engine={state.lastVehicleEngine??undefined}
   data-night-engine={state.lastNightEngine??undefined} data-night-searches={state.lastNightSearches} onKeyDown={e=>{
-  if(e.key==='Escape'){if(target)cancel();else if(panel)closePanel();else setArrival(null);}
+  if(e.key==='Escape'){if(target)cancel();else if(panel)closePanel();else if(fieldOpen)closeField();}
  }}>
   <header className="a3-desk">
    <div className="a3-title"><h1>{t('brand')} <small>{t('c_chapter')}</small></h1><b>{t('a3_update')}</b>{import.meta.env.MODE!=='alpha'&&<small>v0.18.0 Beta 2</small>}</div>
@@ -174,7 +213,8 @@ export function AlphaCampaign(){
     <Map game={game} districtId={area.id} selected={selected} grid={grid} terrain={terrain} districtPicker={panel==='district'}
      destination={pendingTarget?.id} segments={target?quote?.segments??[]:arrival?.quote?.segments??historyRoute}
      motion={motion} onMotionEnd={()=>setMotion(null)}
-     onCell={id=>pick({cellId:id,districtId:map.cells.get(id)?.districtId})} onDistrict={focusDistrict} onNode={pickNode} onUnit={chooseUnit}
+     onCell={id=>pick({cellId:id,districtId:map.cells.get(id)?.districtId})} onDistrict={focusDistrict} onNode={pickNode} onUnit={openFieldForUnit}
+     fieldPopup={fieldMenu?{cellId:actor.cellId,element:fieldMenu}:undefined}
      popup={target&&pendingTarget?{cellId:pendingTarget.id,element:<div className="a3-quote" role="group" aria-label={t('c_routePreview',{cost:quote?.ap??'—'})}>
       <strong tabIndex={-1} ref={quoteHeading}>{node?name(node.id):t('a3_destination')}</strong>
       {game.visitColors?.[pendingTarget.id]&&<small>{game.visitColors[pendingTarget.id].challenger?t('a3_contested'):
@@ -189,7 +229,7 @@ export function AlphaCampaign(){
      </div>}:undefined}/>
    </Suspense>
    <aside className="a3-left">
-    {panelButton('district',area.name[lang]+' ▾')}
+    {panelButton('district',mapLabel(area.name,lang)+' ▾')}
     <button onClick={()=>pickNode(area.wonderId)}><svg viewBox="-24 -29 48 48" aria-hidden="true"><Landmark districtId={area.id}/></svg>{name(area.wonderId)}</button>
     {panelButton('journal')}
    </aside>
@@ -201,8 +241,8 @@ export function AlphaCampaign(){
    </aside>
    {panel&&<section className={`a3-drawer ${panel==='district'||panel==='journal'?'left':''}`} aria-label={t(keys[panel])}>
     <div className="a3-drawer-head"><h2>{t(keys[panel])}</h2><button ref={drawerClose} onClick={closePanel}>{t('close')}</button></div>
-    {panel==='district'&&<div className="a3-grid">{map.districts.map(d=><button key={d.id} aria-pressed={d.id===area.id} onClick={()=>focusDistrict(d.id)}>{d.name[lang]}</button>)}</div>}
-    {panel==='venues'&&<><label>{t('c_district')} <select value={area.id} onChange={e=>setDistrict(e.target.value)}>{map.districts.map(d=><option key={d.id} value={d.id}>{d.name[lang]}</option>)}</select></label>
+    {panel==='district'&&<div className="a3-grid">{map.districts.map(d=><button key={d.id} aria-pressed={d.id===area.id} onClick={()=>focusDistrict(d.id)}>{mapLabel(d.name,lang)}</button>)}</div>}
+    {panel==='venues'&&<><label>{t('c_district')} <select value={area.id} onChange={e=>setDistrict(e.target.value)}>{map.districts.map(d=><option key={d.id} value={d.id}>{mapLabel(d.name,lang)}</option>)}</select></label>
      <div className="a3-grid">{nearbyPlaces.map(n=>placeButton(n.id))}</div></>}
     {panel==='journal'&&<><ol>{game.logs.map((entry,i)=><li key={i}>{t(entry.key,{...entry.values,team:entry.values.team?t(String(entry.values.team)):'',
      action:entry.values.skill?t(`c_skill_${entry.values.skill}`):entry.values.action?t(`c_action_${entry.values.action}`):'',node:entry.values.node?name(String(entry.values.node)):''})}</li>)}</ol>
@@ -225,38 +265,21 @@ export function AlphaCampaign(){
      {currentEvent&&action({type:'talkStart',unitId:selected,mode:'debate'},t('c_action_event'),game.eventDone[team]===game.day)}
      <SurprisePanel/></>}
     {panel==='contacts'&&<CampaignContacts/>}
-    {panel==='session'&&<><SessionControls/><AccessibilityPanel/><label>{t('language')} <select value={lang} onChange={e=>void i18n.changeLanguage(e.target.value)}><option value="zh-TW">繁體中文</option><option value="en">English</option></select></label>
+    {panel==='session'&&<><SessionControls/><AccessibilityPanel/><label>{t('language')} <LanguageSelect/></label>
      <p><a href={publicAsset('data/GAME-DATA-CREDITS.txt')} target="_blank" rel="noreferrer">{t('p_credits')}</a></p></>}
    </section>}
    <div className="a3-tools"><button aria-pressed={grid} onClick={()=>setGrid(!grid)}>{t('a3_grid')}</button>
-    <button aria-pressed={terrain} onClick={()=>setTerrain(!terrain)}>{t('a3_terrain')}</button><button onClick={()=>setArrival({})}>{t('c_actions')}</button>
+    <button aria-pressed={terrain} onClick={()=>setTerrain(!terrain)}>{t('a3_terrain')}</button>
     <span>{t('a3_legend')}</span></div>
    {headline&&<div className={`a3-headline ${headline==='breaking'?'breaking':''}`} key={headline+game.day} aria-hidden="true">{headline==='update'?t('a3_update'):surpriseText}</div>}
   </section>
-  <section className="a3-scene" aria-label={t('c_actions')}>
+  <div className="a3-scene">
    {game.talk?<CampaignDialogue/>:game.result?<><h2>{t(game.result==='draw'?'c_resultDraw':game.result===team?'c_resultWin':'c_resultLose')}</h2>
-    {support&&<p>{t('c_points',support)}</p>}<button onClick={state.reset}>{t('playAgain')}</button></>:motion?<p role="status">{t(arrival?.mode==='motorcade'?'a3_motorcadeTraveling':'a3_arriving')}</p>:arrival?
-    <><strong ref={sceneHeading} tabIndex={-1}>{nearby?name(nearby.id):t('a3_onSite')}</strong>
-     {local.length>1&&<label className="a3-nearby">{t('c_nodes')} <select value={nearby?.id??''} onChange={e=>setArrival({...arrival,nodeId:e.target.value})}>
-      {local.map(n=><option key={n.id} value={n.id}>{name(n.id)}</option>)}</select></label>}
-     {arrival.quote?.contacts!==undefined&&<p role="status">{t('a3_motorcadeDone')} · {t(arrival.quote.contacts?'a3_contact':'a3_noContact')}</p>}
-     <div className="a3-actions">
-      {game.movementProfile==='streets-v2'&&action({type:'streetCanvass',unitId:selected},undefined,!!streetCanvassError(game,actor))}
-      {nearby&&action({type:'visit',unitId:selected,nodeId:nearby.id},undefined,visitBlocked)}
-      {nearby&&action({type:'talkStart',unitId:selected,nodeId:nearby.id,mode:'resident'},t('d_resident'),visitBlocked)}
-      {nearby&&action({type:'canvass',unitId:selected,nodeId:nearby.id},undefined,visitBlocked)}
-      {nearby?.wonderId&&(['forum','livestream','culture','environment'] as const).map(type=>action({type,unitId:selected,nodeId:nearby.id},undefined,visitBlocked))}
-      {nearby?.wonderId&&<button onClick={()=>state.priority(nearby.wonderId!)}>{t('c_prioritize')} · {wonderCondition(game,nearby.wonderId,team)?'✓':'★'}</button>}
-      {nearby?.kind==='venue'&&!stage&&(['island','soapbox'] as const).map(brand=>action({type:'build',unitId:selected,nodeId:nearby.id,brand},t(`c_brand_${brand}`)))}
-      {stage?.team===team&&nearby&&(!stage.staffed?action({type:'staff',unitId:selected,nodeId:nearby.id},undefined,stage.openDay>game.day||resources.volunteers<1):
-       action({type:'talkStart',unitId:selected,nodeId:nearby.id,mode:'stage'},t('c_action_stageEvent'),stage.lastEventDay===game.day||stage.openDay>game.day))}
-      {stage?.team===team&&nearby&&action({type:'withdraw',unitId:selected,nodeId:nearby.id})}
-      <button onClick={()=>setArrival(null)}>{t('a3_later')}</button>
-     </div></>:chat>=0?<div className="a3-chat">{portrait(chatter)}<div><small>{t('a3_chat')} · {unitLabel(game,chatter,t)}</small><p>{t(lines[chat])}</p></div>
+    {support&&<p>{t('c_points',support)}</p>}<button onClick={state.reset}>{t('playAgain')}</button></>:motion?<p role="status">{t(arrival?.mode==='motorcade'?'a3_motorcadeTraveling':'a3_arriving')}</p>:chat>=0?<div className="a3-chat">{portrait(chatter)}<div><small>{t('a3_chat')} · {unitLabel(game,chatter,t)}</small><p>{t(lines[chat])}</p></div>
       <div className="a3-actions">{chat<lines.length-1&&<button onClick={()=>setChat(chat+1)}>{t('a3_nextLine')}</button>}<button onClick={()=>setChat(-1)}>{t('close')}</button></div></div>:
     <button onClick={()=>setChat(0)}>{t('a3_chat')}</button>}
    <p className="a3-feedback" role="status">{busy?t(state.campaignPending==='night'?'c_nightPending':'c_routePending'):state.error?t(state.error):state.saveError?t(state.saveError):''}</p>
-  </section>
+  </div>
   <footer className="a3-footer"><CampaignMedia centered/><a href={publicAsset('data/GAME-DATA-CREDITS.txt')} target="_blank" rel="noreferrer">© OpenStreetMap · Copernicus GLO-30 DSM · {t('p_credits')}</a></footer>
  </main>;
 }

@@ -6,7 +6,7 @@
 
 同機以 Beta 1 WASM 對照七組快照，路線、AP、物資和完整結算後狀態均一致。最慢一晚從 22.37 降至 15.14 秒，其中單趟 AI 車行從 19.07 降至 12.55 秒。七組有五組較快，兩組慢約 0.25–0.48 秒。這是本機 Node 的單次對照，含兩方 AI，未計瀏覽器畫面及首次下載。Beta 1 的表重建在該測試約 3.85 秒。實際首次載入仍視網路與裝置而定。
 
-重跑方式為 `node design/benchmark-beta-night.mjs .tools/stksst-beta1-baseline.wasm`。Beta 1 可從提交 `3e6a875` 編譯。原始對照紀錄在 `.tools/beta2-optimized.jsonl`。後續可量測步行搜尋樹的轉換成本，以及拆分約 30 MB 首次車網下載的效益。GitHub Pages 的試玩版仍為 Beta 1。
+重跑方式為 `node design/benchmark-beta-night.mjs .tools/stksst-beta1-baseline.wasm`。Beta 1 可從提交 `3e6a875` 編譯。原始對照紀錄在 `.tools/beta2-optimized.jsonl`。後續可量測步行搜尋樹的轉換成本，以及拆分約 30 MB 首次車網下載的效益。
 
 型別檢查、255 項遊戲回歸、Rust 四項測試、一般建置及 Pages 子目錄建置通過。本機瀏覽器驗證 Beta 2 版號、3D 畫布與 WASM 夜間結算進入第 2 天。此輪未在實體手機測量載入或完整對局。
 

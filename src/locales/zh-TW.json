@@ -56,7 +56,7 @@
   "missionDetail": "你指揮藍軍三人小隊。利用兵種相剋、主將護盾與新聞事件，突破敵軍防線。白天與晚上共用 AP。",
   "deadlineBadge": "{{days}} 天作戰",
   "squadBadge": "3 人小隊",
-  "bilingualBadge": "中英雙語",
+  "bilingualBadge": "六種語言",
   "enterHint": "本機單人戰棋 · 進度保留於目前頁面",
   "dayCount": "第 {{day}} 天",
   "ofDays": "／ {{days}} 天",
@@ -906,5 +906,7 @@
   "o_placeLegend": "活動場地（白色圓點）",
   "o_opportunity_fresh": "新街區",
   "o_opportunity_familiar": "已觸及街區",
-  "o_opportunity_saturated": "接觸已飽和"
+  "o_opportunity_saturated": "接觸已飽和",
+  "a3_zoomIn": "放大",
+  "a3_zoomOut": "縮小"
 }

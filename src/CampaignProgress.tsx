@@ -11,7 +11,7 @@ import { districtVisitPlans } from './game/campaign-plans.ts';
 import { vehicleActive } from './game/campaign-vehicle-state.ts';
 export function ProgressBadge({nodeId}:{nodeId:string}){const {t}=useTranslation();const {game}=useCampaign();const status=nodeProgress(game,nodeId);return <span className={`node-progress-badge ${status.completed?'complete':''}`}>{status.completed?'✓ ':''}{t(progressKey(status),{count:status.today})}</span>;}
 export function NodeChecklist({nodeId,onNode,onPlan}:{nodeId:string;onNode:(id:string)=>void;onPlan:(id:string|null)=>void}){
- const {t,i18n}=useTranslation();const {game,districtId,selected,dispatch}=useCampaign();const lang=i18n.language==='en'?'en':'zh-TW',progress=districtProgress(game,districtId),unit=game.units.find(u=>u.id===selected)!;
+ const {t,i18n}=useTranslation();const {game,districtId,selected,dispatch}=useCampaign();const lang=i18n.language,progress=districtProgress(game,districtId),unit=game.units.find(u=>u.id===selected)!;
  const canTransfer=!game.vehicle||!vehicleActive(game.vehicle,game.day);
  const {nodeById}=mapFor(game),[filter,setFilter]=useState<'all'|'unfinished'|'available'>('all'),[query,setQuery]=useState(''),[kind,setKind]=useState('all'),[limit,setLimit]=useState(6);
  useEffect(()=>setLimit(6),[districtId,query,kind,filter]);

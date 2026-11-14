@@ -1,4 +1,5 @@
 /** Real road data and presentation selectors. No game commands or costs live here. */
+import {mapLanguage,supportedLanguage} from './languages.ts';
 export type RoadClass='express'|'arterial'|'street'|'alley'|'path';
 export type RoadFilter='all'|'arterial'|'local'|'path';
 export type Road={id:string;osmId:number;highway:string;class:RoadClass;name:{'zh-TW':string;en:string};ref:string;points:number[][];bounds:number[];districtIds:string[];lengthMetres:number;bridge:string;tunnel:string;layer:string;access:string;foot:string;oneway:string;restricted:boolean};
@@ -12,7 +13,7 @@ export function validRoadData(value:unknown):value is RoadData{
  for(const r of d.roads){if(!r||typeof r.id!=='string'||ids.has(r.id)||!Number.isSafeInteger(r.osmId)||r.osmId<=0||!roadClasses.has(r.class)||!r.name||typeof r.name['zh-TW']!=='string'||typeof r.name.en!=='string'||!Array.isArray(r.points)||r.points.length<2||!r.points.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite))||!Array.isArray(r.bounds)||r.bounds.length!==4||!r.bounds.every(Number.isFinite)||r.bounds[0]>r.bounds[2]||r.bounds[1]>r.bounds[3]||r.points.some(p=>p[0]<r.bounds[0]-.11||p[0]>r.bounds[2]+.11||p[1]<r.bounds[1]-.11||p[1]>r.bounds[3]+.11)||!Array.isArray(r.districtIds)||!r.districtIds.length||r.districtIds.some(id=>!/^630(?:0[1-9]|1[0-2])00$/.test(id))||!Number.isFinite(r.lengthMetres)||r.lengthMetres<0||typeof r.bridge!=='string'||typeof r.tunnel!=='string'||typeof r.ref!=='string')return false;ids.add(r.id);}
  return Object.entries(d.cellIndex).every(([id,indices])=>/^taipei-hex-v1:-?\d+,-?\d+$/.test(id)&&Array.isArray(indices)&&indices.every(i=>Number.isSafeInteger(i)&&i>=0&&i<d.roads.length));
 }
-export function roadName(r:Road,lang:string){return lang==='en'?(r.name.en||r.name['zh-TW']||r.ref):r.name['zh-TW']||r.ref;}
+export function roadName(r:Road,lang:string){return r.name[mapLanguage(lang)]||r.name['zh-TW']||r.ref;}
 export function roadMatches(r:Road,filter:RoadFilter){return filter==='all'||filter==='arterial'&&(r.class==='arterial'||r.class==='express')||filter==='local'&&(r.class==='street'||r.class==='alley')||filter==='path'&&r.class==='path';}
 export function roadsInView(data:RoadData,cellIds:string[],bounds:MapBounds,filter:RoadFilter){
  const found=new Set<number>();for(const id of cellIds)for(const index of data.cellIndex[id]??[])found.add(index);
@@ -24,7 +25,7 @@ export function roadGroups(roads:Road[],lang:string,query=''){
   if(q&&!`${r.name['zh-TW']} ${r.name.en} ${r.ref}`.normalize('NFKC').toLocaleLowerCase().includes(q))continue;
   const old=grouped.get(key);if(old)old.roads.push(r);else grouped.set(key,{key,name,roads:[r]});
  }
- return [...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,lang==='en'?'en':'zh-Hant'));
+ return [...grouped.values()].sort((a,b)=>a.name.localeCompare(b.name,supportedLanguage(lang)??'zh-TW'));
 }
 export function roadPath(r:Road){return r.points.map((p,i)=>`${i?'L':'M'}${p[0]},${p[1]}`).join('');}
 export function labelRoads(roads:Road[],bounds:MapBounds,pixels:number,avoid:number[][],lang='zh-TW',avoidRadius=170){

@@ -56,7 +56,7 @@
   "missionDetail": "Command a three-person Blue squad. Use class advantages, your commander’s shield, and field news to break the enemy line. Day and night share AP.",
   "deadlineBadge": "{{days}}-day operation",
   "squadBadge": "3-person squad",
-  "bilingualBadge": "ZH / EN",
+  "bilingualBadge": "6 languages",
   "enterHint": "Local single-player tactics · Progress stays in this page",
   "dayCount": "DAY {{day}}",
   "ofDays": "/ {{days}}",
@@ -906,5 +906,7 @@
   "o_placeLegend": "Activity place (white circle)",
   "o_opportunity_fresh": "New neighborhood",
   "o_opportunity_familiar": "Previously reached",
-  "o_opportunity_saturated": "Outreach saturated"
+  "o_opportunity_saturated": "Outreach saturated",
+  "a3_zoomIn": "Zoom in",
+  "a3_zoomOut": "Zoom out"
 }

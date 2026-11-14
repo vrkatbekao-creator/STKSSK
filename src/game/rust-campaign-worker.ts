@@ -4,10 +4,10 @@ import { endVehicleCampaignPhase } from './campaign-vehicle-phase.ts';
 import { campaignVehicleCommand } from './campaign-vehicle-runtime.ts';
 import type { VehicleCommand } from './campaign-vehicle-runtime.ts';
 import { campaignRoadQuery, rustRoadSearch } from './rust-campaign-routing.ts';
-import { allCells } from './campaign-map.ts';
+import { allCells, districts as campaignDistricts } from './campaign-map.ts';
 import { prepareCampaignTravel } from './campaign-travel.ts';
 import type { TravelIntent } from './campaign-travel.ts';
-import { readRustVehicleBackend } from './rust-vehicle-backend.ts';
+import { readPreparedVehiclePolicy, readRustVehicleBackend } from './rust-vehicle-backend.ts';
 import { instantiateRustVehicle } from './rust-vehicle.ts';
 import { encodeVehiclePolicy } from './rust-vehicle-policy.ts';
 import type { RoutingQuery, RoutingResult } from './rust-routing.ts';
@@ -18,8 +18,9 @@ export function createRustCampaignWorker(module: WebAssembly.Module, query: (opt
   let activeQueries = 0;
   const roadSearch = rustRoadSearch(options => { activeQueries++; return query(options); });
   async function loadVehicle(base: string) {
+    const prepared=loadBackend===readRustVehicleBackend?readPreparedVehiclePolicy(base,campaignDistricts).catch(()=>undefined):undefined;
     const { graph, runtime, turns, districts } = await loadBackend(base);
-    const planLeg = await instantiateRustVehicle(module, graph, encodeVehiclePolicy(graph, turns, districts));
+    const planLeg = await instantiateRustVehicle(module, graph, (await prepared)??encodeVehiclePolicy(graph, turns, districts));
     return {
       ...runtime,
       contextFor: (game: Campaign, team: Campaign['playerTeam']) => ({

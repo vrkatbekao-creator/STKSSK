@@ -4,6 +4,12 @@ import type {CoverageDistrict} from './vehicle-geometry.ts';
 import {vehicleTurnPolicy} from './vehicle-turn-policy.ts';
 import type {parseVehicleTurnMetadata} from './vehicle-runtime-factory.ts';
 
+export const preparedVehiclePolicy={
+ filename:'vehicle-policy-v1.bin.gz',
+ bytes:884810,
+ sha256:'6eb1ac4b940579ebc93b02d6d1bb50036eadc2441fb382f573f678e09472a460',
+};
+
 export function encodeVehiclePolicy(graph:VehicleGraphColumns,turns:ReturnType<typeof parseVehicleTurnMetadata>,districts:readonly CoverageDistrict[]){
  const allow=vehicleTurnPolicy(turns.relations,turns.viaNodes);
  const incomingByNode=new Map<number,Map<bigint,number>>();

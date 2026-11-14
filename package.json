@@ -9,6 +9,8 @@
     "play": "vite --host 127.0.0.1 --port 5173 --strictPort --open http://127.0.0.1:5173/",
     "qa": "vite --host 127.0.0.1 --port 5187 --strictPort --open http://127.0.0.1:5187/design/compat-qa.html",
     "build": "vite build && node design/write-release-notices.mjs",
+    "alpha:assets": "node design/package-alpha.mjs",
+    "build:alpha": "npm run alpha:assets && vite build --mode alpha && node design/write-release-notices.mjs",
     "preview": "vite preview --host 127.0.0.1",
     "test": "node --test --test-concurrency=2 tests/*.test.mjs",
     "check": "tsc --noEmit",
@@ -21,6 +23,7 @@
   },
   "dependencies": {
     "i18next": "26.5.12",
+    "maplibre-gl": "6.18.0",
     "pixi.js": "8.22.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",

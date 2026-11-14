@@ -6,9 +6,11 @@ import type {VehicleTeamLedger} from './vehicle-ledger.ts';
 import {validVehicleLedger} from './vehicle-ledger.ts';
 import {campaignBoardingRoutes} from './campaign-vehicle-boarding.ts';
 import {planVehicleLeg} from './vehicle-leg-planner.ts';
+import type {VehicleLegOptions,VehicleLegPlan} from './vehicle-leg-planner.ts';
 
 export type VehiclePlanContext={graph:VehicleGraphColumns;connectors:ReadonlyMap<number,readonly number[]>;
- allowTurn:(incoming:bigint,node:bigint,outgoing:bigint)=>boolean;edgeWeightQuarters:(edge:number)=>number};
+ allowTurn:(incoming:bigint,node:bigint,outgoing:bigint)=>boolean;edgeWeightQuarters:(edge:number)=>number;
+ planLeg?:(options:VehicleLegOptions)=>VehicleLegPlan|null};
 
 /** Context must already be SHA/revision validated. Does not alter game or ledger. */
 export function previewCampaignVehicleLeg(g:Campaign,u:CampaignUnit,destinationCell:string,mode:VehicleMode,
@@ -22,8 +24,9 @@ export function previewCampaignVehicleLeg(g:Campaign,u:CampaignUnit,destinationC
  const destinations=campaignBoardingRoutes(g,actor,destinationCell,context.connectors,'fromVehicle');
  if(!origins.length||!destinations.length)return null;
  const unit=ledger.units[actor.id]??{drive:0,motorcade:0};
- return planVehicleLeg(context.graph,{mode,origins,destinations,ap:actor.ap,
+ const options:VehicleLegOptions={mode,origins,destinations,ap:actor.ap,
   materials:g.resources[actor.team].materials-reserve.materials,reservedAp:reserve.ap,
   previousWeightedQuarterMetres:unit[mode],previousTeamQuarterMetres:ledger.actualQuarterMetres,
-  allowTurn:context.allowTurn,edgeWeightQuarters:context.edgeWeightQuarters});
+  allowTurn:context.allowTurn,edgeWeightQuarters:context.edgeWeightQuarters};
+ return context.planLeg?context.planLeg(options):planVehicleLeg(context.graph,options);
 }

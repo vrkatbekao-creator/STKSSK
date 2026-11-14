@@ -1,3 +1,4 @@
+import {validVisitColors} from './campaign-visit-colors.ts';
 import {initialContacts,validContacts} from './campaign-contacts.ts';
 import {initialOutreach,validOutreach} from './campaign-outreach.ts';
 import {teamRecord} from './campaign-teams.ts';
@@ -61,6 +62,7 @@ export function validSession(value:unknown,oldNodes=false):value is Session{
  if(g.day<15?g.rumor!==null:!snapshot(g.rumor)||g.rumor.releasedDay!==g.day)return false;
  if(!list(g.history,h=>obj(h)&&integer(h.day,1,28)&&support(h.support),28)||!g.history.every((h:any,i:number)=>h.day===i+1))return false;
  if(g.result===null){if(g.history.length!==g.day-1)return false;}else{if(!oneOf(g.result,[...teams,'draw'])||g.day!==28||g.phase!=='night'||g.history.length!==28)return false;const scores=Object.values(g.support as Campaign['support']).reduce((a,s)=>{for(const t of teams)a[t]+=s[t];return a;},{blue:0,green:0,white:0});if(campaignOutcome(scores)!==g.result)return false;}
+ if(g.visitColors!==undefined&&!validVisitColors(g.visitColors,cells))return false;
  if(g.trail!==undefined&&!teamValues(g.trail,t=>obj(t)&&list(t.arrivedCells,id=>typeof id==='string'&&cells.has(id),cells.size)&&new Set(t.arrivedCells).size===t.arrivedCells.length&&uniqueList(t.completedNodes,nodeIds)&&typeof t.partial==='boolean'))return false;
  if(g.trail)for(const team of teams){const walks=g.trail[team].walks;if(walks!==undefined&&!list(walks,w=>{
   if(!obj(w)||!g.units.some((u:any)=>u.id===w.unitId&&u.team===team)||!integer(w.day,1,g.day)||!oneOf(w.phase,['day','night'])||!(w.day<g.day||g.phase==='night'||w.phase==='day')||!list(w.cells,id=>typeof id==='string'&&cells.has(id),1000)||w.cells.length<2)return false;

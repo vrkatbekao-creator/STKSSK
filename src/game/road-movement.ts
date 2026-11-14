@@ -14,6 +14,23 @@ export function roadEffort(g:Campaign,edgeId:number,team:CampaignUnit['team']){
  const e=routingEdges[edgeId],way=streetWays.get(e.wayId)!,district=allCells.get(routingNodes[e.to].cellId)!.districtId;
  return e.metres*(1+(way.highway==='steps'?roadAPPolicy.stairs:0)+(g.news==='rain'?roadAPPolicy.rain:0)+(g.surprise?.id==='streetworks'&&g.surprise.districtId===district&&!adapted(g.surprise,team)?roadAPPolicy.streetworks:0));
 }
+export function checkedRoadMove(game:Campaign,unit:CampaignUnit,destination:string,ids:Uint32Array){
+ if(game.movementProfile!=='streets-v2'||!ids.length||ids.length>10000)return null;
+ const target=allCells.get(destination)?.roadNode;
+ let node=allCells.get(unit.cellId)?.roadNode;
+ if(target===undefined||node===undefined)return null;
+ const occupied=new Set(game.units.filter(other=>other.id!==unit.id&&other.mobilization>0&&other.withdrawUntil<=game.day).map(other=>other.cellId));
+ let effort=0;
+ for(const id of ids){
+  const edge=routingEdges[id];
+  if(!edge||edge.from!==node||edge.cellIds.some(cell=>occupied.has(cell)))return null;
+  effort+=roadEffort(game,id,unit.team);
+  node=edge.to;
+ }
+ if(node!==target||effort>unit.ap*roadAPPolicy.metresPerAP+1e-6)return null;
+ const edgeIds=Array.from(ids);
+ return {cost:roadAPCost(effort),path:roadWalkCells(edgeIds),edgeIds};
+}
 export function roadMovement(g:Campaign,u:CampaignUnit,budget:number):RoadMovement{
  const start=allCells.get(u.cellId)!.roadNode!,effort=new Map<number,number>([[start,0]]),previous=new Map<number,number>(),costs=new Map<string,number>([[u.cellId,0]]);
  const occupied=new Set(g.units.filter(v=>v.id!==u.id&&v.mobilization>0&&v.withdrawUntil<=g.day).map(v=>v.cellId));

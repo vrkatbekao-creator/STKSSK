@@ -32,11 +32,11 @@ export function executeCampaignVehicle(original:Campaign,team:Team,unitId:string
  // Each connector is its own walking movement; transport itself adds no strain.
  for(const walk of [plan.boarding,plan.alighting])if(walk.edgeIds.length)exert(state,unit,'move',vehicleBoardingAP(walk.effort,true));
  unit.cellId=destinationCell;ensureTrail(state);recordArrival(state,team,[destinationCell]);state.actions++;
+ state.logs=[{key:'c_logAction',values:{team,unit:unitId,action:mode}},...state.logs].slice(0,100);
  const journey:VehicleJourney={day:original.day,phase:original.phase,unitId,mode,fromCell:actor.cellId,toCell:destinationCell,
   boardEdges:[...plan.boarding.edgeIds],carStart:plan.nodeIndices[0],carEdges:[...plan.edgeIndices],weights,
   alightStart:plan.alighting.walkingNode,alightEdges:[...plan.alighting.edgeIds],actualQuarterMetres:plan.actualQuarterMetres,
   weightedQuarterMetres:plan.weightedQuarterMetres};
- // No log, animations or saved history yet: those require the new revisioned journey schema.
  return {game:state,ledger:charged.ledger,plan,journey};
 }
 export function executeCampaignDrive(original:Campaign,team:Team,unitId:string,destinationCell:string,

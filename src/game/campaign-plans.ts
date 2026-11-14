@@ -25,7 +25,7 @@ function makePlan(g:Campaign,u:CampaignUnit,nodeId:string,walk:ReturnType<typeof
  let path:string[]|undefined;
  return {...base,state,error,destination,get path(){return path??=(moveAp?routeFromMovement(u,destination,walk)?.path??[]:[u.cellId]);},moveAp,totalAp,canAct:error===null};
 }
-export function planNodeVisit(g:Campaign,u:CampaignUnit,nodeId:string){return makePlan(g,u,nodeId,movement(g,u));}
+export function planNodeVisit(g:Campaign,u:CampaignUnit,nodeId:string,walk=movement(g,u)){return makePlan(g,u,nodeId,walk);}
 export function districtVisitPlans(g:Campaign,u:CampaignUnit,districtId:string){const walk=movement(g,u);return mapFor(g).nodes.filter(n=>n.districtId===districtId).map(n=>makePlan(g,u,n.id,walk));}
 
 export function visitPlans(g:Campaign,u:CampaignUnit,walk=movement(g,u)){return mapFor(g).nodes.filter(n=>playableNode(g,n)).map(n=>makePlan(g,u,n.id,walk));}

@@ -2,18 +2,27 @@
 
 **選舉騎士團 台北篇 全市掃街**
 
-A single-player 3D tactics game set across Taipei’s 12 districts. Lead one of three fictional factions through 28 days of neighborhood visits, campaign motorcades, community stages, policy presentations, and debates. Beta 4 is available in English, Traditional Chinese, Japanese, French, Dutch, and Simplified Chinese.
+A single-player 3D tactics game set across Taipei’s 12 districts. Lead one of three fictional factions through 28 days of neighborhood visits, campaign motorcades, community stages, policy presentations, and debates. Beta 05 is available in English, Traditional Chinese, Japanese, French, Dutch, and Simplified Chinese.
 
-這是一款以台北 12 行政區為舞台的單機 3D 戰棋。帶領三個虛構陣營之一，在 28 天內步行拜訪、跨區車掃、經營社群舞台，並透過政見發表會及辯論爭取支持。Beta 4 支援繁體中文、英文、日語、法語、荷蘭語與簡體中文。
+這是一款以台北 12 行政區為舞台的單機 3D 戰棋。帶領三個虛構陣營之一，在 28 天內步行拜訪、跨區車掃、經營社群舞台，並透過政見發表會及辯論爭取支持。Beta 05 支援繁體中文、英文、日語、法語、荷蘭語與簡體中文。
 
 | Version / 版本 | How to play / 取得方式 |
 | --- | --- |
-| **v0.18.0 Beta 4 · 3D public preview / 公開試玩** | [Play 3D Beta 4 / 試玩 3D Beta 4](https://vrkatbekao-creator.github.io/STKSST/3d/) |
-| **v0.18.0 Beta 4 · 3D source / 原始碼** | [Local build and performance notes / 本機建置與效能紀錄](BETA-REVIEW.md) |
-| **v0.17.0 · 2D public prototype / 公開原型** | [Play the 2D prototype / 試玩 2D 原型](https://vrkatbekao-creator.github.io/STKSST/) |
+| **v0.18.0 Beta 05 · main 3D preview / 3D 主要試玩** | [Play 3D Beta 05 / 試玩 3D Beta 05](https://vrkatbekao-creator.github.io/STKSST/) |
+| **v0.18.0 Beta 05 · 3D source / 原始碼** | [Local build and mobile testing / 本機建置與手機版驗收](BETA-REVIEW.md) |
+| **v0.17.0 · 2D Legacy / 舊版** | [Play 2D Legacy / 試玩 2D 舊版](https://vrkatbekao-creator.github.io/STKSST/legacy/) |
+
+Use the edition link on either preview to switch between 3D Beta 05 and 2D Legacy. Each edition uses its own browser saves.
+
+兩版都可從頁面上的版本連結切換。3D Beta 05 與 2D Legacy 各自使用原有的瀏覽器存檔。
 
 [回報問題 / Report an issue](https://github.com/vrkatbekao-creator/STKSST/issues/new?template=bug_report.yml)
 
+## 3D Beta 05
+
+On narrow screens, tap a road to choose a route in a bottom sheet. The sheet shows the cost before you confirm. Tap a landmark for location details or tap a team member for field actions.
+
+手機窄版可點道路，在底部面板選擇移動方式並確認費用。點地標可看地點資訊，點角色可開啟現場行動。
 
 ## 3D Beta 4
 

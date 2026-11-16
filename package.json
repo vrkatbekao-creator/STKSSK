@@ -1,6 +1,6 @@
 {
   "name": "capital-tactics",
-  "version": "0.18.0-beta.4",
+  "version": "0.18.0-beta.5",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -19,7 +19,7 @@
     "build:pages": "vite build --base=/STKSST/ && node design/write-release-notices.mjs",
     "build:pages:beta": "npm run alpha:assets && vite build --mode beta --base=/STKSST/3d/ && node design/write-release-notices.mjs",
     "deploy:pages:beta": "npm run check && npm test && npm run build:pages:beta && node design/publish-pages.mjs --beta",
-    "deploy:pages": "npm run check && npm test && npm run build:pages && node design/publish-pages.mjs"
+    "deploy:pages": "npm run deploy:pages:beta"
   },
   "engines": {
     "node": ">=22.12.0"

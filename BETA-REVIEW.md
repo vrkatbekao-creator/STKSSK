@@ -1,5 +1,13 @@
 # 《選舉騎士團 台北篇 全市掃街》3D Beta
 
+## Beta 05 · 手機 3D 地圖
+
+`AlphaCampaign.tsx` 與 `MobileMapSheet.tsx` 處理窄版選點與底部面板。`AlphaMap.tsx` 保留桌面地圖浮窗，並在窄版區分點按、拖曳及多指操作。實際選點先由角色與現有地標或舞台標記攔截，其餘交由六角格判定。一般建物輪廓沿用地圖圖層。場地清單也可開啟地點資訊，已可互動的地點直接開啟現場行動。
+
+沿用 `prepareCampaignTravel`、`quoteTravel` 與 `confirmTravel`。自動在同區優先選步行，跨區優先選車掃。此 UI 偏好不限制玩家手動選擇。步行能否跨區由既有路網、成本及可達範圍判定。接駁選項與載具可用性沿用現有規則。面板先驗證選中的模式，因車行搜尋可能耗時，其他模式等點選後才取得報價與限制。確認使用引擎驗證過的路線及遊戲快照。狀態改變時重新取得報價。
+
+以同一瀏覽器測試繁中與日文 320、360、390、412 CSS px 及 390 × 480 CSS px，量測頁面和底部面板的內容寬度。900 CSS px 驗證桌面移動列及地標浮窗。手機操作流程另驗證道路點選、角色現場行動、地標資訊、跨區車掃及取消。實體 Android、iOS 與多指手勢仍需裝置驗收。
+
 ## Beta 4
 
 `0.18.0-beta.4` 採用新遊戲名稱，並收錄步行與車行路網並行載入及台北地標問答。The new title is *Election Knights: Taipei — Citywide Canvassing*. The 3D preview loads both routing datasets in parallel and offers a landmark quiz while they load.

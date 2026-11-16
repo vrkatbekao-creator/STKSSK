@@ -24,6 +24,7 @@ import {memberIndex} from './campaign-character.ts';
 import {publicAsset} from './public-asset.ts';
 import {DistrictLandmark} from './DistrictStreets.tsx';
 import {CampaignVehicle} from './CampaignArt.tsx';
+import {createMapTapGesture} from './mobile-map-gesture.ts';
 
 maplibre.setWorkerUrl(mapWorkerUrl);
 
@@ -41,7 +42,7 @@ const feature=(geometry:Geometry,properties:Feature['properties']={}):Feature=>(
 const collection=(features:Feature[]=[]):FeatureCollection=>({type:'FeatureCollection',features});
 const sources=['districts','rivers','roads','buildings','hex','visits','contest','picked','route'] as const;
 const accents={blue:['#91b9f3','#245ce1','#143b82'],green:['#ffc0a8','#db6a41','#8f361f'],white:['#d9def2','#f7faff','#493a73']};
-type Props={game:Campaign;districtId:string;selected:string;destination?:string;segments:TravelSegment[];grid:boolean;terrain:boolean;
+type Props={game:Campaign;districtId:string;selected:string;destination?:string;segments:TravelSegment[];grid:boolean;terrain:boolean;mobile:boolean;
  onCell:(id:string)=>void;onNode:(id:string)=>void;onDistrict:(id:string)=>void;onUnit:(id:string,origin:HTMLElement)=>void;districtPicker:boolean;
  popup?:{cellId:string;element:React.ReactNode};fieldPopup?:{cellId:string;element:React.ReactNode};motion:TravelQuote|null;onMotionEnd:()=>void};
 
@@ -74,6 +75,7 @@ export function AlphaMap(props:Props){
  const mapData=mapFor(game), district=mapData.districts.find(d=>d.id===districtId)!;
  const host=useRef<HTMLDivElement>(null), map=useRef<maplibre.Map|null>(null);
  const live=useRef(props);live.current=props;
+ const acceptTap=useRef<(event:MouseEvent,select:()=>void)=>void>((_event,select)=>select());
  const [ready,setReady]=useState(false),[failed,setFailed]=useState(false),[terrainFailed,setTerrainFailed]=useState(false);
  const [view,setView]=useState({x:district.bounds[0],y:district.bounds[1],width:district.bounds[2]-district.bounds[0],height:district.bounds[3]-district.bounds[1]});
  const [popupPoint,setPopupPoint]=useState({x:0,y:0,width:0,height:0});
@@ -92,13 +94,45 @@ export function AlphaMap(props:Props){
     maxBounds:[[121.38,24.88],[121.79,25.26]],dragRotate:false,pitchWithRotate:false,attributionControl:false});
   }catch{setFailed(true);return;}
   map.current=instance;
-  const size=new ResizeObserver(()=>instance.resize());size.observe(host.current);
+  const container=host.current;
+  const size=new ResizeObserver(()=>instance.resize());size.observe(container);
+  const gesture=createMapTapGesture();
+  let pendingTap:number|undefined;
+  let touch=false;
+  const stopTap=()=>{if(pendingTap!==undefined)window.clearTimeout(pendingTap);pendingTap=undefined;};
+  const point=(e:PointerEvent)=>({x:e.clientX,y:e.clientY});
+  const start=(e:PointerEvent)=>{
+   if(!live.current.mobile||e.button!==0)return;
+   stopTap();
+   touch=e.pointerType==='touch';
+   gesture.start(e.pointerId,point(e));
+  };
+  const move=(e:PointerEvent)=>gesture.move(e.pointerId,point(e));
+  const end=(e:PointerEvent)=>{
+   move(e);
+   gesture.end(e.pointerId,container.contains(document.elementFromPoint(e.clientX,e.clientY)));
+  };
+  const cancel=(e:PointerEvent)=>gesture.end(e.pointerId,false);
+  acceptTap.current=(event,select)=>{
+   if(!live.current.mobile||event.detail===0){select();return;}
+   if(!gesture.consume())return;
+   if(!touch){select();return;}
+   stopTap();
+   pendingTap=window.setTimeout(()=>{pendingTap=undefined;select();},320);
+  };
+  container.addEventListener('pointerdown',start,true);
+  window.addEventListener('pointermove',move,true);
+  window.addEventListener('pointerup',end,true);
+  window.addEventListener('pointercancel',cancel,true);
+  instance.on('dragstart',stopTap);
+  instance.on('zoomstart',stopTap);
+  instance.on('dblclick',stopTap);
   instance.on('load',()=>{updateBounds(instance);setReady(true);});
   instance.on('error',event=>{if('sourceId' in event&&event.sourceId==='elevation')setTerrainFailed(true);
    else if(event.error.message.includes('Worker failed'))setFailed(true);});
   instance.on('webglcontextlost',()=>setFailed(true));
   instance.on('moveend',()=>updateBounds(instance));
-  instance.on('click',e=>{
+  instance.on('click',e=>acceptTap.current(e.originalEvent,()=>{
    const p=live.current, data=mapFor(p.game);
    if(p.districtPicker){
     const hit=instance.queryRenderedFeatures(e.point,{layers:['districts']})[0]?.properties.id;
@@ -109,8 +143,15 @@ export function AlphaMap(props:Props){
    const {q,r}=axialAt(x,y,data.campaignMap.radiusMetres);
    const id=`${data.campaignMap.version}:${q},${r}`,cell=data.cells.get(id);
    if(cell&&cell.terrain!=='water'&&cell.walkable!==false)p.onCell(id);
-  });
-  return()=>{size.disconnect();instance.remove();map.current=null;};
+  }));
+  return()=>{
+   stopTap();
+   container.removeEventListener('pointerdown',start,true);
+   window.removeEventListener('pointermove',move,true);
+   window.removeEventListener('pointerup',end,true);
+   window.removeEventListener('pointercancel',cancel,true);
+   size.disconnect();instance.remove();map.current=null;
+  };
  },[]);
  useEffect(()=>{
   const instance=map.current;if(!instance)return;
@@ -216,7 +257,7 @@ export function AlphaMap(props:Props){
   const marker=(xy:number[],label:string,cls:string,click:(origin:HTMLElement)=>void,color?:string)=>{
    const el=document.createElement('button');el.type='button';el.className=cls;el.textContent=label;
    if(color)el.style.setProperty('--mark',color);
-   el.onclick=e=>{e.stopPropagation();click(el);};
+   el.onclick=e=>{e.stopPropagation();acceptTap.current(e,()=>{if(el.isConnected)click(el);});};
    return new maplibre.Marker({element:el,anchor:'bottom'}).setLngLat(alphaLngLat(xy)).addTo(m);
   };
   if(districtPicker)return;

@@ -4,13 +4,13 @@
 
 ## 建置與發布
 
-- 2D 公開原型使用 `/STKSST/`，3D Beta 使用 `/STKSST/3d/`。兩個入口可互相切換，使用各自的存檔鍵。各入口的 `RELEASE.json` 記錄自己的版本與來源提交。
-- `npm run deploy:pages:beta` 驗證、建置並更新 `gh-pages` 的 `3d/`，同時在 2D 首頁加入 3D 連結。車網、WASM 和地形圖磚的前置需求見 [Beta 建置說明](BETA-REVIEW.md)。3D 發布包附車網資料的 ODbL 署名及下載檔。
+- `/STKSST/` 導向主要試玩 `/STKSST/3d/`。原 2D v0.17.0 移至 `/STKSST/legacy/`，並沿用原有資產網址及瀏覽器存檔鍵。兩版頁面上方都有版本切換連結。根目錄和 `3d/` 的 `RELEASE.json` 對應目前的 3D 發布，`legacy/RELEASE.json` 對應原 2D 發布。
+- `npm run deploy:pages` 與 `npm run deploy:pages:beta` 都會驗證、建置並更新 3D 主要試玩。發布程式保留 Legacy 原始資產，在初次切換時將原首頁及發布紀錄保存在 `legacy/`。車網、WASM 和地形圖磚的前置需求見 [Beta 建置說明](BETA-REVIEW.md)。
 
 - 目前使用 GitHub Pages 的 gh-pages 分支根目錄來源，配合 .nojekyll 發布預先建置的成品。現有 OAuth 憑證沒有 workflow scope，GitHub 拒絕新增自訂 Actions 工作流，因此未擴充憑證權限，改採官方支援的分支發布。
 - Node.js 24（最低依 package.json），首次準備 npm ci。後續執行 npm run deploy:pages：check、test、build:pages、發布包檢查全部成功後才推送成品。僅更新 main 不會重建網站。
 - design/publish-pages.mjs 只推送 gh-pages，保留既有發布歷史，不使用 force；若有競爭更新會拒絕而非覆寫。暫存發布工作目錄在已忽略的 .tools/。RELEASE.json 保存版本與來源提交。
-- 來源與 MIT／署名修改先提交、推送 main，再執行部署命令。只將 dist 成品放入 gh-pages，入口與圖片、圖資、音訊都使用 /STKSST/。不將 design、src、tests、node_modules 或 .env 放入網站。
+- 來源與 MIT／署名修改先提交、推送 main，再執行部署命令。3D 成品使用 `/STKSST/3d/` 資產路徑，Legacy 成品沿用 `/STKSST/`。發布程式只上傳成品、路由入口及發布紀錄。
 - MIT 原文在 LICENSE；建置自動輸出 LICENSE.txt、THIRD-PARTY-LICENSES.txt。PROJECT-CREDITS.txt 與第三方圖資告示隨站點發布，頁尾提供雙語作者／MIT 與問題回報連結。
 - 版本更新時同步核對 package.json、README 頂端、線上 RELEASE.json 與 GitHub About description；About 是 Repo 設定，不會隨 git push 或 README 更新而改變。歷史版本段落保留，但不能把舊原型版本當成目前簡介。
 - Repo 公開會讓來源與 Git 歷史可見；dist-only 是網站部署範圍，不表示公開 Repo 隱藏 design 或原始碼。公開前針對現有歷史檢查常見憑證格式，檢查不等於所有敏感資料的形式化證明。

@@ -1,4 +1,9 @@
 {
+  "a3_mobileAbout": "Game info",
+  "a3_mobileGround": "Road in {{district}}",
+  "a3_mobileMoveHere": "Move here",
+  "a3_mobileVehicleOff": "Vehicles are currently unavailable.",
+  "a3_mobileAutoMode": "Auto selected {{mode}}",
   "p_bootReady": "Your campaign is ready.",
   "p_bootEnter": "Open campaign",
   "p_quizTitle": "Taipei landmark quiz",

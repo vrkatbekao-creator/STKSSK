@@ -1,4 +1,9 @@
 {
+  "a3_mobileAbout": "Infos du jeu",
+  "a3_mobileGround": "Route dans {{district}}",
+  "a3_mobileMoveHere": "Aller ici",
+  "a3_mobileVehicleOff": "Les véhicules sont actuellement indisponibles.",
+  "a3_mobileAutoMode": "Choix automatique de {{mode}}",
   "p_bootReady": "Votre campagne est prête.",
   "p_bootEnter": "Ouvrir la campagne",
   "p_quizTitle": "Quiz sur les lieux de Taipei",

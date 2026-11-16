@@ -1,4 +1,9 @@
 {
+  "a3_mobileAbout": "遊戲資訊",
+  "a3_mobileGround": "{{district}}道路",
+  "a3_mobileMoveHere": "移動到這裡",
+  "a3_mobileVehicleOff": "目前無法使用載具。",
+  "a3_mobileAutoMode": "自動選擇{{mode}}",
   "p_bootReady": "競選準備就緒。",
   "p_bootEnter": "進入競選",
   "p_quizTitle": "台北地標小問答",

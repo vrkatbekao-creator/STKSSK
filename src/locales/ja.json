@@ -1,4 +1,9 @@
 {
+  "a3_mobileAbout": "ゲーム情報",
+  "a3_mobileGround": "{{district}}の道路",
+  "a3_mobileMoveHere": "ここへ移動",
+  "a3_mobileVehicleOff": "現在、車両を利用できません。",
+  "a3_mobileAutoMode": "自動選択：{{mode}}",
   "p_bootReady": "選挙戦の準備ができました。",
   "p_bootEnter": "選挙戦を開く",
   "p_quizTitle": "台北の名所クイズ",
@@ -227,7 +232,7 @@
   "c_heading": "台北, ストリートバイストリート",
   "c_dayLabel": "選挙戦",
   "c_sharedAP": "APは夜に運びます",
-  "c_materials": "材料材料",
+  "c_materials": "資材",
   "c_volunteers": "ボランティア募集",
   "c_endDay": "夜に進む",
   "c_endNight": "夜の行動を確定",

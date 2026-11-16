@@ -1,4 +1,9 @@
 {
+  "a3_mobileAbout": "Spelinfo",
+  "a3_mobileGround": "Weg in {{district}}",
+  "a3_mobileMoveHere": "Verplaats hierheen",
+  "a3_mobileVehicleOff": "Voertuigen zijn momenteel niet beschikbaar.",
+  "a3_mobileAutoMode": "Automatische keuze: {{mode}}",
   "p_bootReady": "Je campagne is klaar.",
   "p_bootEnter": "Campagne openen",
   "p_quizTitle": "Quiz over Taipei",

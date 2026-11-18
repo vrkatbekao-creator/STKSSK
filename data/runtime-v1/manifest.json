@@ -1,0 +1,282 @@
+{
+  "version": 1,
+  "revision": "13446e24a86edcda147420f6d6d3799bda7acbff7818550292c656e70895a2f7",
+  "core": {
+    "file": "routing.44c395710d076e20.gz",
+    "sha256": "44c395710d076e20c98903023c0062809748888569f8c4e8907df43fcc9ccde8",
+    "bytes": 18680680,
+    "gzipBytes": 6640319
+  },
+  "meta": {
+    "file": "street-meta.5aad6e9c0d1d1dfd.gz",
+    "sha256": "5aad6e9c0d1d1dfd0b96e72e507f671aa3bf3a244858fc04ae5527db6fa3b76b",
+    "bytes": 6357911,
+    "gzipBytes": 629351
+  },
+  "base": {
+    "file": "base-map.305f0eee0389b13e.gz",
+    "sha256": "305f0eee0389b13e09c1ebc63c71b0f28dd9c4933563e88d86e19fc9a5c0900c",
+    "bytes": 3896267,
+    "gzipBytes": 378367
+  },
+  "places": {
+    "file": "places.d2e1ea5756093502.gz",
+    "sha256": "d2e1ea575609350247dcf79b24c77038b8035a29a93244f988e58d5a8e43743f",
+    "bytes": 60607,
+    "gzipBytes": 10074
+  },
+  "districts": [
+    {
+      "id": "6400100",
+      "bounds": [
+        -7046.8,
+        -3548.7,
+        -671.3,
+        3319
+      ],
+      "roads": {
+        "file": "roads-6400100.5842b9089d636549.gz",
+        "sha256": "5842b9089d636549e732c51b3b38dbceb36604430d367ab1949f019a5bca9c51",
+        "bytes": 1894336,
+        "gzipBytes": 239422
+      },
+      "buildings": {
+        "file": "buildings-6400100.dd6db38bf070a63d.gz",
+        "sha256": "dd6db38bf070a63d587fca4bf385e5b554f8ecf0a94bcd4bafb624be7d730c3e",
+        "bytes": 478288,
+        "gzipBytes": 121657
+      }
+    },
+    {
+      "id": "6400200",
+      "bounds": [
+        -5723.8,
+        3034.9,
+        -152.7,
+        10010.1
+      ],
+      "roads": {
+        "file": "roads-6400200.1105f1c45e8686fa.gz",
+        "sha256": "1105f1c45e8686face8b90497ba19107b647277cb215714e9dfcf3fe37617bb7",
+        "bytes": 217614,
+        "gzipBytes": 29861
+      },
+      "buildings": {
+        "file": "buildings-6400200.5ad54082ae9d3119.gz",
+        "sha256": "5ad54082ae9d311954f698587ca4fb44ccb98fc4e97f1c718865130f43e048f4",
+        "bytes": 17891,
+        "gzipBytes": 5976
+      }
+    },
+    {
+      "id": "6400300",
+      "bounds": [
+        -6907.5,
+        -7940.7,
+        943.9,
+        -1185.9
+      ],
+      "roads": {
+        "file": "roads-6400300.8a5a3011948c12bd.gz",
+        "sha256": "8a5a3011948c12bd57d4d7763d43e73d1c6153962808dbdee58623447fe12c0c",
+        "bytes": 1772001,
+        "gzipBytes": 218838
+      },
+      "buildings": {
+        "file": "buildings-6400300.418c9fa57e3d68ca.gz",
+        "sha256": "418c9fa57e3d68ca7a447ac4674831b2a01f6d5da96503bb682f2adfc2f30f4e",
+        "bytes": 468528,
+        "gzipBytes": 121440
+      }
+    },
+    {
+      "id": "6400400",
+      "bounds": [
+        -6377.7,
+        -13845.5,
+        10108.5,
+        -1498
+      ],
+      "roads": {
+        "file": "roads-6400400.a8349caee52783b1.gz",
+        "sha256": "a8349caee52783b129fd7bdd05d18e734a423853ebe1614a4973ce8663014f51",
+        "bytes": 3571202,
+        "gzipBytes": 485010
+      },
+      "buildings": {
+        "file": "buildings-6400400.e9fc36f691328555.gz",
+        "sha256": "e9fc36f6913285554e74bfc014413194f1997b8e4a861be7845ae174e913a400",
+        "bytes": 633596,
+        "gzipBytes": 158690
+      }
+    },
+    {
+      "id": "6400500",
+      "bounds": [
+        -3834.3,
+        -4188.4,
+        3363.1,
+        1548.2
+      ],
+      "roads": {
+        "file": "roads-6400500.63c68008a2c260db.gz",
+        "sha256": "63c68008a2c260db175788d67ae5634d59f5a4ef84b72f14f179749418534b4c",
+        "bytes": 2117536,
+        "gzipBytes": 255603
+      },
+      "buildings": {
+        "file": "buildings-6400500.fe0ddcdbc76d27df.gz",
+        "sha256": "fe0ddcdbc76d27df541aa81b6bee56a7c1b0f9e8129841771338431db5c1e8c2",
+        "bytes": 371318,
+        "gzipBytes": 96007
+      }
+    },
+    {
+      "id": "6400600",
+      "bounds": [
+        -3399.8,
+        397.6,
+        263.4,
+        3606
+      ],
+      "roads": {
+        "file": "roads-6400600.59d0aeb121ed9817.gz",
+        "sha256": "59d0aeb121ed9817fb0790c0df8ab3d6794f9e88d7714c07398dd50622e29fd9",
+        "bytes": 680542,
+        "gzipBytes": 77121
+      },
+      "buildings": {
+        "file": "buildings-6400600.e6d1a3f4b3a1eaff.gz",
+        "sha256": "e6d1a3f4b3a1eaff40c098a47407da74b4065ff52c0bef07a6b0a4927c92f68d",
+        "bytes": 201160,
+        "gzipBytes": 51845
+      }
+    },
+    {
+      "id": "6400700",
+      "bounds": [
+        -3047.9,
+        559.2,
+        3170.1,
+        4095.6
+      ],
+      "roads": {
+        "file": "roads-6400700.c6aaf86e053241b5.gz",
+        "sha256": "c6aaf86e053241b554409993b15a405657fe8f89249eb7bd0af697e7f0ed81a8",
+        "bytes": 1168174,
+        "gzipBytes": 135526
+      },
+      "buildings": {
+        "file": "buildings-6400700.6c63a475527fe721.gz",
+        "sha256": "6c63a475527fe721d8e8fea19c0905593557de75bd6a1544f57b866b9f4f8e36",
+        "bytes": 266705,
+        "gzipBytes": 68681
+      }
+    },
+    {
+      "id": "6400800",
+      "bounds": [
+        -3797.8,
+        1613.2,
+        5078,
+        9293.4
+      ],
+      "roads": {
+        "file": "roads-6400800.2ff5aa8e00d354fe.gz",
+        "sha256": "2ff5aa8e00d354fee86377e7c255d6603eb8d9b5cf175973c426dba0a5b6c5ef",
+        "bytes": 1483776,
+        "gzipBytes": 181206
+      },
+      "buildings": {
+        "file": "buildings-6400800.0b692c997d8a2ccc.gz",
+        "sha256": "0b692c997d8a2ccce2cbfe9ad2eb8afef825d8b68c340bccb1a3b07ff13a34b1",
+        "bytes": 453939,
+        "gzipBytes": 110436
+      }
+    },
+    {
+      "id": "6400900",
+      "bounds": [
+        -2687.4,
+        -658.8,
+        13145.3,
+        15185.9
+      ],
+      "roads": {
+        "file": "roads-6400900.de82180a02b2fca8.gz",
+        "sha256": "de82180a02b2fca82b0287b4b22cebd8a7da45f26f1303da6105ecaab212078b",
+        "bytes": 2813712,
+        "gzipBytes": 381948
+      },
+      "buildings": {
+        "file": "buildings-6400900.5b9f2ac46ce519af.gz",
+        "sha256": "5b9f2ac46ce519af4b649341b78ae77b2b80b8c52dcf333abddd5324ce044633",
+        "bytes": 1605144,
+        "gzipBytes": 362567
+      }
+    },
+    {
+      "id": "6401000",
+      "bounds": [
+        -184.9,
+        -6073.8,
+        12112.6,
+        7448
+      ],
+      "roads": {
+        "file": "roads-6401000.0beefec68b00e060.gz",
+        "sha256": "0beefec68b00e0602c50f27ae05401c402da2664a5b117a3d6846877b9376915",
+        "bytes": 2803464,
+        "gzipBytes": 366740
+      },
+      "buildings": {
+        "file": "buildings-6401000.c0cfc02484719c26.gz",
+        "sha256": "c0cfc02484719c2627c3d40e070d5c22f12006ae7df28b9cfc79c2a6f1702bdc",
+        "bytes": 927396,
+        "gzipBytes": 214053
+      }
+    },
+    {
+      "id": "6401100",
+      "bounds": [
+        -7737.3,
+        -21900.4,
+        13446.6,
+        -7420.9
+      ],
+      "roads": {
+        "file": "roads-6401100.5245c0576ed08bae.gz",
+        "sha256": "5245c0576ed08baebc57d6365e1561a1f6e0bc1f86da9d8747b2f822284363c0",
+        "bytes": 3845695,
+        "gzipBytes": 549212
+      },
+      "buildings": {
+        "file": "buildings-6401100.8fa23f0334b34fdf.gz",
+        "sha256": "8fa23f0334b34fdf1682055ad9b23a2060aa5ce8bd7d26eb147b60022c9a737f",
+        "bytes": 634122,
+        "gzipBytes": 146879
+      }
+    },
+    {
+      "id": "6401200",
+      "bounds": [
+        6447.2,
+        -37472.1,
+        31854.6,
+        852.2
+      ],
+      "roads": {
+        "file": "roads-6401200.bec6a9bfcef44d57.gz",
+        "sha256": "bec6a9bfcef44d576f92ec9268ca417e96aac6c7a867a029459fb6c0ead5f886",
+        "bytes": 3957042,
+        "gzipBytes": 607482
+      },
+      "buildings": {
+        "file": "buildings-6401200.a4d0ff0c26f51b8f.gz",
+        "sha256": "a4d0ff0c26f51b8fded5e58e77f974e12239267259e9920e1f469e01b6774dd5",
+        "bytes": 470612,
+        "gzipBytes": 112502
+      }
+    }
+  ]
+}

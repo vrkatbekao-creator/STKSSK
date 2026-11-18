@@ -1,0 +1,17 @@
+選戰騎士團：高雄篇 3D 全市掃街 / Election Knights: Kaohsiung (3D)
+Created by vrkatbekao-creator, 2026.
+Repository: https://github.com/vrkatbekao-creator/STKSSK
+GitHub Pages (3D): https://vrkatbekao-creator.github.io/STKSSK/
+Upstream Capital Edition: https://github.com/vrkatbekao-creator/STKSST
+
+本作改編自首都篇開源戰棋架構，結合高雄 12 大生活圈 300 公尺六角格、MapLibre 3D 地形建物與 Rust/WASM 路網尋路。
+歡迎取用、修改與改善，請保留版權與 MIT 授權文字，並標註原作者 `vrkatbekao-creator` 與專案來源。
+
+This Kaohsiung 3D edition builds on the open-source Capital Tactics engine (`STKSST`), adapted for 12 Kaohsiung zones on a 300 m hex grid with MapLibre 3D terrain/buildings and Rust/WASM road & vehicle routing.
+You are welcome to use, modify, and improve it. Retain the copyright and MIT licence notice, credit `vrkatbekao-creator`, and link back to this project and the upstream repository.
+
+Project software: MIT, see LICENSE.txt.
+Third-party software: see THIRD-PARTY-LICENSES.txt.
+Map and satellite data retain their original terms, see
+data/GAME-DATA-CREDITS.txt, data/ROAD-DATA-LICENSE.txt and
+data/LANDSCAPE-DATA-LICENSE.txt.

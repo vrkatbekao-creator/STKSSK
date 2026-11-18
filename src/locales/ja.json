@@ -259,7 +259,7 @@
   "c_theme_music": "ミュージック会場と通勤路",
   "c_theme_hill": "ヒルズ&周辺リンク",
   "c_theme_culture": "文化と麓のルート",
-  "c_theme_spring": "温泉街と緑",
+  "c_theme_spring": "山あいの町と渓谷",
   "c_north": "ノ ン ン ン ン",
   "c_mapStamp": "Kaohsiung · 12 Zones",
   "c_hexScale": "1六角あたり{{metres}}m",
@@ -927,5 +927,17 @@
   "p_quizFengshan": "Fengshan",
   "p_quizQijin": "Qijin",
   "p_quizZuoying": "Zuoying",
-  "c_hqTokens": "HQ Tokens"
+  "c_hqTokens": "HQ Tokens",
+  "c_sceneTitle_6400100": "塩埕・鼓山 駁二ベイエリア",
+  "c_sceneTitle_6400200": "旗津・灯台とフェリー",
+  "c_sceneTitle_6400300": "左営・蓮池潭龍虎塔",
+  "c_sceneTitle_6400400": "楠梓・Sコリドー科学園",
+  "c_sceneTitle_6400500": "三民・高雄駅キャノピー",
+  "c_sceneTitle_6400600": "新興・前金 光のドーム",
+  "c_sceneTitle_6400700": "苓雅・市民文化アベニュー",
+  "c_sceneTitle_6400800": "前鎮・アジア新湾区",
+  "c_sceneTitle_6400900": "小港・国際空港ゲートウェイ",
+  "c_sceneTitle_6401000": "鳳山・衛武営ガジュマル広場",
+  "c_sceneTitle_6401100": "岡山・橋頭 製糖工場と廟前",
+  "c_sceneTitle_6401200": "旗山・美濃 山あいと渓谷"
 }

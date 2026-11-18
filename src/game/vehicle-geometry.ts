@@ -11,6 +11,7 @@ export type CoverageDistrict={id:string;rings:readonly (readonly (readonly numbe
 const cross=(ax:number,ay:number,bx:number,by:number)=>ax*by-ay*bx;
 
 /** TWD97 TM2 / EPSG:3826; local origin agrees with the existing city map. */
+export const VEHICLE_ORIGIN=[180000,2505000] as const;
 export function projectVehiclePoint(lon:number,lat:number):[number,number]{
  if(!Number.isFinite(lon)||!Number.isFinite(lat)||lon<119.5||lon>123||lat<21.5||lat>27)throw new RangeError('Outside vehicle projection');
  const a=6378137,f=1/298.257222101,k=.9999,e2=2*f-f*f,ep2=e2/(1-e2),phi=lat*Math.PI/180,lam=(lon-121)*Math.PI/180;
@@ -19,7 +20,7 @@ export function projectVehiclePoint(lon:number,lat:number):[number,number]{
   (15*e4/256+45*e6/1024)*Math.sin(4*phi)-(35*e6/3072)*Math.sin(6*phi));
  const east=250000+k*N*(A+(1-T+C)*A**3/6+(5-18*T+T*T+72*C-58*ep2)*A**5/120);
  const north=k*(M+N*t*(A*A/2+(5-T+9*C+4*C*C)*A**4/24+(61-58*T+T*T+600*C-330*ep2)*A**6/720));
- return [east-300000,2800000-north];
+ return [east-VEHICLE_ORIGIN[0],VEHICLE_ORIGIN[1]-north];
 }
 
 function onSegment(p:Point,a:readonly number[],b:readonly number[]){

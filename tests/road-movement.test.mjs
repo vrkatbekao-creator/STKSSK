@@ -13,8 +13,8 @@ const fresh=(team='blue')=>{const g=initialCampaign(1,team,'streets-v2');g.news=
 const session=g=>({game:g,selected:`${g.playerTeam}1`,districtId:mapFor(g).cells.get(g.units.find(u=>u.id===`${g.playerTeam}1`).cellId).districtId,view:'street'});
 const act=(g,cmd)=>{const out=campaignCommand(g,cmd);assert.equal(out.error,undefined,JSON.stringify(cmd));return out.game;};
 
-test('100 m shared tactical lattice uses source topology, preserves grade tags and excludes expressways',()=>{
- const g=fresh(),m=mapFor(g);assert.equal(m.campaignMap.radiusMetres,50);assert.equal(m.cells.size,41336);assert.equal(m.nodes.length,378);assert.ok(streetSource.audit.maxNodeSnap<=161);
+test('300 m shared tactical lattice uses source topology, preserves grade tags and excludes expressways',()=>{
+ const g=fresh(),m=mapFor(g);assert.equal(m.campaignMap.radiusMetres,150);assert.equal(m.cells.size,13785);assert.equal(m.nodes.length,232);assert.ok(streetSource.audit.maxNodeSnap<=650);
  for(const c of m.cells.values())for(const id of c.neighbors)assert.equal(hexDistance(c,m.cells.get(id)),1);
  for(const w of streetWays.values()){assert.ok(!['motorway','motorway_link','trunk','trunk_link'].includes(w.highway));assert.ok(['unknown','yes','designated','permissive','official'].includes(w.foot));if(w.highway==='cycleway')assert.notEqual(w.foot,'unknown');}
  assert.ok([...streetWays.values()].some(w=>w.bridge!=='no'));assert.ok([...streetWays.values()].some(w=>w.tunnel!=='no'));assert.ok([...streetWays.values()].some(w=>w.layer!=='0'));assert.ok([...streetWays.values()].some(w=>w.foot==='unknown'&&w.assumed));
@@ -27,8 +27,8 @@ test('all district anchors and 60 activity nodes are reachable both ways through
  const incoming=routingNodes.map(()=>[]);for(const e of routingEdges)incoming[e.to].push(e.from);const back=new Set([start]),q=[start];for(let i=0;i<q.length;i++)for(const n of incoming[q[i]])if(!back.has(n)){back.add(n);q.push(n);}assert.equal(back.size,routingNodes.length);
 });
 
-test('Wanhua and Xinyi preview, AP deduction, road geometry and saved ordered walks agree',()=>{
- for(const district of ['6300700','6300200']){let g=fresh();const m=mapFor(g),anchor=m.districts.find(d=>d.id===district).anchor,u=g.units.find(u=>u.cellId===anchor)??g.units[0];u.cellId=anchor;const walk=movement(g,u),to=[...walk.costs].find(([id,c])=>c>=4&&c<=7&&id!==u.cellId)[0],p=routeFromMovement(u,to,walk);assert.ok(p.edgeIds.length);assert.equal(p.cost,roadAPCost(p.edgeIds.reduce((sum,id)=>sum+roadEffort(g,id,u.team),0)));assert.deepEqual(p.path,roadWalkCells(p.edgeIds));assert.deepEqual(p.geometry,walkGeometry(p.path,p.edgeIds));assert.ok(p.geometry.length>=p.path.length);
+test('Yancheng and Formosa preview, AP deduction, road geometry and saved ordered walks agree',()=>{
+ for(const district of ['6400600','6400700']){let g=fresh();const m=mapFor(g),anchor=m.districts.find(d=>d.id===district).anchor,u=g.units.find(u=>u.cellId===anchor)??g.units[0];u.cellId=anchor;const walk=movement(g,u),to=[...walk.costs].find(([id,c])=>c>=4&&c<=7&&id!==u.cellId)[0],p=routeFromMovement(u,to,walk);assert.ok(p.edgeIds.length);assert.equal(p.cost,roadAPCost(p.edgeIds.reduce((sum,id)=>sum+roadEffort(g,id,u.team),0)));assert.deepEqual(p.path,roadWalkCells(p.edgeIds));assert.deepEqual(p.geometry,walkGeometry(p.path,p.edgeIds));assert.ok(p.geometry.length>=p.path.length);
   const before=u.ap;g=act(g,{type:'move',unitId:u.id,cellId:to});assert.equal(g.units.find(v=>v.id===u.id).ap,before-p.cost);assert.deepEqual(g.trail.blue.walks[0].edgeIds,p.edgeIds);assert.ok(validSession(session(g)));const encoded=encodeSave(session(g),'2026-10-31T22:00:00Z');assert.equal(encoded.version,5);assert.equal(encoded.mapRevision,streetSource.revision);assert.deepEqual(decodeSave(JSON.stringify(encoded)).save.session,session(g));
  }
 });
@@ -84,7 +84,7 @@ test('move-and-canvass reserves outreach AP and matches the legal two-command se
 
 test('new saves reject forged road histories and map revisions; legacy saves retain positions and rules',()=>{
  let g=fresh();const u=g.units[0],to=[...movement(g,u).costs].find(([id,c])=>c>=4)[0];g=act(g,{type:'move',unitId:u.id,cellId:to});const s=session(g),forged=structuredClone(s);forged.game.trail.blue.walks[0].edgeIds.reverse();assert.equal(validSession(forged),false);const mixed=structuredClone(s);mixed.game.units[0].cellId=initialCampaign().units[0].cellId;assert.equal(validSession(mixed),false);const wrong=encodeSave(s);wrong.mapRevision='obsolete';assert.equal(decodeSave(JSON.stringify(wrong)).error,'c_saveIncompatible');
- const legacy=session(initialCampaign());const old=encodeSave(legacy);assert.equal(old.version,5);assert.equal(old.map,'taipei-hex-v1');const port={getItem:()=>JSON.stringify(old),setItem:()=>{}};const store=createCampaignStore(port,'streets-v2');store.getState().resume();assert.deepEqual(store.getState().game,legacy.game);store.getState().menu();assert.equal(store.getState().game.movementProfile,'streets-v2');
+ const legacy=session(initialCampaign());const old=encodeSave(legacy);assert.equal(old.version,5);assert.equal(old.map,'kaohsiung-hex-v1');const port={getItem:()=>JSON.stringify(old),setItem:()=>{}};const store=createCampaignStore(port,'streets-v2');store.getState().resume();assert.deepEqual(store.getState().game,legacy.game);store.getState().menu();assert.equal(store.getState().game.movementProfile,'streets-v2');
 });
 
 test('new-mode opponents use road walks and a complete 28-day game preserves polling blackout and deterministic continuation',()=>{
@@ -93,5 +93,5 @@ test('new-mode opponents use road walks and a complete 28-day game preserves pol
 });
 
 test('fine-hex road inspection uses exact intersection with the coarse spatial index',()=>{
- const data=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/taipei-roads-v1.json.gz',import.meta.url))));const m=mapFor(fresh());for(const district of ['6300700','6300200']){const c=m.cells.get(m.districts.find(d=>d.id===district).anchor);assert.ok(coarseRoadCells([c]).length>=7);const roads=roadsInHex(data,c,50);assert.ok(roads.length);assert.ok(roads.every(r=>r.bounds[0]<=c.x+50&&r.bounds[2]>=c.x-50&&r.bounds[1]<=c.y+50&&r.bounds[3]>=c.y-50));}
+ const data=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/taipei-roads-v1.json.gz',import.meta.url))));const m=mapFor(fresh());for(const district of ['6400100','6400600']){const c=m.cells.get(m.districts.find(d=>d.id===district).anchor);assert.ok(coarseRoadCells([c]).length>=7);const roads=roadsInHex(data,c,150);assert.ok(roads.length);assert.ok(roads.every(r=>r.bounds[0]<=c.x+150&&r.bounds[2]>=c.x-150&&r.bounds[1]<=c.y+150&&r.bounds[3]>=c.y-150));}
 });

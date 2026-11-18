@@ -40,7 +40,7 @@ for(const d of base.districts){
  manifest.districts.push({id:d.id,bounds,roads:json(`roads-${d.id}`,roadData),buildings:json(`buildings-${d.id}`,buildingData)});
 }
 // Only remove this generator's obsolete hashed files within its exact output directory.
-for(const file of readdirSync(out))if(/^(routing|street-meta|base-map|places|roads-630\d{4}|buildings-630\d{4})\.[a-f0-9]{16}\.gz$/.test(file)&&!written.has(file))unlinkSync(new URL(file,out));
+for(const file of readdirSync(out))if(/^(routing|street-meta|base-map|places|roads-(?:630|640)\d{4}|buildings-(?:630|640)\d{4})\.[a-f0-9]{16}\.gz$/.test(file)&&!written.has(file))unlinkSync(new URL(file,out));
 writeFileSync(new URL('manifest.json',out),JSON.stringify(manifest,null,2)+'\n');
 writeFileSync(new URL('src/data/map-packages.json',root),JSON.stringify(manifest,null,2)+'\n');
 console.log(JSON.stringify({revision:manifest.revision,core:manifest.core,meta:manifest.meta,districts:manifest.districts.map(d=>({id:d.id,roads:d.roads.gzipBytes,buildings:d.buildings.gzipBytes}))},null,2));

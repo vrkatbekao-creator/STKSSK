@@ -65,7 +65,7 @@ function log(g:Campaign,key:string,values:CampaignLog['values']={}){g.logs.unshi
 export function initialCampaign(seed=0x5eed,playerTeam:Team='blue',movementProfile:MovementProfile='legacy-hex'):Campaign{
  const {districts,nodes}=mapFor({movementProfile});
  const support=Object.fromEntries(districts.map(d=>[d.id,teamRecord(()=>100)]));
- const starts={blue:['6300500','6300300','6300700'],green:['6301000','6301200','6300900'],white:['6300400','6300600','6300100']};
+ const starts={blue:['6400600','6400700','6400300'],green:['6400100','6400800','6401000'],white:['6400400','6400500','6401100']};
  const units=teams.flatMap(team=>(['heavy','ranged','scout'] as Role[]).map((role,i)=>({id:`${team}${i+1}`,team,role,cellId:districts.find(d=>d.id===starts[team][i])!.anchor,ap:role==='scout'?19:15,maxAp:role==='scout'?19:15,mobilization:10,fatigue:0,withdrawUntil:0,guardedUntil:0,skillReadyDay:1,transportDay:0,facing:team==='blue'?0:3,bracedUntil:0,confusedUntil:0})));
  const n=news(seed);if(n.news==='volunteers')for(const u of units)u.ap++;
  const surprise=drawSurprise(n.seed,1,districts.map(d=>d.id));

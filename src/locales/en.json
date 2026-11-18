@@ -259,7 +259,7 @@
   "c_theme_music": "Music venues & commuter streets",
   "c_theme_hill": "Hills & neighborhood links",
   "c_theme_culture": "Culture & foothill routes",
-  "c_theme_spring": "Hot-spring streets & greenery",
+  "c_theme_spring": "Mountain creeks & Hakka towns",
   "c_north": "N",
   "c_mapStamp": "Kaohsiung · 12 Zones",
   "c_hexScale": "{{metres}} m per hex",
@@ -927,5 +927,17 @@
   "p_quizFengshan": "Fengshan",
   "p_quizQijin": "Qijin",
   "p_quizZuoying": "Zuoying",
-  "c_hqTokens": "HQ Tokens"
+  "c_hqTokens": "HQ Tokens",
+  "c_sceneTitle_6400100": "Yancheng & Gushan · Pier-2 Bay",
+  "c_sceneTitle_6400200": "Qijin · Lighthouse & Ferry",
+  "c_sceneTitle_6400300": "Zuoying · Lotus Pond Towers",
+  "c_sceneTitle_6400400": "Nanzi · S-Corridor Tech Hub",
+  "c_sceneTitle_6400500": "Sanmin · Station Cloud Canopy",
+  "c_sceneTitle_6400600": "Xinxing & Qianjin · Dome of Light",
+  "c_sceneTitle_6400700": "Lingya · Civic Cultural Avenue",
+  "c_sceneTitle_6400800": "Qianzhen · Asia New Bayfront",
+  "c_sceneTitle_6400900": "Xiaogang · Aviation Gateway",
+  "c_sceneTitle_6401000": "Fengshan · Weiwuying Canopy",
+  "c_sceneTitle_6401100": "Gangshan & Qiaotou · Sugar & Temple",
+  "c_sceneTitle_6401200": "Qishan & Meinong · Mountain Valley"
 }

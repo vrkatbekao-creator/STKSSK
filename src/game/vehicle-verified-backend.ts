@@ -7,7 +7,7 @@ import {parseVehicleTurnMetadata,createVehicleRuntime,createVehicleSaveContext} 
 
 const fixed=Object.freeze({
  revision:'bcfe2b6758c6943be71adad779a5a639125107c0116bdcb6b94b518825428955',
- walkingRevision:'324e9a8435d22e7d1876af469e16e7c23ae0d2e9eb06116f1810e34b7106477f',
+ walkingRevision:'13446e24a86edcda147420f6d6d3799bda7acbff7818550292c656e70895a2f7',
  source:'b7ff3500b40dfbb508f59a93026a950f16f9a9efa1dec63bb278b474823d3ffe',
  graph:'8a024d1b7a313b7e895b808920ea6e4da8d6d99515d2e48f057fc66dc07ffb1f',
  metadata:'9efb8952c183f1f84e007ab2ad5891e6a0bccaab245694f4cec905659ba906ed',

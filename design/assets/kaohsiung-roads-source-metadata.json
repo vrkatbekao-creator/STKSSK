@@ -1,0 +1,20 @@
+{
+  "provider": "OpenStreetMap / Geofabrik Taiwan",
+  "endpoint": "https://download.geofabrik.de/asia/taiwan-latest.osm.pbf",
+  "bboxWgs84": [
+    120.228,
+    22.4917,
+    120.6433,
+    22.9983
+  ],
+  "dataTimestamp": "2026-11-17T21:24:30Z",
+  "retrievedAt": "2026-11-18T15:26:10.628798+00:00",
+  "licence": "ODbL-1.0",
+  "licenceUrl": "https://opendatacommons.org/licenses/odbl/",
+  "copyrightUrl": "https://www.openstreetmap.org/copyright",
+  "sourceSha256": "306db88c9d04354f423d20e2b8cf2c9badbd730b84ac44541a75cc98b2db418a",
+  "fieldsNotProvided": [
+    "verified-public-access",
+    "sidewalk-width"
+  ]
+}

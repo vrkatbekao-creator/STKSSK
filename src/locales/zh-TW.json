@@ -259,7 +259,7 @@
   "c_theme_music": "音樂聚場與通勤街景",
   "c_theme_hill": "山城與街區連線",
   "c_theme_culture": "文博交流與山麓",
-  "c_theme_spring": "溫泉街景與綠蔭",
+  "c_theme_spring": "山城、溪谷與客庄",
   "c_north": "北",
   "c_mapStamp": "高雄市 · 12 戰區",
   "c_hexScale": "格徑 {{metres}} 公尺",
@@ -927,5 +927,17 @@
   "p_quizFengshan": "鳳山區",
   "p_quizQijin": "旗津區",
   "p_quizZuoying": "左營區",
-  "c_hqTokens": "幕僚指令"
+  "c_hqTokens": "幕僚指令",
+  "c_sceneTitle_6400100": "鹽埕鼓山・駁二音浪",
+  "c_sceneTitle_6400200": "旗津・燈塔與渡輪",
+  "c_sceneTitle_6400300": "左營・蓮池潭雙塔",
+  "c_sceneTitle_6400400": "楠梓・Ｓ廊帶科園",
+  "c_sceneTitle_6400500": "三民・車站雲天棚",
+  "c_sceneTitle_6400600": "新興前金・光之穹頂",
+  "c_sceneTitle_6400700": "苓雅・文化綠大道",
+  "c_sceneTitle_6400800": "前鎮・亞灣水岸港",
+  "c_sceneTitle_6400900": "小港・空港臨海線",
+  "c_sceneTitle_6401000": "鳳山・衛武營榕庭",
+  "c_sceneTitle_6401100": "岡山橋頭・壽天糖廠",
+  "c_sceneTitle_6401200": "旗山美濃・山城客庄"
 }

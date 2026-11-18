@@ -259,7 +259,7 @@
   "c_theme_music": "Lieux de musique et rues de banlieue",
   "c_theme_hill": "Collines & liens de quartier",
   "c_theme_culture": "Culture & itinéraires de contrefort",
-  "c_theme_spring": "Rues thermales et verdure",
+  "c_theme_spring": "Rivières et bourgs de montagne",
   "c_north": "N",
   "c_mapStamp": "Kaohsiung · 12 Zones",
   "c_hexScale": "{{metres}} m par hex",
@@ -927,5 +927,17 @@
   "p_quizFengshan": "Fengshan",
   "p_quizQijin": "Qijin",
   "p_quizZuoying": "Zuoying",
-  "c_hqTokens": "HQ Tokens"
+  "c_hqTokens": "HQ Tokens",
+  "c_sceneTitle_6400100": "Yancheng & Gushan · Baie Pier-2",
+  "c_sceneTitle_6400200": "Qijin · Phare & ferry",
+  "c_sceneTitle_6400300": "Zuoying · Pagodes du Lotus",
+  "c_sceneTitle_6400400": "Nanzi · Pôle tech S-Corridor",
+  "c_sceneTitle_6400500": "Sanmin · Verrière de la gare",
+  "c_sceneTitle_6400600": "Xinxing & Qianjin · Dôme de Lumière",
+  "c_sceneTitle_6400700": "Lingya · Avenue culturelle",
+  "c_sceneTitle_6400800": "Qianzhen · Nouvelle Baie d’Asie",
+  "c_sceneTitle_6400900": "Xiaogang · Portail aéroportuaire",
+  "c_sceneTitle_6401000": "Fengshan · Canopée de Weiwuying",
+  "c_sceneTitle_6401100": "Gangshan & Qiaotou · Sucre & temple",
+  "c_sceneTitle_6401200": "Qishan & Meinong · Vallée montagneuse"
 }

@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {projectVehiclePoint,clipVehicleSegment,vehicleRouteFragments} from '../src/game/vehicle-geometry.ts';
 
 test('TWD97 projected coordinates match independent EPSG:3826 reference points',()=>{
- for(const [lon,lat,x,y] of [[121.5,25.03,458.1499706162722,30806.42350243125],
-  [121.969,25.48,47430.38268189528,-19299.408737569116],
-  [121.156,24.686,-34213.56480900117,68991.93702595076]]){
+ for(const [lon,lat,x,y] of [[121.5,25.03,120458.14997061627,-264193.57649756875],
+  [121.969,25.48,167430.38268189528,-314299.4087375691],
+  [121.156,24.686,85786.43519099883,-226008.06297404924]]){
   const actual=projectVehiclePoint(lon,lat);assert.ok(Math.hypot(actual[0]-x,actual[1]-y)<0.02);
  }
  assert.throws(()=>projectVehiclePoint(0,0),RangeError);

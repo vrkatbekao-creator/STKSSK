@@ -29,7 +29,7 @@ import {createMapTapGesture} from './mobile-map-gesture.ts';
 maplibre.setWorkerUrl(mapWorkerUrl);
 
 export const alphaLngLat=([x,y]:number[]):[number,number]=>{
- let lon=121+(x+50000)/101000,lat=(2800000-y)/110800;
+ let lon=120+(x-70000)/101000,lat=(2505000-y)/110800;
  for(let i=0;i<5;i++){const [px,py]=projectVehiclePoint(lon,lat);lon+=(x-px)/101000;lat-=(y-py)/111000;}
  return [lon,lat];
 };
@@ -90,8 +90,8 @@ export function AlphaMap(props:Props){
   if(!host.current)return;
   let instance:maplibre.Map;
   try{
-   instance=new maplibre.Map({container:host.current,style:style(),center:defaultCenter,zoom:13.9,pitch:44,maxPitch:58,minZoom:10,maxZoom:17.8,
-    maxBounds:[[121.38,24.88],[121.79,25.26]],dragRotate:false,pitchWithRotate:false,attributionControl:false});
+   instance=new maplibre.Map({container:host.current,style:style(),center:defaultCenter,zoom:13.2,pitch:44,maxPitch:58,minZoom:9.5,maxZoom:17.8,
+    maxBounds:[[120.14,22.44],[120.72,23.06]],dragRotate:false,pitchWithRotate:false,attributionControl:false});
   }catch{setFailed(true);return;}
   map.current=instance;
   const container=host.current;
@@ -176,8 +176,8 @@ export function AlphaMap(props:Props){
  useEffect(()=>{
   const m=map.current;if(!ready||!m)return;
   const reduce=reduceMotion||matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(districtPicker)m.fitBounds([[121.43,24.95],[121.67,25.22]],{padding:65,pitch:0,duration:reduce?0:320});
-  else if(!live.current.motion&&!live.current.fieldPopup)m.easeTo({center:defaultCenter,zoom:Math.max(13.8,m.getZoom()),pitch:44,duration:reduce?0:400});
+  if(districtPicker)m.fitBounds([[120.22,22.49],[120.65,23.00]],{padding:65,pitch:0,duration:reduce?0:320});
+  else if(!live.current.motion&&!live.current.fieldPopup)m.easeTo({center:defaultCenter,zoom:Math.max(13.1,m.getZoom()),pitch:44,duration:reduce?0:400});
  },[ready,districtId,districtPicker]);
  useEffect(()=>{
   if(!props.motion)return;
@@ -213,7 +213,7 @@ export function AlphaMap(props:Props){
   const m=map.current;if(!ready||!m)return;
   if(!m.getSource('elevation'))m.addSource('elevation',{type:'raster-dem',tiles:[new URL(
    `${import.meta.env.BASE_URL}alpha-data/terrain/{z}/{x}/{y}.png`,location.href).href.replaceAll('%7B','{').replaceAll('%7D','}')],
-   bounds:[121.42,24.94,121.72,25.23],tileSize:256,minzoom:9,maxzoom:12,encoding:'mapbox'});
+   bounds:[120.22,22.49,120.65,23.00],tileSize:256,minzoom:9,maxzoom:12,encoding:'mapbox'});
   m.setTerrain(terrain&&!terrainFailed?{source:'elevation',exaggeration:.85}:null);
  },[ready,terrain,terrainFailed]);
  useEffect(()=>{

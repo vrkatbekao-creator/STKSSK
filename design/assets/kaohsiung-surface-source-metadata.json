@@ -1,0 +1,34 @@
+{
+  "provider": "Copernicus GLO-30 Public / AWS",
+  "model": "DSM",
+  "release": "2021",
+  "acquisition": "2011–2015 (older gap-fill possible)",
+  "nativeResolution": "1 arc-second (~30 m)",
+  "gridMetres": 30,
+  "verticalDatum": "EGM2008 (EPSG:3855)",
+  "retrievedAt": "2026-11-18T15:41:02.827715+00:00",
+  "sources": [
+    {
+      "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N22_00_E120_00_DEM/Copernicus_DSM_COG_10_N22_00_E120_00_DEM.tif",
+      "sha256": "835ae8d6084231fc5eab3a81b8153a3e40f52ddd67f894adab177794fa1adbb1",
+      "bounds": [
+        119.99986111111112,
+        22.000138888888888,
+        120.99986111111112,
+        23.000138888888888
+      ],
+      "pixelDegrees": [
+        0.0002777777777777778,
+        0.0002777777777777778
+      ],
+      "tags": {
+        "AREA_OR_POINT": "Point"
+      }
+    }
+  ],
+  "sourceSubsetSha256": "55f491740e1757c8de6b4670778e95cefb3abf7210c9d90a2f1e358850cc8e9c",
+  "datasetUrl": "https://registry.opendata.aws/copernicus-dem/",
+  "productUrl": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM",
+  "licence": "Copernicus DEM licence, free GLO-30/GLO-90 use with attribution",
+  "processing": "Bilinear reprojection from EPSG:4326 to EPSG:3826 at 30 m, city mask, decimetre quantisation, hillshade and 50 m surface isolines."
+}

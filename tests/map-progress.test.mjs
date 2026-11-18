@@ -16,7 +16,7 @@ test('movement records every actual route step, never the preview or a failed co
  const ap=u.ap;g=act(g,{type:'move',unitId:u.id,cellId:destination});assert.equal(g.units[0].ap,ap-path.cost);for(const id of path.path)assert.ok(trailFor(g).arrivedCells.includes(id));assert.equal(new Set(trailFor(g).arrivedCells).size,trailFor(g).arrivedCells.length);assert.deepEqual(trailFor(g,'green'),before.green);assert.deepEqual(trailFor(g,'white'),before.white);
 });
 test('a charter records only its destination, without inventing a walked cross-city route',()=>{
- let g=initialCampaign(3);const before=trailFor(g).arrivedCells;g=act(g,{type:'transport',unitId:'blue1',districtId:'6300200'});assert.deepEqual(new Set(trailFor(g).arrivedCells),new Set([...before,g.units[0].cellId]));assert.equal(trailFor(g).completedNodes.length,0);
+ let g=initialCampaign(3);const before=trailFor(g).arrivedCells;g=act(g,{type:'transport',unitId:'blue1',districtId:'6400200'});assert.deepEqual(new Set(trailFor(g).arrivedCells),new Set([...before,g.units[0].cellId]));assert.equal(trailFor(g).completedNodes.length,0);
 });
 test('completed activity and daily count are distinct; only the count resets next morning',()=>{
  let g=initialCampaign(3);g.surprise=null;const n=nodes.find(n=>n.cellId===g.units[0].cellId);g=act(g,{type:'canvass',unitId:'blue1',nodeId:n.id});assert.equal(nodeProgress(g,n.id).today,1);assert.equal(nodeProgress(g,n.id).completed,true);g=act(g,{type:'visit',unitId:'blue1',nodeId:n.id});assert.equal(nodeProgress(g,n.id).today,2);assert.equal(trailFor(g).completedNodes.filter(id=>id===n.id).length,1);const before=JSON.stringify(g.trail);assert.ok(campaignCommand(g,{type:'visit',unitId:'blue1',nodeId:n.id}).error);assert.equal(JSON.stringify(g.trail),before);

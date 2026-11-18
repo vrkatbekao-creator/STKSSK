@@ -5,7 +5,7 @@ import {teamRecord} from './campaign-teams.ts';
 import type { Campaign } from './campaign.ts';
 import { campaignOutcome } from './campaign-teams.ts';
 import { teams } from './campaign-teams.ts';
-import { routingEdges,roadWalkCells,mapFor,streetSource,placeRevision,cells,districts,nodes,wonders } from './campaign-map.ts';
+import { routingEdges,roadWalkCells,mapFor,streetSource,placeRevision,cells,districts,nodes,wonders,campaignMap } from './campaign-map.ts';
 import { legacyTrail } from './campaign-progress.ts';
 import { surpriseIds } from './campaign-events.ts';
 import { validTalk } from './campaign-dialogue.ts';
@@ -18,7 +18,7 @@ export const isSaveSlot=(slot:unknown):slot is SaveSlot=>SAVE_SLOTS.includes(slo
 export function saveKey(slot:SaveSlot=1){if(!isSaveSlot(slot))throw new Error('save-slot');return slot===1?SAVE_KEY:`${SAVE_KEY}-${slot}`;}
 export const SAVE_VERSION=5;
 export type Session={game:Campaign;selected:string;districtId:string;view:'city'|'street'};
-export type SavedCampaign={version:1|2|3|4|5;rules:'0.5.0'|'0.6.0'|'0.10.0'|'0.16.0'|'0.17.0';map:'taipei-hex-v1'|'taipei-street-hex-v2';mapRevision?:string;placeRevision?:string;savedAt:string;session:Session;checksum:number};
+export type SavedCampaign={version:1|2|3|4|5;rules:'0.5.0'|'0.6.0'|'0.10.0'|'0.16.0'|'0.17.0';map:'taipei-hex-v1'|'taipei-street-hex-v2'|'kaohsiung-hex-v1'|'kaohsiung-street-hex-v1';mapRevision?:string;placeRevision?:string;savedAt:string;session:Session;checksum:number};
 export type SaveError='c_saveUnavailable'|'c_saveInvalid'|'c_saveIncompatible';
 export type StoragePort={getItem:(key:string)=>string|null;setItem:(key:string,value:string)=>void};
 type Obj=Record<string,any>;
@@ -90,14 +90,16 @@ export function encodeSave(session:Session,savedAt=new Date().toISOString()):Sav
  if(!session.game.contacts)session={...session,game:{...session.game,contacts:initialContacts()}};
  if(!session.game.outreach)session={...session,game:{...session.game,outreach:initialOutreach(session.game)}};
  const street=session.game.movementProfile==='streets-v2';
- const data:Omit<SavedCampaign,'checksum'>={version:5,rules:'0.17.0',map:street?'taipei-street-hex-v2':'taipei-hex-v1',...(street?{mapRevision:streetSource.revision,placeRevision}:{}),savedAt,session:structuredClone(session)};
+ const mapVersion=(street?streetSource.version:campaignMap.version) as SavedCampaign['map'];
+ const data:Omit<SavedCampaign,'checksum'>={version:5,rules:'0.17.0',map:mapVersion,...(street?{mapRevision:streetSource.revision,placeRevision}:{}),savedAt,session:structuredClone(session)};
  return {...data,checksum:checksum(JSON.stringify(data))};
 }
 export function decodeSave(raw:string):{save:SavedCampaign|null;error:SaveError|null}{
  try{if(raw.length>4_000_000)return {save:null,error:'c_saveInvalid'};const v=JSON.parse(raw);if(!obj(v))return {save:null,error:'c_saveInvalid'};
  const street=v.session?.game?.movementProfile==='streets-v2';
+ const expectedMap=street?streetSource.version:campaignMap.version;
  const modern=v.version===5||v.version===4||v.version===3;
- if(modern?(v.rules!==(v.version===5?'0.17.0':v.version===4?'0.16.0':'0.10.0')||v.map!==(street?'taipei-street-hex-v2':'taipei-hex-v1')||street&&v.mapRevision!==streetSource.revision):street?(v.version!==2||v.rules!=='0.6.0'||v.map!=='taipei-street-hex-v2'||v.mapRevision!==streetSource.revision):(v.version!==1||v.rules!=='0.5.0'||v.map!=='taipei-hex-v1'))return {save:null,error:'c_saveIncompatible'};
+ if(modern?(v.rules!==(v.version===5?'0.17.0':v.version===4?'0.16.0':'0.10.0')||v.map!==expectedMap||street&&v.mapRevision!==streetSource.revision):street?(v.version!==2||v.rules!=='0.6.0'||v.map!==expectedMap||v.mapRevision!==streetSource.revision):(v.version!==1||v.rules!=='0.5.0'||v.map!==expectedMap))return {save:null,error:'c_saveIncompatible'};
  if(v.version>=4&&!v.session?.game?.contacts||v.version===5&&!v.session?.game?.outreach)return {save:null,error:'c_saveInvalid'};
  if(v.version===5&&street&&v.placeRevision!==placeRevision)return {save:null,error:'c_saveIncompatible'};
  const {checksum:hash,...data}=v;if(!integer(hash,0,0xffffffff)||checksum(JSON.stringify(data))!==hash||typeof v.savedAt!=='string'||!Number.isFinite(Date.parse(v.savedAt))||!validSession(v.session,v.version<5&&street&&Object.keys(v.session?.game?.nodeState??{}).length===nodes.length))return {save:null,error:'c_saveInvalid'};

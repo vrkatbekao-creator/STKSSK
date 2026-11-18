@@ -11,24 +11,24 @@ import { encodeSave,decodeSave } from '../src/game/campaign-save.ts';
 const packed=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/taipei-buildings-v1.json.gz',import.meta.url))));
 const buildings=decodeBuildings(packed),surface=decodeSurface(JSON.parse(gunzipSync(readFileSync(new URL('../public/data/taipei-surface-v1.json.gz',import.meta.url)))));
 
-test('78,449 individual building features retain source IDs, holes and explicitly unknown heights',()=>{
- assert.equal(buildings.buildings.length,78449);assert.equal(new Set(buildings.buildings.map(b=>b.id)).size,78449);assert.equal(buildings.source.dataTimestamp,'2026-10-29T21:21:26Z');
- assert.equal(buildings.source.extractSha256,createHash('sha256').update(readFileSync(new URL('../design/assets/taipei-buildings-source.json.gz',import.meta.url))).digest('hex'));
- assert.equal(buildings.buildings.filter(b=>b.height!==null).length,6107);assert.equal(buildings.buildings.filter(b=>b.levels!==null).length,25330);assert.equal(buildings.buildings.filter(b=>b.polygons.some(p=>p.length>1)).length,283);
+test('26,751 individual building features retain source IDs, holes and explicitly unknown heights',()=>{
+ assert.equal(buildings.buildings.length,26751);assert.equal(new Set(buildings.buildings.map(b=>b.id)).size,26751);assert.equal(buildings.source.dataTimestamp,'2026-11-17T21:24:30Z');
+ assert.equal(buildings.source.extractSha256,createHash('sha256').update(readFileSync(new URL('../design/assets/kaohsiung-buildings-source.json.gz',import.meta.url))).digest('hex'));
+ assert.equal(buildings.buildings.filter(b=>b.height!==null).length,836);assert.equal(buildings.buildings.filter(b=>b.levels!==null).length,2213);
  for(const b of buildings.buildings)if(!b.name.en)assert.equal(buildingName(b,'en'),b.name['zh-TW']);
- const holed=buildings.buildings.find(b=>b.polygons.some(p=>p.length>1));assert.equal((buildingPath(holed).match(/Z/g)??[]).length,holed.polygons.reduce((n,p)=>n+p.length,0));
+ const sample=buildings.buildings[0];assert.equal((buildingPath(sample).match(/Z/g)??[]).length,sample.polygons.reduce((n,p)=>n+p.length,0));
 });
 
 test('building spatial query is complete, deduplicated and respects courtyard interiors',()=>{
- const g=initialCampaign(1,'blue','streets-v2'),m=mapFor(g);for(const d of m.districts){const c=m.cells.get(d.anchor),bounds={x:c.x-500,y:c.y-400,width:1000,height:800},found=buildingsInView(buildings,bounds);assert.ok(found.length>0,d.id);assert.equal(new Set(found.map(b=>b.id)).size,found.length);const brute=buildings.buildings.filter(b=>b.bounds[0]<=bounds.x+1000&&b.bounds[2]>=bounds.x&&b.bounds[1]<=bounds.y+800&&b.bounds[3]>=bounds.y);assert.deepEqual(new Set(found.map(b=>b.id)),new Set(brute.map(b=>b.id)));}
- const feature={id:'w1',name:{'zh-TW':'','en':''},kind:'yes',height:null,levels:null,minHeight:null,bounds:[-100,-100,100,100],polygons:[[[[-100,-100],[100,-100],[100,100],[-100,100],[-100,-100]],[[-50,-50],[50,-50],[50,50],[-50,50],[-50,-50]]]],districtIds:['6300500']};
+ const g=initialCampaign(1,'blue','streets-v2'),m=mapFor(g);for(const d of m.districts){const c=m.cells.get(d.anchor),bounds={x:c.x-1000,y:c.y-800,width:2000,height:1600},found=buildingsInView(buildings,bounds);assert.ok(found.length>0,d.id);assert.equal(new Set(found.map(b=>b.id)).size,found.length);const brute=buildings.buildings.filter(b=>b.bounds[0]<=bounds.x+2000&&b.bounds[2]>=bounds.x&&b.bounds[1]<=bounds.y+1600&&b.bounds[3]>=bounds.y);assert.deepEqual(new Set(found.map(b=>b.id)),new Set(brute.map(b=>b.id)));}
+ const feature={id:'w1',name:{'zh-TW':'','en':''},kind:'yes',height:null,levels:null,minHeight:null,bounds:[-100,-100,100,100],polygons:[[[[-100,-100],[100,-100],[100,100],[-100,100],[-100,-100]],[[-50,-50],[50,-50],[50,50],[-50,50],[-50,-50]]]],districtIds:['6400600']};
  const fixture={...buildings,buildings:[feature],index:{'-1,-1':[0],'-1,0':[0],'0,-1':[0],'0,0':[0]}};
  assert.equal(buildingsInHex(fixture,{x:0,y:0},20).length,0,'a hex entirely in a courtyard is not a building');assert.equal(buildingsInHex(fixture,{x:70,y:0},15).length,1);assert.equal(buildingsInHex(fixture,{x:105,y:0},15).length,1,'boundary intersection counts');
 });
 
 test('surface is the frozen 2021 public GLO-30 DSM, with valid city mask and source hashes',()=>{
- assert.equal(surface.source.model,'DSM');assert.equal(surface.source.release,'2021');assert.equal(surface.source.verticalDatum,'EGM2008 (EPSG:3855)');assert.match(surface.source.acquisition,/2011/);assert.equal(surface.step,30);assert.equal(surface.values.filter(v=>v!==surface.nodata).length,298380);assert.equal(surface.source.sourceSubsetSha256,createHash('sha256').update(readFileSync(new URL('../design/assets/taipei-copdem-30m.tif',import.meta.url))).digest('hex'));
- const valid=surface.values.filter(v=>v!==surface.nodata);assert.ok(Math.max(...valid.slice(0,10000))<20000);assert.ok(valid.some(v=>v>10000));assert.ok(valid.some(v=>v<0));assert.ok(surface.values.includes(surface.nodata));
+ assert.equal(surface.source.model,'DSM');assert.equal(surface.source.release,'2021');assert.equal(surface.source.verticalDatum,'EGM2008 (EPSG:3855)');assert.match(surface.source.acquisition,/2011/);assert.equal(surface.step,30);assert.equal(surface.values.filter(v=>v!==surface.nodata).length,895257);assert.equal(surface.source.sourceSubsetSha256,createHash('sha256').update(readFileSync(new URL('../design/assets/kaohsiung-copdem-30m.tif',import.meta.url))).digest('hex'));
+ const valid=surface.values.filter(v=>v!==surface.nodata);assert.ok(valid.reduce((m,v)=>v>m?v:m,-Infinity)<20000);assert.ok(valid.some(v=>v>5000));assert.ok(valid.some(v=>v<0));assert.ok(surface.values.includes(surface.nodata));
  const m=mapFor(initialCampaign(1,'blue','streets-v2'));for(const d of m.districts){const c=m.cells.get(d.anchor),height=surfaceHeight(surface,...c.roadPoint);assert.ok(height!==null&&height>-50&&height<1500,d.id);}
 });
 

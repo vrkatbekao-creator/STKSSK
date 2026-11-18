@@ -20,8 +20,8 @@ test('all twelve district packages retain complete source features and search na
 test('border view packages merge without duplicates or missing roads/buildings',async()=>{
  const {base,meta}=await loadStreetRuntime(),fullRoads=snapshot('taipei-roads-v1.json.gz'),fullBuildings=decodeBuildings(snapshot('taipei-buildings-v1.json.gz'));
  // Every district anchor, wide border view and north/south extremities.
- const spots=base.districts.map(d=>{const i=meta.districtAnchors[d.id],[q,r]=meta.cells[i];return {id:d.id,x:50*Math.sqrt(3)*(q+r/2),y:75*r};});
- spots.push({id:'6300100',x:8000,y:10000},{id:'6300800',x:6000,y:22000});
+ const spots=base.districts.map(d=>{const i=meta.districtAnchors[d.id],[q,r]=meta.cells[i];return {id:d.id,x:150*Math.sqrt(3)*(q+r/2),y:225*r};});
+ spots.push({id:'6400100',x:-7000,y:1000},{id:'6400800',x:-4000,y:3000});
  for(const s of spots){const bounds={x:s.x-1700,y:s.y-1200,width:3400,height:2400},ids=viewDistricts(s.id,bounds);const chunks=await Promise.all(ids.map(async id=>{const d=manifest.districts.find(d=>d.id===id);return {r:await readJsonPackage(d.roads),b:decodeBuildings(await readJsonPackage(d.buildings))};}));const r=mergeRoads(chunks.map(c=>c.r)),b=mergeBuildings(chunks.map(c=>c.b));assert.equal(new Set(r.roads.map(r=>r.id)).size,r.roads.length);assert.equal(new Set(b.buildings.map(b=>b.id)).size,b.buildings.length);
  const cellIds=Object.keys(fullRoads.cellIndex),wanted=roadsInView(fullRoads,cellIds,bounds,'all').map(r=>r.id).sort();assert.deepEqual(roadsInView(r,cellIds,bounds,'all').map(r=>r.id).sort(),wanted);assert.deepEqual(buildingsInView(b,bounds).map(b=>b.id).sort(),buildingsInView(fullBuildings,bounds).map(b=>b.id).sort());}
 });

@@ -259,7 +259,7 @@
   "c_theme_music": "Muziekzalen en pendelstraatjes",
   "c_theme_hill": "Hills & neighborhood links",
   "c_theme_culture": "Cultuur & voetafdalingen",
-  "c_theme_spring": "Warmwaterstraten en groen",
+  "c_theme_spring": "Bergrivieren & dorpen",
   "c_north": "N",
   "c_mapStamp": "Kaohsiung · 12 Zones",
   "c_hexScale": "{{metres}} m per hex",
@@ -927,5 +927,17 @@
   "p_quizFengshan": "Fengshan",
   "p_quizQijin": "Qijin",
   "p_quizZuoying": "Zuoying",
-  "c_hqTokens": "HQ Tokens"
+  "c_hqTokens": "HQ Tokens",
+  "c_sceneTitle_6400100": "Yancheng & Gushan · Pier-2 Baai",
+  "c_sceneTitle_6400200": "Qijin · Vuurtoren & veerboot",
+  "c_sceneTitle_6400300": "Zuoying · Lotuspachtorens",
+  "c_sceneTitle_6400400": "Nanzi · S-Corridor Techpark",
+  "c_sceneTitle_6400500": "Sanmin · Stationsluifel",
+  "c_sceneTitle_6400600": "Xinxing & Qianjin · Koepel van Licht",
+  "c_sceneTitle_6400700": "Lingya · Cultuurboulevard",
+  "c_sceneTitle_6400800": "Qianzhen · Asia New Bay",
+  "c_sceneTitle_6400900": "Xiaogang · Luchthavenpoort",
+  "c_sceneTitle_6401000": "Fengshan · Weiwuying-dak",
+  "c_sceneTitle_6401100": "Gangshan & Qiaotou · Suiker & tempel",
+  "c_sceneTitle_6401200": "Qishan & Meinong · Bergvallei"
 }

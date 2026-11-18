@@ -41,7 +41,7 @@ const closed=(ring:number[][]):Position[]=>{
 const feature=(geometry:Geometry,properties:Feature['properties']={}):Feature=>({type:'Feature',geometry,properties});
 const collection=(features:Feature[]=[]):FeatureCollection=>({type:'FeatureCollection',features});
 const sources=['districts','rivers','roads','buildings','hex','visits','contest','picked','route'] as const;
-const accents={blue:['#91b9f3','#245ce1','#143b82'],green:['#ffc0a8','#db6a41','#8f361f'],white:['#d9def2','#f7faff','#493a73']};
+const accents={blue:['#8fd3ff','#0e62a8','#083b6e'],green:['#ffb8d2','#f5659b','#9e144e'],white:['#beebe4','#f7faff','#1b7a72']};
 type Props={game:Campaign;districtId:string;selected:string;destination?:string;segments:TravelSegment[];grid:boolean;terrain:boolean;mobile:boolean;
  onCell:(id:string)=>void;onNode:(id:string)=>void;onDistrict:(id:string)=>void;onUnit:(id:string,origin:HTMLElement)=>void;districtPicker:boolean;
  popup?:{cellId:string;element:React.ReactNode};fieldPopup?:{cellId:string;element:React.ReactNode};motion:TravelQuote|null;onMotionEnd:()=>void};

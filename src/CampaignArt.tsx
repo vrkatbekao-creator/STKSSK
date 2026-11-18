@@ -14,14 +14,14 @@ export function RoleDrawing({role}:{role:Role}){return <g stroke="#14233d" strok
  <path d="M39 36L42 36M58 36L61 36" strokeWidth="5"/><path d="M42 47Q50 54 58 46" fill="none" strokeWidth="3"/>
  </g>;}
 export function RolePortrait({role,helper,team}:{role:Role;helper?:Helper;team?:Team}){if(team)return <MemberPortrait role={role} helper={helper} team={team}/>;return <svg viewBox="0 0 100 100" aria-hidden="true" className="role-portrait"><RoleDrawing role={role}/>{helper&&<g><circle cx="79" cy="76" r="16" fill="#fff" stroke="#14233d" strokeWidth="3"/><text x="79" y="84" fontSize="24" fill="#245ce1" textAnchor="middle" fontWeight="900">{helper==='medic'?'+':helper==='organizer'?'♪':'↗'}</text></g>}</svg>;}
-export function VehicleDrawing({id}:{id:CommanderId}){const duck=id==='jiang',globe=id==='shen',body=duck?'#db6a41':globe?'#ffd34e':'#f7faff',accent=duck?'#67cbd0':globe?'#245ce1':'#b69bea';return <g stroke="#14233d" strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round">
+export function VehicleDrawing({id}:{id:CommanderId}){const duck=id==='jiang',globe=id==='shen',body=duck?'#f5659b':globe?'#ffd23f':'#f7faff',accent=duck?'#ffd23f':globe?'#0e62a8':'#1b7a72';return <g stroke="#14233d" strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round">
  <ellipse cx="82" cy="89" rx="68" ry="5" fill="#14233d" opacity=".15" stroke="none"/>
  <path d={duck?'M13 51H86L99 37H125L144 60L150 64V80H10Z':'M15 57H41L52 35H101L119 56H146V80H11Z'} fill={body}/>
  <path d={duck?'M101 42H121L133 58H101Z':'M57 40H97L109 56H49Z'} fill="#bce8f4"/>
- <path d="M18 65H89M18 72H89" stroke={duck?'#8f4a31':accent} strokeWidth={duck?'3':'6'}/>
+ <path d="M18 65H89M18 72H89" stroke={duck?'#c41d63':accent} strokeWidth={duck?'3.5':'6'}/>
  <path d="M38 51V17L70 23L38 33" fill={accent}/><path d="M75 51V22L96 27L75 36" fill={accent}/>
  <circle cx="38" cy="79" r="14" fill="#14233d"/><circle cx="124" cy="79" r="14" fill="#14233d"/><circle cx="38" cy="79" r="6" fill="#f7faff"/><circle cx="124" cy="79" r="6" fill="#f7faff"/>
- {duck?<><circle cx="68" cy="49" r="13" fill="#ffd34e"/><circle cx="75" cy="39" r="7" fill="#ffd34e"/><path d="M81 38L90 40L81 43Z" fill="#db6a41"/></>:globe?<><circle cx="72" cy="24" r="12" fill="#67cbd0"/><path d="M60 24H84M72 12V36" strokeWidth="2.5"/><path d="M104 18L120 14V36L104 30Z" fill={accent}/></>:<><path d="M98 35Q94 17 82 14M98 35Q106 16 116 19" fill="none" stroke="#428a59" strokeWidth="4"/><path d="M104 18L120 14V36L104 30Z" fill={accent}/></>}
- <path d="M137 64H149" stroke="#ffd34e" strokeWidth="5"/>
+ {duck?<><circle cx="68" cy="49" r="13" fill="#ffd23f"/><circle cx="75" cy="39" r="7" fill="#ffd23f"/><path d="M81 38L90 40L81 43Z" fill="#c41d63"/></>:globe?<><circle cx="72" cy="24" r="12" fill="#4ec6de"/><path d="M60 24H84M72 12V36" strokeWidth="2.5"/><path d="M104 18L120 14V36L104 30Z" fill={accent}/></>:<><path d="M98 35Q94 17 82 14M98 35Q106 16 116 19" fill="none" stroke="#4ca965" strokeWidth="4"/><path d="M104 18L120 14V36L104 30Z" fill={accent}/></>}
+ <path d="M137 64H149" stroke="#ffd23f" strokeWidth="5"/>
  </g>;}
 export function CampaignVehicle({id}:{id:CommanderId}){return <svg viewBox="0 0 164 100" aria-hidden="true" className={`campaign-vehicle vehicle-${id}`}><VehicleDrawing id={id}/></svg>;}

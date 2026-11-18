@@ -236,7 +236,7 @@ export function AlphaCampaign(){
    {stage?.team===team&&nearby&&action({type:'withdraw',unitId:selected,nodeId:nearby.id})}
   </div>
  </section>:null;
- return <main className={`a3-shell a3-${game.phase}${reduceMotion?' a3-reduced':''}`} id="campaign-main" tabIndex={-1}
+ return <main className={`a3-shell a3-${game.phase} player-${team}${reduceMotion?' a3-reduced':''}`} id="campaign-main" tabIndex={-1}
   data-move-engine={state.lastMoveEngine??undefined} data-vehicle-engine={state.lastVehicleEngine??undefined}
   data-night-engine={state.lastNightEngine??undefined} data-night-searches={state.lastNightSearches} onKeyDown={e=>{
   if(e.key==='Escape'){if(mobile&&(target||place))return;if(target)cancel();else if(panel)closePanel();else if(fieldOpen)closeField();}

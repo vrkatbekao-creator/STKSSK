@@ -9,10 +9,10 @@ const manifest={version:1,revision:'',core:null,meta:null,base:null,places:null,
 const written=new Set();
 function emit(name,bytes){const sha256=hash(bytes),file=`${name}.${sha256.slice(0,16)}.gz`,packed=gzipSync(bytes,{level:9,mtime:0});writeFileSync(new URL(file,out),packed);written.add(file);return {file,sha256,bytes:bytes.length,gzipBytes:packed.length};}
 const json=(name,data)=>emit(name,Buffer.from(JSON.stringify(data,(_key,value)=>Object.is(value,-0)?JSON.rawJSON('-0'):value)));
-const raw=JSON.parse(readFileSync(new URL('src/data/taipei-street-map-v2.json',root),'utf8'));
-const base=JSON.parse(readFileSync(new URL('src/data/taipei-map.json',root),'utf8'));
+const raw=JSON.parse(readFileSync(new URL('src/data/kaohsiung-street-map-v2.json',root),'utf8'));
+const base=JSON.parse(readFileSync(new URL('src/data/kaohsiung-map.json',root),'utf8'));
 manifest.base=json('base-map',base);
-manifest.places=json('places',JSON.parse(readFileSync(new URL('src/data/taipei-places.json',root),'utf8')));
+manifest.places=json('places',JSON.parse(readFileSync(new URL('src/data/kaohsiung-places.json',root),'utf8')));
 manifest.revision=raw.revision;
 // Aligned, lossless binary arrays. Original link order determines stable directed edge IDs.
 let offset=16;const arrays=[];
@@ -29,8 +29,8 @@ const binary=Buffer.alloc(offset);binary.write('STR1');binary.writeUInt32LE(raw.
 for(const a of arrays)binary.set(new Uint8Array(a.data.buffer,a.data.byteOffset,a.data.byteLength),a.offset);
 manifest.core=emit('routing',binary);
 const {graphNodes,graphLinks,...meta}=raw;manifest.meta=json('street-meta',meta);
-const roads=JSON.parse(gunzipSync(readFileSync(new URL('public/data/taipei-roads-v1.json.gz',root))));
-const buildings=JSON.parse(gunzipSync(readFileSync(new URL('public/data/taipei-buildings-v1.json.gz',root))));
+const roads=JSON.parse(gunzipSync(readFileSync(new URL('public/data/kaohsiung-roads-v1.json.gz',root))));
+const buildings=JSON.parse(gunzipSync(readFileSync(new URL('public/data/kaohsiung-buildings-v1.json.gz',root))));
 function subset(items,predicate,index){const selected=[],mapping=new Map();items.forEach((r,i)=>{if(predicate(r)){mapping.set(i,selected.length);selected.push(r);}});return {selected,index:Object.fromEntries(Object.entries(index).map(([k,ids])=>[k,ids.filter(i=>mapping.has(i)).map(i=>mapping.get(i))]).filter(([,ids])=>ids.length))};}
 for(const d of base.districts){
  const r=subset(roads.roads,r=>r.districtIds.includes(d.id),roads.cellIndex),b=subset(buildings.buildings,b=>b[8].includes(d.id),buildings.index);

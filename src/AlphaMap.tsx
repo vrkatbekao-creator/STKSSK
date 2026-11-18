@@ -75,7 +75,7 @@ export function AlphaMap(props:Props){
  const [ready,setReady]=useState(false),[failed,setFailed]=useState(false),[terrainFailed,setTerrainFailed]=useState(false);
  const [view,setView]=useState({x:district.bounds[0],y:district.bounds[1],width:district.bounds[2]-district.bounds[0],height:district.bounds[3]-district.bounds[1]});
  const [popupPoint,setPopupPoint]=useState({x:0,y:0,width:0,height:0});
- const surface=useGeoData('taipei-surface-v1.json.gz',decodeSurface);
+ const surface=useGeoData('kaohsiung-surface-v1.json.gz',decodeSurface);
  const {roads,buildings}=useDistrictLayers(districtId,view);
  const defaultCenter=alphaLngLat(district.center);
  const updateBounds=(m:maplibre.Map)=>{

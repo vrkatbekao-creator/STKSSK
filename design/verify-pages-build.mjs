@@ -7,7 +7,7 @@ const beta = process.argv.includes('--beta');
 const base = beta ? '/STKSST/3d/' : '/STKSST/';
 const files = readdirSync(root, {recursive: true}).filter(file => statSync(join(root, file)).isFile()).map(file => file.replaceAll('\\', '/'));
 assert.ok(readFileSync(join(root, 'index.html'), 'utf8').includes(`${base}assets/`), 'Expected project-site asset base');
-for (const required of ['.nojekyll', 'LICENSE.txt', 'THIRD-PARTY-LICENSES.txt', 'PROJECT-CREDITS.txt', 'data/GAME-DATA-CREDITS.txt', 'data/CITY-PLACES-LICENSE.txt', 'data/taipei-places-v1.json', 'data/ROAD-DATA-LICENSE.txt', 'data/LANDSCAPE-DATA-LICENSE.txt', 'art/members/blue-v1.png', 'art/members/green-v1.png', 'art/members/white-v1.png', 'art/members/visitors-v1.png']) {
+for (const required of ['.nojekyll', 'LICENSE.txt', 'THIRD-PARTY-LICENSES.txt', 'PROJECT-CREDITS.txt', 'data/GAME-DATA-CREDITS.txt', 'data/CITY-PLACES-LICENSE.txt', 'data/kaohsiung-places-v1.json', 'data/ROAD-DATA-LICENSE.txt', 'data/LANDSCAPE-DATA-LICENSE.txt', 'art/members/blue-v1.png', 'art/members/green-v1.png', 'art/members/white-v1.png', 'art/members/visitors-v1.png']) {
   assert.ok(files.includes(required), `Missing published asset or notice: ${required}`);
 }
 if (beta) for (const required of ['alpha-data/stksst_core.wasm', 'alpha-data/vehicle-policy-v1.bin.gz', 'alpha-data/vehicle-graph-prototype-v3.bin.gz', 'alpha-data/vehicle-graph-prototype-v1.meta.json.gz', 'alpha-data/vehicle-connectors-prototype-v1.json.gz', 'data/VEHICLE-DATA-LICENSE.txt']) {

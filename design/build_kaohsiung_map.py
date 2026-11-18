@@ -143,7 +143,7 @@ for c in cells:
                 c['neighbors'].append(n['id'])
 
 # Verify Qijin Ferry / Tunnel neighbor bridge even if harbor channel > 300m wide
-catalog = json.loads((ROOT / 'src/data/taipei-wonders.json').read_text('utf-8'))
+catalog = json.loads((ROOT / 'src/data/kaohsiung-wonders.json').read_text('utf-8'))
 themes = ['music', 'river', 'temple', 'skyline', 'civic', 'market', 'park', 'arts', 'ecology', 'culture', 'hill', 'spring']
 districts = []
 nodes = []
@@ -272,6 +272,6 @@ out = {
     'bridges': bridges,
 }
 
-path = ROOT / 'src/data/taipei-map.json'
+path = ROOT / 'src/data/kaohsiung-map.json'
 path.write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')), 'utf-8')
 print(json.dumps({'cells': len(cells), 'land': len(main_comp), 'nodes': len(nodes), 'districts': len(districts), 'bridges': len(bridges), 'waterRings': len(water_rings), 'bytes': path.stat().st_size}), flush=True)

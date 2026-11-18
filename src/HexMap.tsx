@@ -32,7 +32,7 @@ export default function HexMap({nodeId,onNode,planned,onPlan}:{nodeId:string;onN
  const {t,i18n}=useTranslation();const {vectorMap}=useAccessibility();const lang=i18n.language;const {game,selected,districtId,select}=useCampaign();
  const {campaignMap,districts,nodes,nodeById}=mapFor(game);const street=game.movementProfile==='streets-v2',sf=campaignMap.radiusMetres/190;const nodeCells=useMemo(()=>new Set(nodes.map(n=>n.cellId)),[nodes]);
  const [showRoads,setShowRoads]=useState(true),[showRoadNames,setShowRoadNames]=useState(true),[roadFilter,setRoadFilter]=useState<RoadFilter>('all'),[locatedRoad,setLocatedRoad]=useState<string|null>(null);
- const surface=useGeoData('taipei-surface-v1.json.gz',decodeSurface);
+ const surface=useGeoData('kaohsiung-surface-v1.json.gz',decodeSurface);
  const [showBuildings,setShowBuildings]=useState(true),[showSurface,setShowSurface]=useState(true),[showContours,setShowContours]=useState(false),[inspectedBuilding,setInspectedBuilding]=useState<string|null>(null);
  const [showReach,setShowReach]=useState(true),[showTrail,setShowTrail]=useState(true),[showWalks,setShowWalks]=useState(true),[showScenery,setShowScenery]=useState(false);const walks=todaysWalks(game,selected);const trail=trailFor(game);const arrived=new Set(trail.arrivedCells);
  const [zoom,setZoom]=useState(1);const [pan,setPan]=useState<[number,number]>([0,0]);const d=districts.find(d=>d.id===districtId)!;const u=game.units.find(u=>u.id===selected)!;

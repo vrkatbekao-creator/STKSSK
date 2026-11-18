@@ -37,7 +37,7 @@ region_tree = STRtree([g for _, g in regions])
 raw_path = ROOT / 'design/assets/kaohsiung-roads-osm-source.json.gz'
 raw = json.loads(gzip.decompress(raw_path.read_bytes()))
 meta = json.loads((ROOT / 'design/assets/kaohsiung-roads-source-metadata.json').read_text('utf-8'))
-game = json.loads((ROOT / 'src/data/taipei-map.json').read_text('utf-8'))
+game = json.loads((ROOT / 'src/data/kaohsiung-map.json').read_text('utf-8'))
 R = game['radiusMetres']
 hex_polys = [Polygon([(c['x'] + R * math.cos(math.radians(i * 60 - 30)), c['y'] + R * math.sin(math.radians(i * 60 - 30))) for i in range(6)]) for c in game['cells']]
 hex_tree = STRtree(hex_polys)
@@ -122,6 +122,6 @@ out = {
     'cellIndex': cell_index,
     'excludedHighways': excluded,
 }
-target = ROOT / 'public/data/taipei-roads-v1.json.gz'
+target = ROOT / 'public/data/kaohsiung-roads-v1.json.gz'
 target.write_bytes(gzip.compress(json.dumps(out, ensure_ascii=False, separators=(',', ':')).encode(), mtime=0))
 print(json.dumps({'roads': len(roads), 'hexes': len(cell_index), 'districtCounts': district_counts, 'bytes': target.stat().st_size}), flush=True)

@@ -100,6 +100,6 @@ out = {
     },
 }
 out['revision'] = hashlib.sha256(json.dumps(out, ensure_ascii=False, separators=(',', ':'), sort_keys=True).encode()).hexdigest()
-target = ROOT / 'public/data/taipei-buildings-v1.json.gz'
+target = ROOT / 'public/data/kaohsiung-buildings-v1.json.gz'
 target.write_bytes(gzip.compress(json.dumps(out, ensure_ascii=False, separators=(',', ':')).encode(), mtime=0))
 print(json.dumps({'bytes': target.stat().st_size, 'districtCounts': counts, **out['audit']}), flush=True)

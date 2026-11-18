@@ -34,16 +34,16 @@
 
 ---
 
-## 二、特別提醒：下列「檔名仍叫 `taipei-*`」但內容已替換為【高雄資料】— 請勿刪除！
+## 二、備註：先前沿用 `taipei-*` 舊檔名的高雄資料已全面正名
 
-為維持 `src/`、`public/data/` 與現有 270 項單元測試的引用路徑相容，以下檔案雖仍沿用 `taipei-*` 舊檔名，**實際內容已經全數是高雄 300 公尺六角格資料（`origin: [180000, 2505000]`）**：
-- `src/data/taipei-map.json`（實際為 `kaohsiung-hex-v1`）
-- `src/data/taipei-places.json`（實際為 `kaohsiung-places-v1`）
-- `src/data/taipei-street-map-v2.json` / `.js` / `.d.ts`（實際為 `kaohsiung-street-hex-v1`）
-- `src/data/taipei-wonders.json`（實際為 `kaohsiung_v0.18_300m`）
-- `public/data/taipei-buildings-v1.json.gz`（實際為 `kaohsiung-buildings-v1`）
-- `public/data/taipei-places-v1.json`（實際為 `kaohsiung-places-v1`）
-- `public/data/taipei-roads-v1.json.gz`（實際為 `kaohsiung-osm-roads-v1`）
-- `public/data/taipei-surface-v1.json.gz` & `public/data/taipei-surface-hillshade.png`（實際為 `kaohsiung-surface-v1`）
-- `public/data/taipei-walk-network-v2.json.gz`（實際為 `kaohsiung-street-hex-v1`）
-- `src/TaipeiWarmup.tsx`（實際顯示駁二、大港橋、衛武營等高雄暖身問答）
+以下原沿用 `taipei-*` 檔名但實質內容為高雄 300 公尺網格與問答的檔案，已同步正名並更新所有引用與測試：
+- `src/data/taipei-map.json` → `src/data/kaohsiung-map.json`
+- `src/data/taipei-places.json` → `src/data/kaohsiung-places.json`
+- `src/data/taipei-street-map-v2.*` → `src/data/kaohsiung-street-map-v2.*`
+- `src/data/taipei-wonders.json` → `src/data/kaohsiung-wonders.json`
+- `public/data/taipei-buildings-v1.json.gz` → `public/data/kaohsiung-buildings-v1.json.gz`
+- `public/data/taipei-places-v1.json` → `public/data/kaohsiung-places-v1.json`
+- `public/data/taipei-roads-v1.json.gz` → `public/data/kaohsiung-roads-v1.json.gz`
+- `public/data/taipei-surface-v1.json.gz` & `taipei-surface-hillshade.png` → `public/data/kaohsiung-surface-v1.json.gz` & `kaohsiung-surface-hillshade.png`
+- `public/data/taipei-walk-network-v2.json.gz` → `public/data/kaohsiung-walk-network-v2.json.gz`
+- `src/TaipeiWarmup.tsx` → `src/KaohsiungWarmup.tsx`（元件名 `KaohsiungWarmup`）

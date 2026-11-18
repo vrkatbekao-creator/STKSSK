@@ -18,7 +18,7 @@ const graph=parseVehicleGraph(raw.buffer.slice(raw.byteOffset,raw.byteOffset+raw
 const metadata=gunzipSync(readFileSync(new URL('.tools/vehicle-graph-prototype-v1.meta.json.gz',root)));
 if(hash(metadata)!==manifest.metadataSha256)throw Error('Vehicle metadata hash mismatch');
 const data=JSON.parse(metadata.toString('utf8'));
-const districts=JSON.parse(readFileSync(new URL('src/data/taipei-map.json',root),'utf8')).districts;
+const districts=JSON.parse(readFileSync(new URL('src/data/kaohsiung-map.json',root),'utf8')).districts;
 const viaNodes=new Map(Object.entries(data.viaNodesByWay).map(([way,nodes])=>[BigInt(way),new Set(nodes.map(BigInt))]));
 const allowTurn=vehicleTurnPolicy(data.turnRestrictions,viaNodes);
 function indexOfNode(id){const target=BigInt(id);let lo=0,hi=graph.ids.length;while(lo<hi){const mid=(lo+hi)>>1;if(graph.ids[mid]<target)lo=mid+1;else hi=mid;}if(graph.ids[lo]!==target)throw Error('Missing shared source node');return lo;}

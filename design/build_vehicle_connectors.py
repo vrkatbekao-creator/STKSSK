@@ -47,7 +47,7 @@ def main():
     ids = memoryview(binary)[16:16+8*n].cast('Q')
     if len(ids) != n or any(ids[i] >= ids[i+1] for i in range(n-1)):
         raise SystemExit('Vehicle source IDs invalid')
-    walking = json.loads((ROOT / 'src/data/taipei-street-map-v2.json').read_text('utf8'))
+    walking = json.loads((ROOT / 'src/data/kaohsiung-street-map-v2.json').read_text('utf8'))
     walk_revision = walking['revision']
     if walk_revision != WALK_REVISION:
         raise SystemExit('Unexpected walking graph revision')

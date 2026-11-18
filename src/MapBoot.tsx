@@ -6,7 +6,7 @@ import {loadStreetRuntime} from './game/street-runtime.ts';
 import {browserFeatures,missingFeatures} from './browser-capabilities.ts';
 import {alphaMode,vehicleBase} from './game/browser-routing-mode.ts';
 import {preloadVehiclePackages} from './game/vehicle-packages.ts';
-import {TaipeiWarmup} from './TaipeiWarmup.tsx';
+import {KaohsiungWarmup} from './KaohsiungWarmup.tsx';
 import './map-boot.css';
 export default function MapBoot(){
  const {t}=useTranslation();
@@ -56,6 +56,6 @@ export default function MapBoot(){
    {App&&<button type="button" className="map-boot-primary" onClick={()=>{focusGame.current=true;setHold(false);setQuiz(false);}}>{t('p_bootEnter')}</button>}
    {alphaMode&&!missing.length&&<button type="button" aria-expanded={quiz} onClick={()=>{setHold(true);setQuiz(!quiz);}}>{t('p_quizTitle')}</button>}
   </div>
-  {quiz&&<TaipeiWarmup/>}
+  {quiz&&<KaohsiungWarmup/>}
  </div></main>;
 }

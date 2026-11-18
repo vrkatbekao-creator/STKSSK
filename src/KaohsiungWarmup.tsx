@@ -7,7 +7,7 @@ const questions=[
  {prompt:'p_quizWeiwuying',choices:['p_quizFengshan','p_quizYancheng','p_quizQijin'],answer:0},
 ] as const;
 
-export function TaipeiWarmup(){
+export function KaohsiungWarmup(){
  const {t}=useTranslation();
  const [round,setRound]=useState(0);
  const [selected,select]=useState<number|null>(null);

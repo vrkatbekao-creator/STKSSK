@@ -81,7 +81,7 @@ colors = np.array([[50, 92, 108], [60, 111, 109], [87, 127, 112], [126, 135, 126
 rgb = np.stack([np.interp(raster, stops, colors[:, ch]) for ch in range(3)], axis=2)
 rgb *= np.clip(0.55 + shade * 0.55, 0.4, 1.1)[:, :, None]
 rgba = np.concatenate([np.clip(rgb, 0, 255).astype('uint8'), (valid * 255).astype('uint8')[:, :, None]], axis=2)
-Image.fromarray(rgba).save(ROOT / 'public/data/taipei-surface-hillshade.png')
+Image.fromarray(rgba).save(ROOT / 'public/data/kaohsiung-surface-hillshade.png')
 
 contours = {}
 corners = [(0, 0), (0, 1), (1, 1), (1, 0)]
@@ -138,6 +138,6 @@ out = {
 }
 out['revision'] = hashlib.sha256(json.dumps(out, separators=(',', ':'), sort_keys=True).encode()).hexdigest()
 raw = json.dumps(out, ensure_ascii=False, separators=(',', ':')).encode()
-(ROOT / 'public/data/taipei-surface-v1.json.gz').write_bytes(gzip.compress(raw, mtime=0))
+(ROOT / 'public/data/kaohsiung-surface-v1.json.gz').write_bytes(gzip.compress(raw, mtime=0))
 (ROOT / 'design/assets/kaohsiung-surface-source-metadata.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n', 'utf-8')
-print(json.dumps({'width': width, 'height': height, 'validPixels': int(valid.sum()), 'minM': float(raster[valid].min()), 'maxM': float(raster[valid].max()), 'contours': sum(len(v) for v in contours.values()), 'gzipBytes': (ROOT / 'public/data/taipei-surface-v1.json.gz').stat().st_size}), flush=True)
+print(json.dumps({'width': width, 'height': height, 'validPixels': int(valid.sum()), 'minM': float(raster[valid].min()), 'maxM': float(raster[valid].max()), 'contours': sum(len(v) for v in contours.values()), 'gzipBytes': (ROOT / 'public/data/kaohsiung-surface-v1.json.gz').stat().st_size}), flush=True)

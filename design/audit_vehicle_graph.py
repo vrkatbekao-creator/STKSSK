@@ -29,7 +29,7 @@ _, labels = connected_components(adjacency, directed=True, connection='strong')
 largest_component = int(np.bincount(labels).argmax())
 main_nodes = {node for node, index in node_index.items() if labels[index] == largest_component}
 del adjacency, labels, node_ids, node_index
-with (ROOT / 'src/data/taipei-street-map-v2.json').open(encoding='utf8') as f:
+with (ROOT / 'src/data/kaohsiung-street-map-v2.json').open(encoding='utf8') as f:
     walking = json.load(f)
 anchors = dict(walking['anchors'])
 by_district = {}
@@ -87,7 +87,7 @@ for district, entry in by_district.items():
     entry['walkingWeightedMetresFromDistrictAnchorWithin600m'] = walk_distance(start, targets, walk_edges)
     entry['walkingWeightedMetresToDistrictAnchorWithin600m'] = walk_distance(start, targets, walk_reverse)
 if '--venues' in sys.argv:
-    with (ROOT / 'src/data/taipei-places.json').open(encoding='utf8') as f:
+    with (ROOT / 'src/data/kaohsiung-places.json').open(encoding='utf8') as f:
         places = json.load(f)['places']
     cell_by_axial = {(cell[0], cell[1]): i for i, cell in enumerate(walking['cells'])}
 

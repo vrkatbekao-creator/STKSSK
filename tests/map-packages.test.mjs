@@ -6,7 +6,7 @@ import {mergeRoads,mergeBuildings} from '../src/district-packages.ts';
 import {validRoadData,roadsInView,coarseRoadCells,roadGroups} from '../src/road-map.ts';
 import {decodeBuildings,buildingsInView} from '../src/building-map.ts';
 import {cellsInBounds} from '../src/map-cell-index.ts';
-const source=()=>JSON.parse(readFileSync(new URL('../src/data/taipei-street-map-v2.json',import.meta.url),'utf8'));
+const source=()=>JSON.parse(readFileSync(new URL('../src/data/kaohsiung-street-map-v2.json',import.meta.url),'utf8'));
 const snapshot=file=>JSON.parse(gunzipSync(readFileSync(new URL(`../public/data/${file}`,import.meta.url))));
 test('packed routing retains every ordered link, coordinate, metre, direction and anchor exactly',async()=>{
  const raw=source(),{graph,meta}=await loadStreetRuntime();assert.equal(meta.revision,raw.revision);const {graphNodes,graphLinks,...rest}=raw;assert.deepEqual(meta,rest);assert.equal(graph.nodeCount,graphNodes.length);assert.equal(graph.linkCount,graphLinks.length);
@@ -14,11 +14,11 @@ test('packed routing retains every ordered link, coordinate, metre, direction an
  graphLinks.forEach((e,i)=>{assert.equal(graph.links[i*3],e[0]);assert.equal(graph.links[i*3+1],e[1]);assert.equal(graph.metres[i],e[2]);assert.equal(graph.links[i*3+2],e[3]);assert.equal(graph.both[i],e[5]);assert.deepEqual(Array.from(graph.points.subarray(graph.pointOffsets[i],graph.pointOffsets[i+1])),e[4]);});
 });
 test('all twelve district packages retain complete source features and search names',async()=>{
- const fullRoads=snapshot('taipei-roads-v1.json.gz'),fullBuildings=decodeBuildings(snapshot('taipei-buildings-v1.json.gz'));
+ const fullRoads=snapshot('kaohsiung-roads-v1.json.gz'),fullBuildings=decodeBuildings(snapshot('kaohsiung-buildings-v1.json.gz'));
  for(const d of manifest.districts){const roads=await readJsonPackage(d.roads),buildings=decodeBuildings(await readJsonPackage(d.buildings));assert.ok(validRoadData(roads));assert.deepEqual(roads.roads,fullRoads.roads.filter(r=>r.districtIds.includes(d.id)));assert.deepEqual(buildings.buildings,fullBuildings.buildings.filter(b=>b.districtIds.includes(d.id)));assert.deepEqual(roadGroups(roads.roads,'en'),roadGroups(fullRoads.roads.filter(r=>r.districtIds.includes(d.id)),'en'));}
 });
 test('border view packages merge without duplicates or missing roads/buildings',async()=>{
- const {base,meta}=await loadStreetRuntime(),fullRoads=snapshot('taipei-roads-v1.json.gz'),fullBuildings=decodeBuildings(snapshot('taipei-buildings-v1.json.gz'));
+ const {base,meta}=await loadStreetRuntime(),fullRoads=snapshot('kaohsiung-roads-v1.json.gz'),fullBuildings=decodeBuildings(snapshot('kaohsiung-buildings-v1.json.gz'));
  // Every district anchor, wide border view and north/south extremities.
  const spots=base.districts.map(d=>{const i=meta.districtAnchors[d.id],[q,r]=meta.cells[i];return {id:d.id,x:150*Math.sqrt(3)*(q+r/2),y:225*r};});
  spots.push({id:'6400100',x:-7000,y:1000},{id:'6400800',x:-4000,y:3000});

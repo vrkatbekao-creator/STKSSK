@@ -22,7 +22,7 @@ script = r'''
 import fs from 'node:fs';
 import {projectVehiclePoint,clipVehicleSegment} from './src/game/vehicle-geometry.ts';
 const input=JSON.parse(fs.readFileSync(0,'utf8'));
-const districts=JSON.parse(fs.readFileSync('src/data/taipei-map.json','utf8')).districts;
+const districts=JSON.parse(fs.readFileSync('src/data/kaohsiung-map.json','utf8')).districts;
 const points=input.geographic.map(([x,y])=>projectVehiclePoint(x,y));
 const clips=input.segments.map(([a,b])=>clipVehicleSegment(a,b,1000000,'audit:1:2',districts));
 process.stdout.write(JSON.stringify({points,clips}));
@@ -36,7 +36,7 @@ for (lon, lat), (x, y) in zip(geographic, actual['points']):
     east, north = project.transform(lon, lat)
     errors.append(math.hypot(x - (east - 300000), y - (2800000 - north)))
 assert max(errors) < .02
-base = json.loads((ROOT / 'src/data/taipei-map.json').read_text('utf8'))
+base = json.loads((ROOT / 'src/data/kaohsiung-map.json').read_text('utf8'))
 polygons = {d['id']: make_valid(Polygon(d['rings'][0], d['rings'][1:])) for d in base['districts']}
 city = unary_union(list(polygons.values()))
 max_difference = 0

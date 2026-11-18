@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import { validRoadData,roadName,roadGroups,roadMatches,roadsInView,labelRoads } from '../src/road-map.ts';
 import { cells,districts } from '../src/game/campaign-map.ts';
 import { initialCampaign } from '../src/game/campaign.ts';
-const data=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/taipei-roads-v1.json.gz',import.meta.url))));
+const data=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/kaohsiung-roads-v1.json.gz',import.meta.url))));
 const at=id=>{const d=districts.find(d=>d.id===id);return (data.cellIndex[d.anchor]??[]).map(i=>data.roads[i]);};
 test('frozen real-road data has the correct projection, twelve districts and traceable ODbL source',()=>{
  assert.ok(validRoadData(data));assert.equal(data.roads.length,61092);assert.equal(data.source.dataTimestamp,'2026-11-17T21:24:30Z');

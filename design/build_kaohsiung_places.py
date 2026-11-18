@@ -26,8 +26,8 @@ def ll(lon, lat):
     x, y = proj.transform(lon, lat)
     return (x - ORIGIN[0], ORIGIN[1] - y)
 
-raw = json.loads((ROOT / 'src/data/taipei-street-map-v2.json').read_text('utf-8'))
-base = json.loads((ROOT / 'src/data/taipei-map.json').read_text('utf-8'))
+raw = json.loads((ROOT / 'src/data/kaohsiung-street-map-v2.json').read_text('utf-8'))
+base = json.loads((ROOT / 'src/data/kaohsiung-map.json').read_text('utf-8'))
 poi_path = ROOT / 'design/assets/kaohsiung-poi-water.json.gz'
 poi_bytes = poi_path.read_bytes()
 poi = json.loads(gzip.decompress(poi_bytes))
@@ -109,6 +109,6 @@ result = {
 }
 result['revision'] = hashlib.sha256(json.dumps(result, ensure_ascii=False, separators=(',', ':'), sort_keys=True).encode()).hexdigest()
 
-for out_path in [ROOT / 'src/data/taipei-places.json', ROOT / 'public/data/taipei-places-v1.json']:
+for out_path in [ROOT / 'src/data/kaohsiung-places.json', ROOT / 'public/data/kaohsiung-places-v1.json']:
     out_path.write_text(json.dumps(result, ensure_ascii=False, separators=(',', ':')), 'utf-8')
 print(json.dumps(result['audit'], ensure_ascii=False), flush=True)

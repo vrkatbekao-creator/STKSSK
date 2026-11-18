@@ -20,7 +20,7 @@ assert data['vehicleRevision'] == package['revision'] == summary['vehicleRevisio
 vehicle = gzip.decompress((ROOT / '.tools/vehicle-graph-prototype-v3.bin.gz').read_bytes())
 assert sha(vehicle) == package['binarySha256']
 ids = memoryview(vehicle)[16:16 + 8 * package['nodes']].cast('Q')
-walk = json.loads((ROOT / 'src/data/taipei-street-map-v2.json').read_text('utf8'))
+walk = json.loads((ROOT / 'src/data/kaohsiung-street-map-v2.json').read_text('utf8'))
 assert walk['revision'] == WALK_REVISION
 assert joins(walk['graphNodes'], ids) == data['pairs']
 result = {'status': 'source-node join verified; no legal stopping or route guarantee',

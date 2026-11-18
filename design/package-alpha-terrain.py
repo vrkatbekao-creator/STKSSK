@@ -9,7 +9,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 DEST = ROOT / "public/alpha-data/terrain"
-with gzip.open(ROOT / "public/data/taipei-surface-v1.json.gz", "rt", encoding="utf-8") as source:
+with gzip.open(ROOT / "public/data/kaohsiung-surface-v1.json.gz", "rt", encoding="utf-8") as source:
     surface = json.load(source)
 samples = np.array(surface["values"]).reshape(surface["height"], surface["width"])
 size = 256

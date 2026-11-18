@@ -93,5 +93,5 @@ test('new-mode opponents use road walks and a complete 28-day game preserves pol
 });
 
 test('fine-hex road inspection uses exact intersection with the coarse spatial index',()=>{
- const data=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/taipei-roads-v1.json.gz',import.meta.url))));const m=mapFor(fresh());for(const district of ['6400100','6400600']){const c=m.cells.get(m.districts.find(d=>d.id===district).anchor);assert.ok(coarseRoadCells([c]).length>=7);const roads=roadsInHex(data,c,150);assert.ok(roads.length);assert.ok(roads.every(r=>r.bounds[0]<=c.x+150&&r.bounds[2]>=c.x-150&&r.bounds[1]<=c.y+150&&r.bounds[3]>=c.y-150));}
+ const data=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/kaohsiung-roads-v1.json.gz',import.meta.url))));const m=mapFor(fresh());for(const district of ['6400100','6400600']){const c=m.cells.get(m.districts.find(d=>d.id===district).anchor);assert.ok(coarseRoadCells([c]).length>=7);const roads=roadsInHex(data,c,150);assert.ok(roads.length);assert.ok(roads.every(r=>r.bounds[0]<=c.x+150&&r.bounds[2]>=c.x-150&&r.bounds[1]<=c.y+150&&r.bounds[3]>=c.y-150));}
 });

@@ -1,4 +1,4 @@
-import catalog from '../data/taipei-wonders.json' with { type: 'json' };
+import catalog from '../data/kaohsiung-wonders.json' with { type: 'json' };
 import {loadStreetRuntime} from './street-runtime.ts';
 const {base:data,meta:streetSource,graph:streetGraph,places}=await loadStreetRuntime();
 export {streetSource};

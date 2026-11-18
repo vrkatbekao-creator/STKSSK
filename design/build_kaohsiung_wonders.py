@@ -265,6 +265,6 @@ out = {
     'wonders': WONDERS,
 }
 
-target = ROOT / 'src/data/taipei-wonders.json'
+target = ROOT / 'src/data/kaohsiung-wonders.json'
 target.write_text(json.dumps(out, ensure_ascii=False, indent=2) + '\n', 'utf-8')
 print('Verified all 12 Kaohsiung Wonders inside districts ->', target)

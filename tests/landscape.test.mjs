@@ -8,8 +8,8 @@ import { decodeSurface,surfaceHeight,surfaceContours,surfaceProfile } from '../s
 import { initialCampaign,route,movement,campaignCommand } from '../src/game/campaign.ts';
 import { mapFor } from '../src/game/campaign-map.ts';
 import { encodeSave,decodeSave } from '../src/game/campaign-save.ts';
-const packed=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/taipei-buildings-v1.json.gz',import.meta.url))));
-const buildings=decodeBuildings(packed),surface=decodeSurface(JSON.parse(gunzipSync(readFileSync(new URL('../public/data/taipei-surface-v1.json.gz',import.meta.url)))));
+const packed=JSON.parse(gunzipSync(readFileSync(new URL('../public/data/kaohsiung-buildings-v1.json.gz',import.meta.url))));
+const buildings=decodeBuildings(packed),surface=decodeSurface(JSON.parse(gunzipSync(readFileSync(new URL('../public/data/kaohsiung-surface-v1.json.gz',import.meta.url)))));
 
 test('26,751 individual building features retain source IDs, holes and explicitly unknown heights',()=>{
  assert.equal(buildings.buildings.length,26751);assert.equal(new Set(buildings.buildings.map(b=>b.id)).size,26751);assert.equal(buildings.source.dataTimestamp,'2026-11-17T21:24:30Z');

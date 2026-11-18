@@ -124,7 +124,7 @@ def main():
     identity = {'format': 'vehicle-graph-aligned-prototype-v3', 'v2Revision': sha_bytes(canonical(v2_meta)), 'binarySha256': v3_sha, 'metadataSha256': meta_sha}
     vehicle_rev = sha_bytes(canonical(identity))
 
-    walking = json.loads((ROOT / 'src/data/taipei-street-map-v2.json').read_text('utf-8'))
+    walking = json.loads((ROOT / 'src/data/kaohsiung-street-map-v2.json').read_text('utf-8'))
     walk_rev = walking['revision']
     vehicle_ids = sorted(graph.coordinates)
     pairs = joins(walking['graphNodes'], vehicle_ids)

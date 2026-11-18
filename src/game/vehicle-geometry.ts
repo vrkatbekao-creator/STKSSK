@@ -68,7 +68,7 @@ export function clipVehicleSegment(a:Point,b:Point,length:number,key:string,dist
  return result;
 }
 
-/** Verify ordered edges before deriving fragments; never credit travel outside Taipei. */
+/** Verify ordered edges before deriving fragments; never credit travel outside Kaohsiung. */
 export function vehicleRouteFragments(graph:VehicleGraphColumns,plan:VehicleLegPlan,districts:readonly CoverageDistrict[]):CoverageFragment[]{
  if(plan.nodeIndices.length!==plan.edgeIndices.length+1)throw new RangeError('Invalid vehicle route');
  const cache=new Map<number,[number,number]>(),point=(i:number)=>{let p=cache.get(i);if(!p){p=projectVehiclePoint(graph.longitudes[i],graph.latitudes[i]);cache.set(i,p);}return p;};

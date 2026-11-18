@@ -21,7 +21,7 @@ VERSION = 'kaohsiung-street-hex-v1'
 ORIGIN = [180000, 2505000]
 STEP_METRES = 40
 
-legacy = json.loads((ROOT / 'src/data/taipei-map.json').read_text('utf-8'))
+legacy = json.loads((ROOT / 'src/data/kaohsiung-map.json').read_text('utf-8'))
 rawpath = ROOT / 'design/assets/kaohsiung-walk-source.json.gz'
 source = json.loads(gzip.decompress(rawpath.read_bytes()))
 districts_gj = json.loads((ROOT / 'design/assets/kaohsiung-districts.geojson').read_text('utf-8'))
@@ -266,7 +266,7 @@ def build_graph():
     }
 
 stage_path = ROOT / '.tools/kaohsiung-street-stage-v1.json.gz'
-fp = hashlib.sha256(rawpath.read_bytes() + (ROOT / 'design/assets/kaohsiung-districts.geojson').read_bytes() + (ROOT / 'src/data/taipei-map.json').read_bytes()).hexdigest()
+fp = hashlib.sha256(rawpath.read_bytes() + (ROOT / 'design/assets/kaohsiung-districts.geojson').read_bytes() + (ROOT / 'src/data/kaohsiung-map.json').read_bytes()).hexdigest()
 stage = json.loads(gzip.decompress(stage_path.read_bytes())) if stage_path.exists() else {}
 if stage.get('fingerprint') != fp:
     stage = build_graph()
@@ -281,7 +281,7 @@ nodecells = {}
 occupied = set()
 snaps = {}
 district_anchors = {}
-catalog = json.loads((ROOT / 'src/data/taipei-wonders.json').read_text('utf-8'))
+catalog = json.loads((ROOT / 'src/data/kaohsiung-wonders.json').read_text('utf-8'))
 
 for n in legacy['nodes']:
     district_index = next(i for i, (did, _) in enumerate(regions) if did == n['districtId'])
@@ -339,9 +339,9 @@ out = {
     'venueLayout': 'kaohsiung-300m-public-road-sites',
 }
 out['revision'] = hashlib.sha256(json.dumps(out, separators=(',', ':'), sort_keys=True).encode()).hexdigest()
-target = ROOT / 'src/data/taipei-street-map-v2.json'
+target = ROOT / 'src/data/kaohsiung-street-map-v2.json'
 target.write_text(json.dumps(out, ensure_ascii=False, separators=(',', ':')), 'utf-8')
-(ROOT / 'src/data/taipei-street-map-v2.js').write_text("import data from './taipei-street-map-v2.json' with { type: 'json' };\nexport default data;\n", 'utf-8')
-(ROOT / 'src/data/taipei-street-map-v2.d.ts').write_text('declare const data: unknown;\nexport default data;\n', 'utf-8')
-(ROOT / 'public/data/taipei-walk-network-v2.json.gz').write_bytes(gzip.compress(json.dumps(out, ensure_ascii=False, separators=(',', ':')).encode(), mtime=0))
+(ROOT / 'src/data/kaohsiung-street-map-v2.js').write_text("import data from './kaohsiung-street-map-v2.json' with { type: 'json' };\nexport default data;\n", 'utf-8')
+(ROOT / 'src/data/kaohsiung-street-map-v2.d.ts').write_text('declare const data: unknown;\nexport default data;\n', 'utf-8')
+(ROOT / 'public/data/kaohsiung-walk-network-v2.json.gz').write_bytes(gzip.compress(json.dumps(out, ensure_ascii=False, separators=(',', ':')).encode(), mtime=0))
 print(json.dumps({'cells': len(cells), 'walkableCells': len(core), 'links': len(stage['graphLinks']), 'nodes': len(nodecells), 'maxSnap': max(snaps.values()), 'bytes': target.stat().st_size, 'revision': out['revision']}), flush=True)

@@ -22,6 +22,11 @@ export function projectVehiclePoint(lon:number,lat:number):[number,number]{
  const north=k*(M+N*t*(A*A/2+(5-T+9*C+4*C*C)*A**4/24+(61-58*T+T*T+600*C-330*ep2)*A**6/720));
  return [east-VEHICLE_ORIGIN[0],VEHICLE_ORIGIN[1]-north];
 }
+export function unprojectVehiclePoint(x:number,y:number):[number,number]{
+ let lon=121+(VEHICLE_ORIGIN[0]+x-250000)/102500,lat=(VEHICLE_ORIGIN[1]-y)/110800;
+ for(let i=0;i<6;i++){const [px,py]=projectVehiclePoint(lon,lat);lon+=(x-px)/102500;lat-=(y-py)/110800;}
+ return [lon,lat];
+}
 
 function onSegment(p:Point,a:readonly number[],b:readonly number[]){
  const dx=b[0]-a[0],dy=b[1]-a[1],px=p[0]-a[0],py=p[1]-a[1];

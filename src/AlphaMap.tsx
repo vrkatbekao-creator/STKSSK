@@ -8,7 +8,7 @@ import type {GeoJSONSource,StyleSpecification} from 'maplibre-gl';
 import type {Feature,FeatureCollection,Geometry,Position} from 'geojson';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {axialAt,cellPosition,mapFor,polygonPoints} from './game/campaign-map.ts';
-import {projectVehiclePoint} from './game/vehicle-geometry.ts';
+import {projectVehiclePoint,unprojectVehiclePoint} from './game/vehicle-geometry.ts';
 import type {Campaign} from './game/campaign.ts';
 import {isCommander,unitAvailable} from './game/campaign.ts';
 import type {TravelQuote,TravelSegment} from './game/campaign-travel.ts';
@@ -28,11 +28,7 @@ import {createMapTapGesture} from './mobile-map-gesture.ts';
 
 maplibre.setWorkerUrl(mapWorkerUrl);
 
-export const alphaLngLat=([x,y]:number[]):[number,number]=>{
- let lon=120+(x-70000)/101000,lat=(2505000-y)/110800;
- for(let i=0;i<5;i++){const [px,py]=projectVehiclePoint(lon,lat);lon+=(x-px)/101000;lat-=(y-py)/111000;}
- return [lon,lat];
-};
+export const alphaLngLat=([x,y]:number[]):[number,number]=>unprojectVehiclePoint(x,y);
 const closed=(ring:number[][]):Position[]=>{
  const p=ring.map(alphaLngLat);
  if(p.length&&p[0].some((v,i)=>v!==p.at(-1)![i]))p.push(p[0]);

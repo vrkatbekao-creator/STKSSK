@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {projectVehiclePoint,clipVehicleSegment,vehicleRouteFragments} from '../src/game/vehicle-geometry.ts';
+import {projectVehiclePoint,unprojectVehiclePoint,clipVehicleSegment,vehicleRouteFragments} from '../src/game/vehicle-geometry.ts';
+import {districts} from '../src/game/campaign-map.ts';
 
 test('TWD97 projected coordinates match independent EPSG:3826 reference points',()=>{
  for(const [lon,lat,x,y] of [[121.5,25.03,120458.14997061627,-264193.57649756875],
@@ -25,4 +26,12 @@ test('reverse travel uses the same canonical road coverage and cannot invent an 
  const forward=vehicleRouteFragments(graph,plan([0,1],[0]),districts),reverse=vehicleRouteFragments(graph,plan([1,0],[1]),districts);
  assert.deepEqual(forward,[...reverse].reverse());
  assert.throws(()=>vehicleRouteFragments(graph,plan([1,0],[0]),districts),RangeError);
+});
+test('unprojectVehiclePoint round-trips every Kaohsiung district center within 1 mm',()=>{
+ for(const d of districts){
+  const [lon,lat]=unprojectVehiclePoint(d.center[0],d.center[1]);
+  assert.ok(lon>=120.2&&lon<=120.7&&lat>=22.45&&lat<=23.05,`${d.id}: ${lon},${lat}`);
+  const [px,py]=projectVehiclePoint(lon,lat);
+  assert.ok(Math.hypot(px-d.center[0],py-d.center[1])<0.001,d.id);
+ }
 });

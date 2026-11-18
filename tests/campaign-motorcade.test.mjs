@@ -16,7 +16,7 @@ test('split and duplicate coverage cannot create more influence than a single ro
  assert.equal(awards,1);assert.deepEqual(ledger,full.ledger);assert.equal(original.uniqueQuarterMetres,0);
 });
 test('contacts wait for distance budget; saturated streets do not consume budget',()=>{
- const result=applyMotorcadeExposure(newMotorcadeLedger(1,'blue'),[part('a','0,0',0,600),part('b','1,0',0,3400)],
+ const result=applyMotorcadeExposure(newMotorcadeLedger(1,'blue'),[part('a','0,0',0,1200),part('b','1,0',0,2800)],
   sector=>sector.endsWith('0,0')?3:0);
  assert.equal(result.ledger.contacts['6300500:0,0'].status,'blocked');
  assert.equal(result.ledger.contacts['6300500:1,0'].status,'awarded');

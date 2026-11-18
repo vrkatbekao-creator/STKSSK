@@ -6,7 +6,7 @@ type Contact={district:string;covered:number;status:'pending'|'blocked'|'awarded
 export type MotorcadeLedger={day:number;team:Team;covered:Record<string,{length:number;intervals:Interval[]}>;
  contacts:Record<string,Contact>;queue:string[];awarded:number;uniqueQuarterMetres:number;
  heat:Record<string,{day:number;value:number}>;unitContacts:Record<string,number>};
-export const motorcadeExposurePolicy=Object.freeze({contactQuarterMetres:600,budgetQuarterMetres:4000,dailyCap:24,heatCap:6,recoveryDays:2,saturatedAt:3});
+export const motorcadeExposurePolicy=Object.freeze({contactQuarterMetres:1200,budgetQuarterMetres:4000,dailyCap:24,heatCap:6,recoveryDays:2,saturatedAt:3});
 
 export function newMotorcadeLedger(day:number,team:Team,heat:MotorcadeLedger['heat']={}):MotorcadeLedger{
  if(!Number.isInteger(day)||day<1||day>28||!['blue','green','white'].includes(team))throw new RangeError('Invalid motorcade day');
@@ -46,7 +46,7 @@ export function validMotorcadeLedger(value:unknown,day:number,team:Team,unitIds:
  if(!Number.isSafeInteger(unique)||unique!==value.uniqueQuarterMetres)return false;
  let total=0,qualified=0,awarded=0;const pending=new Set<string>();
  for(const [sector,raw] of Object.entries(value.contacts)){
-  if(!obj(raw)||Object.keys(raw).sort().join(',')!=='covered,district,status'||typeof raw.district!=='string'||!/^630\d{4}$/.test(raw.district)||
+  if(!obj(raw)||Object.keys(raw).sort().join(',')!=='covered,district,status'||typeof raw.district!=='string'||!/^(630|640)\d{4}$/.test(raw.district)||
    !sector.startsWith(`${raw.district}:`)||sector.length>160||!integer(raw.covered)||!['pending','blocked','awarded'].includes(raw.status))return false;
   total+=raw.covered;if(raw.covered>=motorcadeExposurePolicy.contactQuarterMetres){qualified++;if(raw.status==='pending')pending.add(sector);if(raw.status==='awarded')awarded++;}
   else if(raw.status!=='pending')return false;
@@ -73,7 +73,7 @@ export function applyMotorcadeExposure(original:MotorcadeLedger,fragments:readon
  const next=structuredClone(original),awards:Record<string,number>={};let newlyReached=0;
  for(const part of fragments){
   if(!part||typeof part.segment!=='string'||!part.segment||part.segment.length>160||['__proto__','constructor','prototype'].includes(part.segment)||typeof part.sector!=='string'||!part.sector||part.sector.length>160||
-   typeof part.district!=='string'||!/^630\d{4}$/.test(part.district)||!part.sector.startsWith(`${part.district}:`)||
+   typeof part.district!=='string'||!/^(630|640)\d{4}$/.test(part.district)||!part.sector.startsWith(`${part.district}:`)||
    ![part.start,part.end,part.segmentLength].every(Number.isSafeInteger)||part.start<0||part.end<=part.start||part.end>part.segmentLength)throw new RangeError('Invalid motorcade fragment');
   const existing=next.covered[part.segment];if(existing&&existing.length!==part.segmentLength)throw new RangeError('Conflicting motorcade segment');
   const merged=merge(existing?.intervals??[],part.start,part.end);next.covered[part.segment]={length:part.segmentLength,intervals:merged.intervals};

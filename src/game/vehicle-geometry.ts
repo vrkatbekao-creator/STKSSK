@@ -4,13 +4,15 @@ import type {VehicleLegPlan} from './vehicle-leg-planner.ts';
 import type {CoverageFragment} from './campaign-motorcade.ts';
 import {vehicleEdgeQuarterMetres} from './vehicle-routing.ts';
 
+import {outreachPolicy} from './campaign-outreach.ts';
+
 type Point=readonly [number,number];
 export type CoverageDistrict={id:string;rings:readonly (readonly (readonly number[])[])[]};
 const cross=(ax:number,ay:number,bx:number,by:number)=>ax*by-ay*bx;
 
 /** TWD97 TM2 / EPSG:3826; local origin agrees with the existing city map. */
 export function projectVehiclePoint(lon:number,lat:number):[number,number]{
- if(!Number.isFinite(lon)||!Number.isFinite(lat)||lon<120||lon>123||lat<23||lat>27)throw new RangeError('Outside vehicle projection');
+ if(!Number.isFinite(lon)||!Number.isFinite(lat)||lon<119.5||lon>123||lat<21.5||lat>27)throw new RangeError('Outside vehicle projection');
  const a=6378137,f=1/298.257222101,k=.9999,e2=2*f-f*f,ep2=e2/(1-e2),phi=lat*Math.PI/180,lam=(lon-121)*Math.PI/180;
  const s=Math.sin(phi),c=Math.cos(phi),t=Math.tan(phi),N=a/Math.sqrt(1-e2*s*s),T=t*t,C=ep2*c*c,A=c*lam;
  const e4=e2*e2,e6=e4*e2,M=a*((1-e2/4-3*e4/64-5*e6/256)*phi-(3*e2/8+3*e4/32+45*e6/1024)*Math.sin(2*phi)+
@@ -40,9 +42,10 @@ export function clipVehicleSegment(a:Point,b:Point,length:number,key:string,dist
  if(!Number.isSafeInteger(length)||length<1||!key||![...a,...b].every(Number.isFinite))throw new RangeError('Invalid coverage segment');
  const dx=b[0]-a[0],dy=b[1]-a[1],norm=dx*dx+dy*dy;if(!norm)return [];
  const cuts=[0,1],add=(t:number)=>{if(t>1e-10&&t<1-1e-10)cuts.push(t);};
+ const sector=outreachPolicy.sectorMetres;
  for(const [origin,delta] of [[a[0],dx],[a[1],dy]])if(delta!==0){
   const lo=Math.min(origin,origin+delta),hi=Math.max(origin,origin+delta);
-  for(let line=(Math.floor(lo/600)+1)*600;line<hi;line+=600)add((line-origin)/delta);
+  for(let line=(Math.floor(lo/sector)+1)*sector;line<hi;line+=sector)add((line-origin)/delta);
  }
  for(const district of districts)for(const ring of district.rings)for(let i=0,j=ring.length-1;i<ring.length;j=i++){
   const p=ring[j],q=ring[i],sx=q[0]-p[0],sy=q[1]-p[1],den=cross(dx,dy,sx,sy),px=p[0]-a[0],py=p[1]-a[1];
@@ -54,7 +57,7 @@ export function clipVehicleSegment(a:Point,b:Point,length:number,key:string,dist
   const lo=distinct[i-1],hi=distinct[i],mid=(lo+hi)/2,p:Point=[a[0]+dx*mid,a[1]+dy*mid];
   const district=vehiclePointDistrict(p,districts);if(!district)continue;
   const start=Math.round(lo*length),end=Math.round(hi*length);if(end<=start)continue;
-  result.push({segment:key,sector:`${district}:${Math.floor(p[0]/600)},${Math.floor(p[1]/600)}`,district,start,end,segmentLength:length});
+  result.push({segment:key,sector:`${district}:${Math.floor(p[0]/sector)},${Math.floor(p[1]/sector)}`,district,start,end,segmentLength:length});
  }
  return result;
 }

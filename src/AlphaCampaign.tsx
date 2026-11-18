@@ -245,7 +245,7 @@ export function AlphaCampaign(){
   <header className="a3-desk">
    <div className="a3-title"><h1>{t('brand')} <small>{t('c_chapter')}</small></h1><b>{t('a3_update')}</b>{import.meta.env.MODE!=='alpha'&&<small>{releaseVersion}</small>}</div>
    <div className="a3-status"><span>{t('c_dayLabel')} {game.day}/28 · {t(game.phase)}</span>
-    <span>{unitLabel(game,actor,t)} <strong>{actor.ap} AP</strong> · {resources.materials} {t('c_materials')}</span>
+    <span>{unitLabel(game,actor,t)} <strong>{actor.ap} AP</strong> · {resources.materials} {t('c_materials')} · {game.hqTokens?.[team]??0} {t('c_hqTokens')}</span>
     <button disabled={busy||!!game.talk||!!game.result} onClick={()=>void end()}>{t(game.phase==='day'?'c_endDay':'c_endNight')}</button>
    </div>
    {mobile&&<details className="a3-mobile-about">

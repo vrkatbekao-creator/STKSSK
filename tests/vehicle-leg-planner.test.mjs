@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {planVehicleLeg} from '../src/game/vehicle-leg-planner.ts';
 import {vehicleEdgeQuarterMetres} from '../src/game/vehicle-routing.ts';
-import {quoteVehicleCost} from '../src/game/vehicle-cost.ts';
+import {quoteVehicleCost,boardingWalkCharge} from '../src/game/vehicle-cost.ts';
 const graph={ids:BigUint64Array.from([1n,2n,3n]),longitudes:new Float64Array(3),latitudes:new Float64Array(3),
  offsets:Uint32Array.from([0,1,2,2]),targets:Uint32Array.from([2,2]),ways:BigUint64Array.from([10n,20n]),metres:Float64Array.from([100,600])};
 const stop=(vehicleNode,metres,edgeIds)=>({walkingNode:vehicleNode,vehicleNode,metres,effort:metres,edgeIds});
@@ -48,8 +48,8 @@ test('combined search matches exhaustive enumeration on small directed geographi
    if(depth)for(const end of destinations.filter(x=>x.vehicleNode===node)){
     const cost=quoteVehicleCost({mode:o.mode,previousWeightedQuarterMetres:o.previousWeightedQuarterMetres,
       addedWeightedQuarterMetres:weighted,previousTeamQuarterMetres:o.previousTeamQuarterMetres,addedTeamQuarterMetres:actual});
-    const foot=r=>r.edgeIds.length?Math.max(1,Math.ceil((r.effort-1e-6)/1500)):0;
-    const ap=foot(origin)+foot(end)+cost.ap,dist=origin.metres+end.metres+actual/4;
+    const b=boardingWalkCharge(origin.effort,origin.edgeIds.length>0,0,0),a=boardingWalkCharge(end.effort,end.edgeIds.length>0,b.walked,b.credit);
+    const ap=b.ap+a.ap+cost.ap,dist=origin.metres+end.metres+actual/4;
     if(ap+o.reservedAp<=o.ap&&cost.supplies<=o.materials&&(!best||ap<best.ap||ap===best.ap&&dist<best.dist))best={ap,dist};
    }
    for(let e=g.offsets[node];e<g.offsets[node+1];e++){const d=vehicleEdgeQuarterMetres(g.metres[e]);visit(g.targets[e],actual+d,weighted+Math.ceil(d*o.edgeWeightQuarters(e)/4),origin,depth+1);}

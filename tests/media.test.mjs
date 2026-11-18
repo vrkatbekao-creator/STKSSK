@@ -10,7 +10,7 @@ test('media follows committed player actions and never fires on failures, load, 
  const memory=new Map(),store=createCampaignStore({getItem:k=>memory.get(k)??null,setItem:(k,v)=>memory.set(k,v)});let effects=[];
  const off=store.subscribe((next,previous)=>{const e=mediaEvent(previous,next);if(e)effects.push(e);});
  store.getState().start();store.getState().focus(store.getState().districtId);store.getState().dispatch({type:'skill',unitId:'green1'});assert.equal(effects.length,0);
- store.getState().dispatch({type:'skill',unitId:'blue1'});assert.equal(effects.length,1);assert.equal(effects[0].cue,'skill-jiang');
+ store.getState().dispatch({type:'skill',unitId:'blue1'});assert.equal(effects.length,1);assert.equal(effects[0].cue,'skill-shen');
  store.getState().save();store.getState().menu();store.getState().resume();store.getState().priority('invalid');store.getState().end();store.getState().end();assert.equal(effects.length,1);off();
 });
 test('media does not read or expose support, and follows commander choice independently from faction',()=>{
@@ -20,7 +20,7 @@ test('media does not read or expose support, and follows commander choice indepe
  assert.equal(mediaEvent(session(g,false),session(b)),null);
 });
 test('blackout and final result transitions do not become cinematics',()=>{
- const g=initialCampaign(12);g.day=15;const b=campaignCommand(g,{type:'brace',unitId:'blue1'}).game;
+ const g=initialCampaign(12);g.day=15;const heavy=g.units.find(u=>u.team==='blue'&&u.role==='heavy');const b=campaignCommand(g,{type:'brace',unitId:heavy.id}).game;
  assert.equal(mediaEvent(session(g),session(b)).kind,'skill');assert.equal(mediaEvent(session(g),session({...b,day:16})),null);assert.equal(mediaEvent(session(g),session({...b,result:'blue'})),null);
  assert.equal(mediaEvent(session(g),session(endCampaignPhase(g))),null);
 });
@@ -30,8 +30,8 @@ test('all preview scenes contain only presentation metadata',()=>{
  }
 });
 test('ordinary members use their own cartoon role in the cut-in',()=>{
- const g=initialCampaign(8);const b=campaignCommand(g,{type:'brace',unitId:'green2'},'green').game;
- const e=mediaEvent(session({...g,playerTeam:'green'}),session({...b,playerTeam:'green'}));
+ const g=initialCampaign(8);const heavy=g.units.find(u=>u.team==='blue'&&u.role==='heavy');const b=campaignCommand(g,{type:'brace',unitId:heavy.id},'blue').game;
+ const e=mediaEvent(session(g),session(b));
  assert.equal(e.actorRole,'heavy');assert.equal(e.action,'brace');assert.equal(e.cue,'shield');
 });
 test('bundled media hashes match manifest and faction themes have exact 20-second composition masters',()=>{

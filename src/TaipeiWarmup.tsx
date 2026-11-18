@@ -3,8 +3,8 @@ import {useTranslation} from 'react-i18next';
 
 const questions=[
  {prompt:'p_quizDistricts',choices:['10','12','16'],answer:1},
- {prompt:'p_quiz101',choices:['p_quizBeitou','p_quizWanhua','p_quizXinyi'],answer:2},
- {prompt:'p_quizRaohe',choices:['p_quizSongshan','p_quizXinyi','p_quizBeitou'],answer:0},
+ {prompt:'p_quizPier2',choices:['p_quizQijin','p_quizZuoying','p_quizYancheng'],answer:2},
+ {prompt:'p_quizWeiwuying',choices:['p_quizFengshan','p_quizYancheng','p_quizQijin'],answer:0},
 ] as const;
 
 export function TaipeiWarmup(){

@@ -5,8 +5,8 @@ import { mapFor, allCells as cells,hexDistance } from './campaign-map.ts';
 import { career,capacity } from './campaign-growth.ts';
 export const commanders={
  jiang:{role:'heavy' as Role,ap:2,cooldown:6},
- shen:{role:'ranged' as Role,ap:4,cooldown:6},
- huang:{role:'heavy' as Role,ap:3,cooldown:6},
+ shen:{role:'ranged' as Role,ap:2,cooldown:6},
+ huang:{role:'scout' as Role,ap:2,cooldown:5},
 };
 export type CommanderId=keyof typeof commanders;
 export const unitAvailable=(g:Campaign,u:CampaignUnit)=>u.withdrawUntil<=g.day&&u.mobilization>0&&career(u).health>0;

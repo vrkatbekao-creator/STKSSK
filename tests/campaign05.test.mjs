@@ -9,12 +9,12 @@ const session=game=>({game,selected:`${game.playerTeam}1`,districtId:cells.get(g
 const memory=()=>{const data=new Map();return {data,getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)};};
 test('three factions have independent rosters, resources, commanders and nine distinct starts',()=>{
  const g=initialCampaign(9);assert.equal(g.units.length,9);assert.equal(new Set(g.units.map(u=>u.cellId)).size,9);
- assert.deepEqual(g.commanders,{blue:'jiang',green:'shen',white:'huang'});
+ assert.deepEqual(g.commanders,{blue:'shen',green:'jiang',white:'huang'});
  for(const t of teams){assert.equal(g.units.filter(u=>u.team===t).length,3);assert.equal(g.resources[t].materials,36);assert.equal(totals(g.support)[t],1200);}
  assert.notEqual(g.resources.blue,g.resources.white);assert.notEqual(g.activity[districts[0].id].blue,g.activity[districts[0].id].white);
 });
 test('each selected faction can act, owns its costs and rejects foreign units',()=>{
- for(const team of teams){const g=initialCampaign(5,team),unitId=`${team}1`;const out=campaignCommand(g,{type:'rest',unitId});assert.equal(out.error,undefined);assert.equal(out.game.units.find(u=>u.id===unitId).ap,g.units.find(u=>u.id===unitId).ap-2);const foreign=teams.find(t=>t!==team);assert.equal(campaignCommand(g,{type:'rest',unitId:`${foreign}1`}).error,'c_errorUnit');}
+ for(const team of teams){const g=initialCampaign(5,team),unitId=`${team}1`;const out=campaignCommand(g,{type:'rest',unitId});assert.equal(out.error,undefined);assert.equal(out.game.units.find(u=>u.id===unitId).ap,g.units.find(u=>u.id===unitId).ap-1);const foreign=teams.find(t=>t!==team);assert.equal(campaignCommand(g,{type:'rest',unitId:`${foreign}1`}).error,'c_errorUnit');}
 });
 test('the two AI rivals act once each at night for every player faction, not on day-to-night',()=>{
  for(const team of teams){const g=initialCampaign(2,team),night=endCampaignPhase(g);assert.equal(night.actions,0);const next=endCampaignPhase(night);assert.equal(next.day,2);const acted=new Set(next.logs.filter(l=>l.key==='c_logAction').map(l=>l.values.team));assert.ok(!acted.has(team));for(const rival of teams.filter(t=>t!==team))assert.ok(acted.has(rival));}
@@ -44,7 +44,7 @@ test('save round-trip retains class abilities, stage staffing, event response, s
  const restored=decodeSave(JSON.stringify(encodeSave(session(g))));assert.equal(restored.error,null);assert.deepEqual(restored.save.session.game,g);
 });
 test('corrupt, incompatible and structurally invalid saves are rejected without overwriting bytes',()=>{
- const storage=memory(),good=JSON.stringify(encodeSave(session(initialCampaign())));for(const raw of ['{broken',good.replace('"ap":14','"ap":13'),good.replace('"version":5','"version":99')]){storage.setItem(SAVE_KEY,raw);assert.equal(readSave(storage).save,null);assert.equal(storage.getItem(SAVE_KEY),raw);}
+ const storage=memory(),good=JSON.stringify(encodeSave(session(initialCampaign())));for(const raw of ['{broken',good.replace('"ap":15','"ap":13'),good.replace('"version":5','"version":99')]){storage.setItem(SAVE_KEY,raw);assert.equal(readSave(storage).save,null);assert.equal(storage.getItem(SAVE_KEY),raw);}
  for(const change of [s=>s.game.day=99,s=>s.game.units[0].cellId='missing',s=>delete s.game.support[districts[0].id].white,s=>s.selected='green1',s=>s.game.history.push({day:1,support:s.game.support})]){const s=session(initialCampaign());change(s);assert.equal(validSession(s),false);assert.throws(()=>encodeSave(s));}
  assert.equal(decodeSave(good.replace('"version":5','"version":2')).error,'c_saveIncompatible');
 });

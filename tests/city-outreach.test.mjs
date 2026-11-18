@@ -22,7 +22,7 @@ test('official places have multiple uneven district counts, byte-traceable sourc
 
 test('street canvassing works away from fixed sites and shares AP, material, XP and sector rules',()=>{
  let g=fresh(),u=actor(g);const occupied=new Set(g.units.map(v=>v.cellId));const c=[...streetCellMap.values()].find(c=>c.walkable&&!occupied.has(c.id)&&!nearbyNodes(g,{...u,cellId:c.id}).length);assert.ok(c);u.cellId=c.id;
- const before=structuredClone(g),quote=outreachQuote(g,'blue',c.id);g=act(g,{type:'streetCanvass'});assert.equal(actor(g).ap,12);assert.equal(g.resources.blue.materials,35);assert.equal(actor(g).career.xp,2);assert.equal(g.support[c.districtId].blue-before.support[c.districtId].blue,quote.points);assert.equal(g.seed,before.seed);assert.equal(g.trail.blue.walks.length,0);assert.ok(validSession(session(g)));assert.deepEqual(before.outreach,initialOutreach());
+ const before=structuredClone(g),quote=outreachQuote(g,'blue',c.id);g=act(g,{type:'streetCanvass'});assert.equal(actor(g).ap,13);assert.equal(g.resources.blue.materials,35);assert.equal(actor(g).career.xp,2);assert.equal(g.support[c.districtId].blue-before.support[c.districtId].blue,quote.points);assert.equal(g.seed,before.seed);assert.equal(g.trail.blue.walks.length,0);assert.ok(validSession(session(g)));assert.deepEqual(before.outreach,initialOutreach());
 });
 
 test('a road contact and nearby fixed-site contact share the same two-contact daily ceiling',()=>{
@@ -39,7 +39,7 @@ test('sector saturation crosses adjacent cells, rewards new districts once and r
 
 test('place transfers work within a district, cost four AP and never fabricate walking histories',()=>{
  const g=fresh(),u=actor(g),district=streetCellMap.get(u.cellId).districtId,n=sourcePlaces.find(n=>n.districtId===district&&siteTransferDestination(g,u,n.id));assert.ok(n);const destination=siteTransferDestination(g,u,n.id).id;
- const moved=act(g,{type:'siteTransfer',nodeId:n.id});assert.equal(actor(moved).cellId,destination);assert.equal(actor(moved).ap,10);assert.equal(moved.resources.blue.materials,32);assert.equal(actor(moved).transportDay,1);assert.deepEqual(moved.trail.blue.walks,g.trail.blue.walks);assert.ok(moved.trail.blue.arrivedCells.includes(destination));assert.equal(campaignCommand(moved,{type:'siteTransfer',unitId:'blue1',nodeId:n.id}).error,'c_errorTransport');assert.ok(validSession(session(moved)));
+ const moved=act(g,{type:'siteTransfer',nodeId:n.id});assert.equal(actor(moved).cellId,destination);assert.equal(actor(moved).ap,11);assert.equal(moved.resources.blue.materials,32);assert.equal(actor(moved).transportDay,1);assert.deepEqual(moved.trail.blue.walks,g.trail.blue.walks);assert.ok(moved.trail.blue.arrivedCells.includes(destination));assert.equal(campaignCommand(moved,{type:'siteTransfer',unitId:'blue1',nodeId:n.id}).error,'c_errorTransport');assert.ok(validSession(session(moved)));
  assert.deepEqual(actionCost(g,{type:'transport'}),{ap:3,materials:4});assert.deepEqual(actionCost(initialCampaign(),{type:'transport'}),{ap:6,materials:4});const locked=structuredClone(g);actor(locked).guardedUntil=3;assert.equal(campaignCommand(locked,{type:'siteTransfer',unitId:'blue1',nodeId:n.id}).game,locked);
 });
 

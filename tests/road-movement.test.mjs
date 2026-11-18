@@ -40,10 +40,10 @@ test('distance penalties share the command formula; occupancy and unaffordable m
  const poor=structuredClone(g);poor.units[0].ap=0;const failed=campaignCommand(poor,{type:'move',unitId:u.id,cellId:to});assert.ok(failed.error);assert.equal(failed.game,poor);const occupied=structuredClone(g);occupied.units[3].cellId=to;assert.equal(route(occupied,occupied.units[0],to),null);
 });
 
-test('road travel uses 1.5-kilometre AP bands with one AP minimum and no per-edge rounding',()=>{
- assert.equal(roadAPCost(.01),1);assert.equal(roadAPCost(1500),1);assert.equal(roadAPCost(1500.001),2);assert.equal(roadAPCost(3000),2);assert.equal(roadAPCost(3000.001),3);
+test('road travel uses 1.8-kilometre AP bands in a shared daily walk pool',()=>{
+ assert.equal(roadAPCost(.01),1);assert.equal(roadAPCost(1800),1);assert.equal(roadAPCost(1800.001),2);assert.equal(roadAPCost(3600),2);assert.equal(roadAPCost(3600.001),3);
  const g=fresh(),u=g.units[0],walk=movement(g,u,2);assert.equal(walk.costs.get(u.cellId),0);
- const candidate=[...walk.costs].map(([id])=>routeFromMovement(u,id,walk)).find(p=>p.edgeIds.length>2&&p.metres>1500&&p.metres<=3000&&p.edgeIds.every(id=>streetWays.get(routingEdges[id].wayId).highway!=='steps'));
+ const candidate=[...walk.costs].map(([id])=>routeFromMovement(u,id,walk)).find(p=>p.edgeIds.length>2&&p.metres>1800&&p.metres<=3600&&p.edgeIds.every(id=>streetWays.get(routingEdges[id].wayId).highway!=='steps'));
  assert.ok(candidate);assert.equal(candidate.cost,2);assert.ok(candidate.edgeIds.length>candidate.cost);
  const limited=movement(g,u,1);assert.equal(limited.costs.has(candidate.path.at(-1)),false);
  const exact=structuredClone(g);exact.units[0].ap=2;const moved=act(exact,{type:'move',unitId:u.id,cellId:candidate.path.at(-1)});assert.equal(moved.units[0].ap,0);assert.equal(exact.units[0].ap,2);
@@ -88,7 +88,7 @@ test('new saves reject forged road histories and map revisions; legacy saves ret
 });
 
 test('new-mode opponents use road walks and a complete 28-day game preserves polling blackout and deterministic continuation',()=>{
- const play=()=>{let g=fresh('white');for(let day=1;day<=28;day++){const night=endCampaignPhase(g);assert.equal(night.units[0].ap,g.units[0].ap);g=endCampaignPhase(night);assert.ok(validSession(session(g)),`day ${day}`);if(g.day>=15&&!g.result)assert.equal(intelligence(g).kind,'rumor');if(day===1){assert.ok(g.trail.blue.walks.length+g.trail.green.walks.length>0);for(const team of ['blue','green'])for(const w of g.trail[team].walks)assert.ok(w.edgeIds.length);const out=decodeSave(JSON.stringify(encodeSave(session(g))));assert.deepEqual(out.save.session.game,g);}}return g;};
+ const play=()=>{let g=fresh('white');for(let day=1;day<=28;day++){const night=endCampaignPhase(g);assert.equal(night.units[0].ap,g.units[0].ap+4);g=endCampaignPhase(night);assert.ok(validSession(session(g)),`day ${day}`);if(g.day>=15&&!g.result)assert.equal(intelligence(g).kind,'rumor');if(day===1){assert.ok(g.trail.blue.walks.length+g.trail.green.walks.length>0);for(const team of ['blue','green'])for(const w of g.trail[team].walks)assert.ok(w.edgeIds.length);const out=decodeSave(JSON.stringify(encodeSave(session(g))));assert.deepEqual(out.save.session.game,g);}}return g;};
  const g=play();assert.equal(g.day,28);assert.equal(g.phase,'night');assert.ok(g.result);assert.equal(intelligence(g).kind,'result');assert.deepEqual(g.pollHistory.map(p=>p.releasedDay),[2,4,6,8,10,12,14]);assert.deepEqual(play(),g);
 });
 

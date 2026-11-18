@@ -7,7 +7,7 @@ import {motorcadeHeat as getMotorcadeHeat} from './campaign-motorcade.ts';
 
 export type OutreachLedger={cells:Record<string,{day:number;count:number}>;sectors:Record<string,{day:number;heat:number}>;seenSectors:string[];districts:string[];partial:boolean};
 export type Outreach=Record<Team,OutreachLedger>;
-export const outreachPolicy=Object.freeze({sectorMetres:600,perCellPerDay:2,newSector:2,newDistrict:4,heatCap:6,heatPenalty:2,recoveryDays:2});
+export const outreachPolicy=Object.freeze({sectorMetres:1500,perCellPerDay:2,newSector:2,newDistrict:4,heatCap:6,heatPenalty:2,recoveryDays:2});
 export const sectorKey=(c:Cell)=>`${c.districtId}:${Math.floor(c.x/outreachPolicy.sectorMetres)},${Math.floor(c.y/outreachPolicy.sectorMetres)}`;
 export function initialOutreach(g?:Campaign):Outreach{return teamRecord(team=>{
  const active=g?.movementProfile==='streets-v2',known=new Set(active?g.trail?.[team].completedNodes??[]:[]),counts:OutreachLedger['cells']={};
@@ -15,7 +15,7 @@ export function initialOutreach(g?:Campaign):Outreach{return teamRecord(team=>{
  const visited=active?[...known].map(id=>mapFor(g).nodeById.get(id)).filter(n=>!!n).map(n=>allCells.get(n!.cellId)!):[];
  return {cells:counts,sectors:{},seenSectors:[...new Set(visited.map(sectorKey))],districts:[...new Set(visited.map(c=>c.districtId))],partial:!!g};
 });}
-export function outreachQuote(g:Campaign,team:Team,cellId:string,base?:number,motorcadeHeat?:number){
+export function outreachQuote(g:Campaign,team:Team,cellId:string,base?:number,motorcadeHeat?:number,ignoreHeat=false){
  const c=allCells.get(cellId)!,ledger=(g.outreach??initialOutreach(g))[team],sector=sectorKey(c),entry=ledger.sectors[sector];
  const vehicle=g.vehicle,vehicleActive=vehicle?.activationDay!==null&&vehicle?.activationDay!==undefined&&g.day>=vehicle.activationDay;
  const extra=motorcadeHeat??(vehicleActive?getMotorcadeHeat(vehicle!.teams[team].exposure,sector,g.day):0);
@@ -24,10 +24,10 @@ export function outreachQuote(g:Campaign,team:Team,cellId:string,base?:number,mo
  const count=active&&ledger.cells[cellId]?.day===g.day?ledger.cells[cellId].count:0;
  const freshSector=active&&!ledger.seenSectors.includes(sector),freshDistrict=active&&!ledger.districts.includes(c.districtId);
  const reward=base??(count?4:8);
- return {cellId,sector,count,heat,freshSector,freshDistrict,band:freshSector?'fresh':heat>=3?'saturated':'familiar',points:active?Math.max(1,reward+(freshSector?outreachPolicy.newSector:0)+(freshDistrict?outreachPolicy.newDistrict:0)-heat*outreachPolicy.heatPenalty):reward};
+ return {cellId,sector,count,heat,freshSector,freshDistrict,band:freshSector?'fresh':heat>=3?'saturated':'familiar',points:active?Math.max(1,reward+(freshSector?outreachPolicy.newSector:0)+(freshDistrict?outreachPolicy.newDistrict:0)-(ignoreHeat?0:heat*outreachPolicy.heatPenalty)):reward};
 }
-export function touchOutreach(g:Campaign,team:Team,cellId:string,base:number,motorcadeHeat?:number){
- const quote=outreachQuote(g,team,cellId,base,motorcadeHeat);if(g.movementProfile!=='streets-v2')return base;
+export function touchOutreach(g:Campaign,team:Team,cellId:string,base:number,motorcadeHeat?:number,ignoreHeat=false){
+ const quote=outreachQuote(g,team,cellId,base,motorcadeHeat,ignoreHeat);if(g.movementProfile!=='streets-v2')return base;
  const state=g.outreach??initialOutreach(g),ledger=state[team],district=allCells.get(cellId)!.districtId;
  const prior=ledger.sectors[quote.sector],ownHeat=prior?Math.max(0,prior.heat-Math.floor((g.day-prior.day)/outreachPolicy.recoveryDays)):0;
  g.outreach={...state,[team]:{...ledger,cells:{...ledger.cells,[cellId]:{day:g.day,count:quote.count+1}},sectors:{...ledger.sectors,[quote.sector]:{day:g.day,heat:Math.min(outreachPolicy.heatCap,ownHeat+1)}},seenSectors:quote.freshSector?[...ledger.seenSectors,quote.sector]:ledger.seenSectors,districts:quote.freshDistrict?[...ledger.districts,district]:ledger.districts}};

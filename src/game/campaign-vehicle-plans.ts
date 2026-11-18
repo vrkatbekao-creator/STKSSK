@@ -28,6 +28,7 @@ export function previewCampaignVehicleLeg(g:Campaign,u:CampaignUnit,destinationC
  const options:VehicleLegOptions={mode,origins,destinations,ap:actor.ap,
   materials:g.resources[actor.team].materials-reserve.materials,reservedAp:reserve.ap,
   previousWeightedQuarterMetres:unit[mode],previousTeamQuarterMetres:ledger.actualQuarterMetres,
+  previousWalkedEffort:actor.walkedEffort??0,previousWalkCredit:actor.walkCredit??0,
   allowTurn:context.allowTurn,edgeWeightQuarters:context.edgeWeightQuarters,roadConditions:context.roadConditions};
  return context.planLeg?context.planLeg(options):planVehicleLeg(context.graph,options);
 }

@@ -1,8 +1,0 @@
-{
-  "status": "independent local geometry check; not full road-data certification",
-  "projectionSamples": 500,
-  "maxProjectionErrorMetres": 9.880401218785448e-06,
-  "clippedSegments": 120,
-  "maxCoverageDifferenceQuarterUnits": 0.973575416544918,
-  "note": "Compares against pyproj EPSG:3826 and Shapely using the existing simplified game district outlines."
-}

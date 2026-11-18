@@ -1,9 +1,0 @@
-{
-  "status": "lossless offline audit only; not runtime approval",
-  "revision": "d2cd021016a417e1951f834ece7eb241fd30823ccf685c8a9972fd26f5611020",
-  "nodesCompared": 862806,
-  "directedEdgesCompared": 1722121,
-  "turnRelationsCompared": 1799,
-  "gzipDecompressSeconds": 0.184,
-  "note": "Local Python decompression only; no browser load or memory benchmark."
-}

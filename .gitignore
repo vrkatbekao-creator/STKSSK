@@ -1,5 +1,8 @@
 node_modules/
 .tools/
+.codex/
+legacy-taipei-archive/
+artifacts/
 design/research/attractions-source.zip
 design/research/puma-official*
 dist/
@@ -7,6 +10,10 @@ public/alpha-data/
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
 *.local
 
 __pycache__/

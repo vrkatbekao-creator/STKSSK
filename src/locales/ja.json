@@ -394,7 +394,7 @@
   "c_guide4": "Outreach normally costs 2 AP and 1 material; a motorcade drop-off discounts your first visit on that hex to 1 AP. 1.5 km sectors saturate with repeat visits.",
   "c_guide5": "疲労は翌日APを減少させます。休息は動員、道徳的、健康を回復し、あなたのチームの状態を見てください。",
   "c_guide6": "各会員は、地域と場所の送迎と疲労の獲得の共有を毎日1回転送できます。 出発前に表示されるAPと材料の費用を確認してください。",
-  "c_guide7": "ガバナンス・アイルまたはチャ・チャ・チャ・チャイルド・ソープボックスをビルドし、完了後にボランティアを割り当て、イベントを主催します。各ステージでは、1日1回のイベントを開催できます。",
+  "c_guide7": "Build a Megaport Container Stage or Banyan Tea Soapbox, assign volunteers once open, and host rallies once per stage each day.",
   "c_guide8": "ワンダーボーナスは、その日の地区で未確認のコントロール、ガードメンバー、アクティビティを必要としています。優先順位を設定し、ほとんどの3人は毎日支払います。",
   "c_guide9": "重いビートは範囲を帯び、範囲を帯びたモバイルを打ち負かし、モバイルは重いビートします。 排気されたメンバーは、翌日にベースに戻ります。",
   "c_errorEnded": "キャンペーンが終了しました。新しいゲームを始めましょう。",
@@ -939,5 +939,6 @@
   "c_sceneTitle_6400900": "小港・国際空港ゲートウェイ",
   "c_sceneTitle_6401000": "鳳山・衛武営ガジュマル広場",
   "c_sceneTitle_6401100": "岡山・橋頭 製糖工場と廟前",
-  "c_sceneTitle_6401200": "旗山・美濃 山あいと渓谷"
+  "c_sceneTitle_6401200": "旗山・美濃 山あいと渓谷",
+  "a3_aboutSummary": "12 Kaohsiung zones on a 300 m hex grid in 3D (MapLibre + Rust/WASM routing). Start with 15–19 AP, +4 AP nightfall, 1,800 m daily free walk pool, and HQ tokens; polling goes dark on days 15–28 until final night tally. All 3 saves stay local in your browser."
 }

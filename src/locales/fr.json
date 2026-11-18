@@ -394,7 +394,7 @@
   "c_guide4": "Outreach normally costs 2 AP and 1 material; a motorcade drop-off discounts your first visit on that hex to 1 AP. 1.5 km sectors saturate with repeat visits.",
   "c_guide5": "La fatigue réduit le jour prochain AP . Le repos restaure la mobilisation, le moral et la santé ; surveillez votre équipe en condition.",
   "c_guide6": "Chaque membre peut transférer une fois par jour, partagé entre les transferts de district et de place, gagnant la fatigue. Vérifiez le AP affiché et le coût du matériel avant de partir.",
-  "c_guide7": "Build Governance Isle ou Cha-Cha Soapbox, assignez un volontaire après l'achèvement, puis organisez un événement. Chaque étape permet un événement par jour.",
+  "c_guide7": "Build a Megaport Container Stage or Banyan Tea Soapbox, assign volunteers once open, and host rallies once per stage each day.",
   "c_guide8": "Les primes de merveille exigent un contrôle incontesté, un membre gardien et une activité dans le district ce jour-là.",
   "c_guide9": "Les battements lourds variaient, les battements mobiles variaient et les battements mobiles étaient lourds. Les membres épuisés reviennent à la base le lendemain.",
   "c_errorEnded": "La campagne s'est terminée. Commencez un nouveau jeu.",
@@ -939,5 +939,6 @@
   "c_sceneTitle_6400900": "Xiaogang · Portail aéroportuaire",
   "c_sceneTitle_6401000": "Fengshan · Canopée de Weiwuying",
   "c_sceneTitle_6401100": "Gangshan & Qiaotou · Sucre & temple",
-  "c_sceneTitle_6401200": "Qishan & Meinong · Vallée montagneuse"
+  "c_sceneTitle_6401200": "Qishan & Meinong · Vallée montagneuse",
+  "a3_aboutSummary": "12 Kaohsiung zones on a 300 m hex grid in 3D (MapLibre + Rust/WASM routing). Start with 15–19 AP, +4 AP nightfall, 1,800 m daily free walk pool, and HQ tokens; polling goes dark on days 15–28 until final night tally. All 3 saves stay local in your browser."
 }

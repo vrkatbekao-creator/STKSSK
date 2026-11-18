@@ -28,12 +28,12 @@ import {MobileMapSheet} from './MobileMapSheet.tsx';
 import './alpha-campaign.css';
 
 const Map=lazy(()=>import('./AlphaMap.tsx').then(m=>({default:m.AlphaMap})));
-type Panel='district'|'journal'|'venues'|'team'|'tactics'|'intel'|'calendar'|'session'|'contacts';
+type Panel='district'|'journal'|'venues'|'team'|'tactics'|'intel'|'calendar'|'session'|'contacts'|'about';
 type Destination={cellId:string;nodeId?:string;districtId?:string};
 type TravelPreference='auto'|'walk'|'drive'|'motorcade';
 type ModeChoice=TravelMode|'auto';
 const keys:Record<Panel,string>={district:'c_district',journal:'c_journal',venues:'c_nodes',team:'c_team',tactics:'c_classTactics',
- intel:'poll',calendar:'c_calendar',session:'s_slots',contacts:'n_title'};
+ intel:'poll',calendar:'c_calendar',session:'s_slots',contacts:'n_title',about:'a3_mobileAbout'};
 const modeLabel:Record<TravelMode,string>={walk:'a3_walk',drive:'c_action_drive',motorcade:'c_action_motorcade',siteTransfer:'c_action_siteTransfer',transport:'c_action_transport'};
 const travelPreferences:TravelPreference[]=['auto','walk','drive','motorcade'];
 const lines=['a3_chat1','a3_chat2','a3_chat3','a3_chat4'];
@@ -250,7 +250,8 @@ export function AlphaCampaign(){
    </div>
    {mobile&&<details className="a3-mobile-about">
     <summary>{t('a3_mobileAbout')}</summary>
-    <div><strong>{t('title')}</strong><p>{releaseVersion} · {t('a3_update')}</p><p>{t('a3_legend')}</p>
+    <div><strong>{t('title')}</strong><p>{releaseVersion} · {t('a3_update')}</p><p>{t('a3_aboutSummary')}</p><p>{t('a3_legend')}</p>
+    <p><a href={publicAsset('PROJECT-CREDITS.txt')} target="_blank" rel="noreferrer">{t('p_projectCredits')}</a> · <a href="https://github.com/vrkatbekao-creator/STKSSK" target="_blank" rel="noreferrer">GitHub · STKSSK</a></p>
     {state.vehicleUnavailable&&<p>{t('c_vehicleUnavailable')}</p>}</div>
    </details>}
    {!mobile&&activeVehicle&&<div className="a3-travel-modes" role="group" aria-label={t('a3_travelMode')}>
@@ -291,7 +292,7 @@ export function AlphaCampaign(){
     <div className="a3-leader">{portrait(leader)}<span><small>{t('a3_leader')}</small><strong>{unitLabel(game,leader,t)}</strong><small>{leader.ap} AP</small></span>
      <button aria-expanded={panel==='tactics'} onClick={e=>{chooseUnit(leader.id);togglePanel('tactics',e);}}>{t(`c_skill_${commander}`)}</button>
     </div>
-    {panelButton('venues')}{panelButton('team')}{panelButton('intel',t('a3_intel'))}{panelButton('contacts')}{panelButton('session')}
+    {panelButton('venues')}{panelButton('team')}{panelButton('intel',t('a3_intel'))}{panelButton('contacts')}{panelButton('session')}{panelButton('about')}
    </aside>
    {panel&&<section className={`a3-drawer ${panel==='district'||panel==='journal'?'left':''}`} aria-label={t(keys[panel])}>
     <div className="a3-drawer-head"><h2>{t(keys[panel])}</h2><button ref={drawerClose} onClick={closePanel}>{t('close')}</button></div>
@@ -321,6 +322,9 @@ export function AlphaCampaign(){
     {panel==='contacts'&&<CampaignContacts/>}
     {panel==='session'&&<><SessionControls/><AccessibilityPanel/><label>{t('language')} <LanguageSelect/></label>
      <p><a href={publicAsset('data/GAME-DATA-CREDITS.txt')} target="_blank" rel="noreferrer">{t('p_credits')}</a></p></>}
+    {panel==='about'&&<><p><strong>{t('title')}</strong> · {releaseVersion}</p><p>{t('a3_update')}</p><p>{t('a3_aboutSummary')}</p><p>{t('a3_legend')}</p>
+     <p><a href={publicAsset('PROJECT-CREDITS.txt')} target="_blank" rel="noreferrer">{t('p_projectCredits')}</a> · <a href={publicAsset('data/GAME-DATA-CREDITS.txt')} target="_blank" rel="noreferrer">{t('p_credits')}</a></p>
+     <p><a href="https://github.com/vrkatbekao-creator/STKSSK" target="_blank" rel="noreferrer">GitHub · STKSSK</a> · <a href="https://github.com/vrkatbekao-creator/STKSSK/issues/new?template=bug_report.yml" target="_blank" rel="noreferrer">{t('p_reportIssue')}</a></p></>}
    </section>}
    <div className="a3-tools"><button aria-pressed={grid} onClick={()=>setGrid(!grid)}>{t('a3_grid')}</button>
     <button aria-pressed={terrain} onClick={()=>setTerrain(!terrain)}>{t('a3_terrain')}</button>

@@ -394,7 +394,7 @@
   "c_guide4": "Outreach normally costs 2 AP and 1 material; a motorcade drop-off discounts your first visit on that hex to 1 AP. 1.5 km sectors saturate with repeat visits.",
   "c_guide5": "Moeheid vermindert volgende dag AP . Rust herstelt mobilisatie, moraal en gezondheid; let op uw team conditie.",
   "c_guide6": "Elk lid kan één keer per dag, gedeeld tussen district en plaats transfers, het verkrijgen van vermoeidheid. Controleer de getoonde AP en materiaalkosten voordat u vertrekt.",
-  "c_guide7": "Bouw Governance Isle of Cha-Cha Soapbox, wijs een vrijwilliger na voltooiing, dan gastheer van een evenement. Elke fase staat één evenement per dag toe.",
+  "c_guide7": "Build a Megaport Container Stage or Banyan Tea Soapbox, assign volunteers once open, and host rallies once per stage each day.",
   "c_guide8": "Wonder bonussen vereisen onbetwiste controle, een bewakend lid en activiteit in het district die dag. Stel prioriteiten; hoogstens drie betalen dagelijks.",
   "c_guide9": "Zware beats varieerden, varieerde beats mobiele, en mobiele beats zwaar. Uitgeput leden terugkeren naar de basis de volgende dag.",
   "c_errorEnded": "De campagne is afgelopen. Start een nieuw spel.",
@@ -939,5 +939,6 @@
   "c_sceneTitle_6400900": "Xiaogang · Luchthavenpoort",
   "c_sceneTitle_6401000": "Fengshan · Weiwuying-dak",
   "c_sceneTitle_6401100": "Gangshan & Qiaotou · Suiker & tempel",
-  "c_sceneTitle_6401200": "Qishan & Meinong · Bergvallei"
+  "c_sceneTitle_6401200": "Qishan & Meinong · Bergvallei",
+  "a3_aboutSummary": "12 Kaohsiung zones on a 300 m hex grid in 3D (MapLibre + Rust/WASM routing). Start with 15–19 AP, +4 AP nightfall, 1,800 m daily free walk pool, and HQ tokens; polling goes dark on days 15–28 until final night tally. All 3 saves stay local in your browser."
 }

@@ -37,12 +37,12 @@ export function configurePagesEntries(staging){
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>選舉騎士團 台北篇 全市掃街 | Election Knights: Taipei</title>
+<title>選舉騎士團 高雄篇 港都掃街 | Election Knights: Kaohsiung</title>
 <link rel="canonical" href="https://vrkatbekao-creator.github.io${betaUrl}">
 <script>location.replace('${betaUrl}' + location.search + location.hash);</script>
 </head>
 <body>
-<h1>選舉騎士團 台北篇 全市掃街</h1>
+<h1>選舉騎士團 高雄篇：港都百里掃街</h1>
 <p><a href="${betaUrl}">開啟 3D 試玩 / Play the 3D preview</a></p>
 <p><a href="${legacyUrl}">開啟 2D Legacy / Play 2D Legacy</a></p>
 </body>

@@ -6,8 +6,8 @@ import type {parseVehicleTurnMetadata} from './vehicle-runtime-factory.ts';
 
 export const preparedVehiclePolicy={
  filename:'vehicle-policy-v1.bin.gz',
- bytes:884810,
- sha256:'6eb1ac4b940579ebc93b02d6d1bb50036eadc2441fb382f573f678e09472a460',
+ bytes:497449,
+ sha256:'0794d988dcfad645634b6e0e01e73970f3b13940cfdb33b253adfa55b2951a5f',
 };
 
 export function encodeVehiclePolicy(graph:VehicleGraphColumns,turns:ReturnType<typeof parseVehicleTurnMetadata>,districts:readonly CoverageDistrict[]){
@@ -44,7 +44,7 @@ export function encodeVehiclePolicy(graph:VehicleGraphColumns,turns:ReturnType<t
  const nodeDistricts=new Uint8Array(bytes,12+forbidden.length*4);
  for(let node=0;node<graph.ids.length;node++){
   const lon=graph.longitudes[node],lat=graph.latitudes[node];
-  if(lon<120||lon>123||lat<23||lat>27)continue;
+  if(lon<120||lon>123||lat<21.5||lat>27)continue;
   const point=projectVehiclePoint(lon,lat),[x,y]=point;
   // Match the boundary tolerance and district tie-break of the reference policy.
   const possible=bounds.filter(b=>x>=b.left-.001&&x<=b.right+.001&&y>=b.top-.001&&y<=b.bottom+.001);

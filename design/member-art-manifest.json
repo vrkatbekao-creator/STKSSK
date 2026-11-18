@@ -1,27 +1,27 @@
 {
-  "date": "2026-11-01",
-  "layout": "members: 3 columns × 2 rows; visitors: 3 × 1; runtime SVG viewBox and explicit clipPath sample cells without changing source PNG; blue medic and organiser use custom polygon masks to preserve the bag and megaphone crossing cell boundaries",
+  "date": "2026-11-18",
+  "layout": "members: strict 3 columns x 2 rows (362x724 per cell, 1086x1448 total); visitors: 3 x 1; transparent RGBA PNGs centered per cell without neighbor bleed",
   "files": [
     {
       "file": "public/art/members/blue-v1.png",
-      "width": 1089,
-      "height": 1445,
-      "bytes": 1724111,
-      "sha256": "0badfbeda2def82db6b1d08ada087f58139a2b78a4e2bd0f61e5ee7620d1e0c6"
+      "width": 1086,
+      "height": 1448,
+      "bytes": 1413263,
+      "sha256": "a26ae02b7e6969a0975bc7dcff0d395f6fef87bb8e4375c2a12c9566c6f4fccf"
     },
     {
       "file": "public/art/members/green-v1.png",
       "width": 1086,
       "height": 1448,
-      "bytes": 1437052,
-      "sha256": "ba59448a2803a198c237bd8107ea994a6901c7a2a4856f48b70cffc538cf4f40"
+      "bytes": 1304121,
+      "sha256": "0baf3813eab575e2dbcb883eecfb1af9b8f8a91aef57bc3960d56f6a62ac0a18"
     },
     {
       "file": "public/art/members/white-v1.png",
       "width": 1086,
       "height": 1448,
-      "bytes": 1369835,
-      "sha256": "ecfe2aa426ae0614b44f9871e62527386a1110ac5400afbdc236781b396b5a82"
+      "bytes": 1293945,
+      "sha256": "c0ce2dab85573ef39dc78369f04669be0a6b2c2f67fd086e27e9781bbb0ed726"
     },
     {
       "file": "public/art/members/visitors-v1.png",

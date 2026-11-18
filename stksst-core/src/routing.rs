@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashSet};
 
 pub const NO_NODE: u32 = u32::MAX;
-const METRES_PER_AP: f64 = 1500.0;
+const METRES_PER_AP: f64 = 1800.0;
 const EPSILON: f64 = 0.000001;
 
 struct Cursor<'a> {

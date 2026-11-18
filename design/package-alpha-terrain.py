@@ -28,7 +28,7 @@ def project(lon, lat):
              + (15*e4/256 + 45*e6/1024)*np.sin(4*phi) - 35*e6/3072*np.sin(6*phi))
     east = 250000 + k*n*(A + (1-T+C)*A**3/6 + (5-18*T+T*T+72*C-58*e2/(1-e2))*A**5/120)
     north = k*(m + n*t*(A*A/2 + (5-T+9*C+4*C*C)*A**4/24 + (61-58*T+T*T+600*C-330*e2/(1-e2))*A**6/720))
-    return east - 300000, 2800000 - north
+    return east - surface["origin"][0], surface["origin"][1] - north
 
 
 def tile_y(lat, scale):
@@ -37,7 +37,7 @@ def tile_y(lat, scale):
 
 for zoom in range(9, 13):
     scale = 2**zoom
-    west, south, east, north = 121.42, 24.94, 121.72, 25.23
+    west, south, east, north = 120.22, 22.49, 120.65, 23.00
     for x in range(int((west+180)/360*scale), int((east+180)/360*scale)+1):
         for y in range(int(tile_y(north, scale)), int(tile_y(south, scale))+1):
             pixels = (np.arange(size)+.5)/size

@@ -6,12 +6,12 @@ import {parseVehicleConnectors} from './vehicle-connectors.ts';
 import {parseVehicleTurnMetadata,createVehicleRuntime,createVehicleSaveContext} from './vehicle-runtime-factory.ts';
 
 const fixed=Object.freeze({
- revision:'bcfe2b6758c6943be71adad779a5a639125107c0116bdcb6b94b518825428955',
+ revision:'7de215380c56bc2a4dcca4aceacefa768d2490fea0b69ab7a5d15d2c754c3841',
  walkingRevision:'13446e24a86edcda147420f6d6d3799bda7acbff7818550292c656e70895a2f7',
- source:'b7ff3500b40dfbb508f59a93026a950f16f9a9efa1dec63bb278b474823d3ffe',
- graph:'8a024d1b7a313b7e895b808920ea6e4da8d6d99515d2e48f057fc66dc07ffb1f',
- metadata:'9efb8952c183f1f84e007ab2ad5891e6a0bccaab245694f4cec905659ba906ed',
- connectors:'ec1d8865e495e3348382be43e88cc69f15983d63579098c9ee318ac733ceebd9',
+ source:'16e35ff21c254f81649bd1692f8bb1ba3a5eb6276a6603433c4e25459b4a0259',
+ graph:'82cf8302c13cced9bf0377362ccaf314320ede3d1fa366ed4285608b59e5c27d',
+ metadata:'64955b5bfbab8558bce8a452e323fc45461ca1237ba75254100d59dc26de0ee7',
+ connectors:'82f69f34e5596895654648c6c1a41e4ff2cac64919ba245574290e4fb0072c29',
 });
 export type VehicleAsset='graph'|'metadata'|'connectors';
 async function authenticated(bytes:ArrayBuffer,hash:string,maximum:number){

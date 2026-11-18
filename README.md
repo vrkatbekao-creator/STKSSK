@@ -44,6 +44,32 @@ A single-player **3D turn-based campaign tactics game** set across **12 Kaohsiun
 
 ---
 
+## 玩法與 3D 操作指南 / How to Play (3D Edition)
+
+1. **開局配置（Setup）**：
+   - 於首頁挑選操控陣營、自由搭配三位主將之一，以及本機三個獨立存檔槽位，按 **「開始競選 / Start Campaign」** 立即進入 3D 高雄戰場。
+2. **移動與宣傳車掃（Travel & Motorcade）**：
+   - **點選地圖道路／六角格／場地標記**：介面會即時在 Rust/WASM 中估算 **步行（Walk）**、**開車（Drive）** 與 **車掃（Motorcade）** 所需的 AP 與物資，確認後才會實際移動與扣點。
+   - **自動判斷移動方式**：預設同區短程優先步行（可共用 1,800 公尺免費步行額度），跨區長程優先車掃沿途觸及多個 1,500 公尺街區；上方按鈕可隨時切換偏好模式。
+   - **手機／窄螢幕體驗**：點地標看簡介與移動選項，點我方角色直接開啟現場行動面板。
+3. **現場行動、舞台與政論（Field Actions, Stages & Debates）**：
+   - 抵達場地或點選我方角色旁的行動選單，可執行 **掃街拜訪（1 AP）**、**在地居民 Q&A**、**架設舞台（「大港音浪貨櫃屋」／「廟口榕樹泡茶攤」）**、**休整補動員力**，或在週期政論／大型活動時進入 **逐題攻防**。
+   - 善用 **職位特性**（重裝駐守減傷、喇叭手範圍廣播、斥候背襲）與 **7 人編制擴充／支援**（補血、應援或調派）拉高全隊覆蓋率。
+4. **民調與封關（Polling & Blackout）**：
+   - 第 **2–14 天**每兩天公布一次真實民調數據與全市勢力版圖。
+   - 第 **15–28 天**進入**民調封關期**，僅能透過不含數字的街頭小道消息與各地區訪問深度推估情勢，直到第 28 天夜晚結束才揭曉最終得票點數。
+
+*Pick a faction, commander, and one of 3 local save slots on the landing screen, then enter the 3D map. Click any road hex or venue pin to preview real WASM routing costs (`Walk` / `Drive` / `Motorcade`), open the allied unit menu for `1 AP` outreach, stages, and debates, grow your team up to 7 members, and navigate the Day 15–28 polling blackout until the final night tally.*
+
+---
+
+## 無障礙與隱私設計 / Accessibility & Privacy
+- **六國語系即時切換**：繁體中文、English、日本語、Français、Nederlands、简体中文（不重骰種子或事件）。
+- **無障礙支援**：內建高對比模式、減少動畫（Reduced Motion）、向量地圖回退、`?view=2d` 切換，以及完整鍵盤導覽與 ARIA 即時狀態播報。
+- **純單機本機存檔**：所有遊戲進度、設定與自訂音訊僅存在瀏覽器本機（`localStorage` 與記憶體），不上傳任何個人資料或連線外部帳號。
+
+---
+
 ## 本機開發與建置 / Local Development & Build
 
 ### 需求環境 / Prerequisites
@@ -75,9 +101,14 @@ npm run preview -- --host 127.0.0.1 --port 4179
 ### GitHub Pages 部署 / Publishing to GitHub Pages
 
 ```sh
-# 驗證測試、檢查套件並打包以 /STKSSK/ 為基底的 3D 靜態網站，再推送到 gh-pages 分支
+# 驗證 270 項測試、打包以 /STKSSK/ 為基底的 3D 靜態網站並發布至 gh-pages 分支
 npm run deploy:pages
 ```
+
+> 若為全新的 GitHub 倉庫第一次發布，推送 `gh-pages` 後請於 GitHub 網頁前往 **`Settings → Pages → Build and deployment`**：
+> - Source：`Deploy from a branch`
+> - Branch：`gh-pages` / `/ (root)`
+> 儲存後約 1–2 分鐘即可於 `https://vrkatbekao-creator.github.io/STKSSK/` 開啟 3D 試玩版。
 
 ---
 

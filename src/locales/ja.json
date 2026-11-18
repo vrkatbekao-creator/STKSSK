@@ -386,7 +386,7 @@
   "c_resultLose": "相手が街に勝つ",
   "c_resultDraw": "街のキャンペーンが結ばれる",
   "c_unlockedHistory": "毎日のサポート履歴のロック解除を見る",
-  "c_footer": "Election Knights · Kaohsiung · v0.19.0",
+  "c_footer": "Election Knights · Kaohsiung · v0.1.0",
   "c_gameValues": "キャラクターとイベント",
   "c_guide1": "Campaign 28 days: 15–19 base AP at dawn, plus +4 Night Surge AP at dusk. Highest total support after night 28 wins.",
   "c_guide2": "開始前にファクトと司令官を選択します。他の2つのファクションは、毎晩行動します。",
